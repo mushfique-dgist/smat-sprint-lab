@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; connect-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'; img-src 'self'">
+<title>SMAT-Sprint encrypted drop</title><link rel="stylesheet" href="./drop.css">
+<script defer src="./vendor/nacl-fast.min.js"></script>
+<script defer src="./vendor/blake-browser.js"></script>
+<script defer src="./drop.js"></script></head>
+<body><main><h1>SMAT-Sprint encrypted drop</h1>
+<p>This page seals the token for the lab before you submit it as an issue in the private GitHub repository. GitHub receives encrypted text.</p>
+<p id="need">Checking your link and the lab key…</p>
+<form id="drop-form" hidden>
+<label for="value">Token or client secret</label><textarea id="value" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required></textarea>
+<label for="username" id="username-label">New bot username, ending in _bot</label><input id="username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+<button type="submit">Encrypt on this phone</button></form>
+<p id="status" role="status"></p>
+<a id="submit-link" hidden rel="noreferrer noopener">Submit encrypted issue on GitHub</a>
+<div id="copy-wrap" hidden><p>If GitHub opens an empty issue, copy this encrypted text into its body:</p>
+<textarea id="sealed" readonly rows="5"></textarea><button type="button" id="copy">Copy encrypted text</button></div>
+<p>After submitting, clear any token from your clipboard. The lab checks the issue owner and the token before using it.</p>
+</main></body></html>
