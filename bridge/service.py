@@ -25,7 +25,7 @@ def gh_auth():
     except (OSError,subprocess.TimeoutExpired): return False
 def message(n):
     lines=["[SMAT-Sprint build] "+("Phone" if n["kind"]=="phone" else "PC only")+": "+n["title"],n["what"]+" "+n["why"]]
-    lines += [str(i)+". "+s for i,s in enumerate(n["steps_phone"],1)]
+    lines += [str(i)+". "+s.replace("{need_id}",n["need_id"]) for i,s in enumerate(n["steps_phone"],1)]
     if n.get("blocking"): lines.append("Everything else is continuing; only "+", ".join(n["blocking"])+" waits.")
     lines += ["Need "+n["need_id"][-4:],"Do not reply to the DGIST bot; that chat belongs to the course service."]
     text="\n".join(lines)
