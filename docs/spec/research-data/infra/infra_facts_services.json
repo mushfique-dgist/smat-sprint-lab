@@ -1,0 +1,530 @@
+{
+  "status": "FINAL",
+  "checked_on": "2026-09-23",
+  "method": "Raw pages fetched with curl on 2026-09-23 and converted to text; quotes copied verbatim from that text. Where a behaviour is not on a documentation page but is visible in the vendor's own open-source code (Telegram Bot API server, GitHub CLI, rclone), the source file is cited and the notes say so.",
+  "access_note": "core.telegram.org timed out or refused connections on 2026-09-23 from this workstation, from sail-gpu and from WebFetch (ECONNREFUSED 149.154.167.99:443). Telegram quotes come from raw Internet Archive captures (id_ mode, unmodified HTML): bots/api 2026-09-20 (latest listed release Bot API 10.3, August 24, 2026), bots/faq 2026-09-05, bots/features 2026-09-14, bots (intro) 2026-09-13, bots/tutorial 2026-09-20, bots/api-changelog 2026-09-06. A probe from sail-gpu to https://api.telegram.org/ returned HTTP 302 on 2026-09-23, so the Bot API endpoint itself is reachable from the server. Versions current on 2026-09-23: gh v2.101.0 (released 2026-09-15), rclone v1.75.1 (released 2026-09-04).",
+  "facts": [
+    {
+      "id": "tg-01",
+      "topic": "Telegram: getUpdates vs setWebhook",
+      "claim": "Long polling (getUpdates) and webhooks are mutually exclusive; getUpdates does not work while an outgoing webhook is set.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#getting-updates",
+      "quote": "There are two mutually exclusive ways of receiving updates for your bot - the getUpdates method on one hand and webhooks on the other. [...] Notes 1. This method will not work if an outgoing webhook is set up.",
+      "checked_on": "2026-09-23",
+      "notes": "Read from the Internet Archive capture dated 2026-09-20 (see access_note). The FAQ repeats it: \"Please note that it's not possible to get updates via long polling while an outgoing Webhook is set.\" (https://core.telegram.org/bots/faq)."
+    },
+    {
+      "id": "tg-02",
+      "topic": "Telegram: retention of unconfirmed updates",
+      "claim": "Updates wait on Telegram's server until received, for at most 24 hours.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#getting-updates",
+      "quote": "Incoming updates are stored on the server until the bot receives them either way, but they will not be kept longer than 24 hours.",
+      "checked_on": "2026-09-23",
+      "notes": "If the bridge is down for more than 24 h, button presses and replies made during the outage are lost."
+    },
+    {
+      "id": "tg-03",
+      "topic": "Telegram: getUpdates offset semantics",
+      "claim": "An update is confirmed when getUpdates is called with an offset greater than its update_id. Without an offset, the server returns updates starting from the earliest unconfirmed one.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#getupdates",
+      "quote": "Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as getUpdates is called with an offset higher than its update_id. The negative offset can be specified to retrieve updates starting from -offset update from the end of the updates queue. All previous updates will be forgotten.",
+      "checked_on": "2026-09-23",
+      "notes": "The FAQ words it differently and less precisely: \"offset = update_id of last processed update + 1 All updates with update_id less than or equal to offset will be marked as confirmed\" (https://core.telegram.org/bots/faq). Follow the API page. Other parameters on the same page: timeout, \"Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.\"; limit 1-100; allowed_updates, \"If not specified, the previous setting will be used.\" (pass [\"message\",\"callback_query\"] explicitly)."
+    },
+    {
+      "id": "tg-04",
+      "topic": "Telegram: two processes long-polling one token (409 Conflict)",
+      "claim": "When a second getUpdates call arrives for the same token, the pending long poll is aborted with HTTP 409 and the text 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'. A getUpdates call made while a webhook is set also returns a 409.",
+      "verdict": "confirmed",
+      "source_url": "https://github.com/tdlib/telegram-bot-api/blob/master/telegram-bot-api/Client.cpp",
+      "quote": "message = \"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running\"; [...] fail_query(409, message, std::move(query)); [...] \"Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first\"",
+      "checked_on": "2026-09-23",
+      "notes": "The documentation pages do not describe this. The text comes from Telegram's official open-source Bot API server; the API page says \"The Bot API server source code is available at telegram-bot-api.\" The file was last changed 2026-08-25. In abort_long_poll(), the NEWER poll wins and the OLDER pending poll gets the 409. Conflict replies are throttled (one immediately, then delayed 3 s). Two pollers therefore keep evicting each other, and updates are split unpredictably between them. Only getUpdates and setWebhook conflict; sendMessage is not in that code path."
+    },
+    {
+      "id": "tg-05",
+      "topic": "Telegram: update_id ordering",
+      "claim": "update_id normally increases sequentially, but after a week with no updates the next id is chosen at random.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#update",
+      "quote": "The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.",
+      "checked_on": "2026-09-23",
+      "notes": "update_id is NOT monotonic across a week of inactivity. If an old offset is persisted and replayed, a new random id below it could be confirmed, and so dropped, without ever being delivered."
+    },
+    {
+      "id": "tg-06",
+      "topic": "Telegram: duplicate / redelivered updates",
+      "claim": "An update that has not been confirmed is returned again by the next getUpdates call (for example after a crash between processing and confirming).",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/faq",
+      "quote": "Long polling gives me the same updates again and again! The getUpdates method returns the earliest 100 unconfirmed updates.",
+      "checked_on": "2026-09-23",
+      "notes": "The API page's getUpdates notes say: \"2. In order to avoid getting duplicate updates, recalculate offset after each server response.\" Delivery is therefore at-least-once, and handlers must be idempotent or dedupe by update_id."
+    },
+    {
+      "id": "tg-07",
+      "topic": "Telegram: InlineKeyboardMarkup",
+      "claim": "An inline keyboard is an array of button rows attached to a message.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#inlinekeyboardmarkup",
+      "quote": "This object represents an inline keyboard that appears right next to the message it belongs to. [...] inline_keyboard | Array of Array of InlineKeyboardButton | Array of button rows, each represented by an Array of InlineKeyboardButton objects",
+      "checked_on": "2026-09-23",
+      "notes": "InlineKeyboardButton: \"Exactly one of the fields other than text, icon_custom_emoji_id, and style must be used to specify the type of the button.\""
+    },
+    {
+      "id": "tg-08",
+      "topic": "Telegram: callback_data size",
+      "claim": "callback_data is limited to 1-64 bytes.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#inlinekeyboardbutton",
+      "quote": "callback_data | String | Optional. Data to be sent in a callback query to the bot when the button is pressed, 1-64 bytes",
+      "checked_on": "2026-09-23",
+      "notes": "The limit is in bytes, not characters (UTF-8). Use short ids such as 'd:<need_id>' and look up the full state on the server."
+    },
+    {
+      "id": "tg-09",
+      "topic": "Telegram: answerCallbackQuery requirement",
+      "claim": "Every callback query must be answered with answerCallbackQuery, even when no notification is shown.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#callbackquery",
+      "quote": "NOTE: After the user presses a callback button, Telegram clients will display a progress bar until you call answerCallbackQuery. It is, therefore, necessary to react by calling answerCallbackQuery even if no notification to the user is needed (e.g., without specifying any of the optional parameters).",
+      "checked_on": "2026-09-23",
+      "notes": "The docs give no deadline for answering. The server source contains the error text \"query is too old and response timeout expired or query ID is invalid\" (tdlib/telegram-bot-api Client.cpp), so answer first and do slow work afterwards. answerCallbackQuery text: 0-200 characters."
+    },
+    {
+      "id": "tg-10",
+      "topic": "Telegram: callback data is untrusted",
+      "claim": "The data in a callback query is not guaranteed to match a button that exists on the message.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#callbackquery",
+      "quote": "data | String | Optional. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data.",
+      "checked_on": "2026-09-23",
+      "notes": "Check callback data against a server-side table of open needs, and check callback_query.from.id and message.chat.id against the owner."
+    },
+    {
+      "id": "tg-11",
+      "topic": "Telegram: editMessageReplyMarkup",
+      "claim": "editMessageReplyMarkup changes only the inline keyboard of a message, so it can remove the buttons after an answer.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#editmessagereplymarkup",
+      "quote": "Use this method to edit only the reply markup of messages. [...] reply_markup | InlineKeyboardMarkup | Optional | A JSON-serialized object for an inline keyboard",
+      "checked_on": "2026-09-23",
+      "notes": "The page does not say in words that omitting reply_markup (or sending {\"inline_keyboard\":[]}) removes the keyboard. That is common practice; confirm it in the first live test."
+    },
+    {
+      "id": "tg-12",
+      "topic": "Telegram: deleting an incoming user message",
+      "claim": "In a private chat a bot can delete messages the user sent, but only within 48 hours of sending.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#deletemessage",
+      "quote": "- A message can only be deleted if it was sent less than 48 hours ago. [...] - Bots can delete outgoing messages in private chats, groups, and supergroups. - Bots can delete incoming messages in private chats.",
+      "checked_on": "2026-09-23",
+      "notes": "deleteMessages (plural) also exists. The docs do not say whether copies already synced to the user's other devices vanish at once. Treat deletion as best-effort cleanup, not confidentiality."
+    },
+    {
+      "id": "tg-13",
+      "topic": "Telegram: bot cannot message a user first",
+      "claim": "A bot cannot start a conversation; the user must message it first (for example /start). Anyone who finds the username can do so.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots",
+      "quote": "Bots can't start conversations with users. A user must either add them to a group or send them a message first. People can search for your bot’s username or start a chat via its unique t.me/bot_username link.",
+      "checked_on": "2026-09-23",
+      "notes": "Chat.type is documented as \"Type of the chat, can be either “private”, “group”, “supergroup” or “channel”\". BotFather has \"/setjoingroups – toggle whether your bot can be added to groups or not\" (https://core.telegram.org/bots/features)."
+    },
+    {
+      "id": "tg-14",
+      "topic": "Telegram: rate limits",
+      "claim": "About 1 message per second per chat (short bursts tolerated), 20 messages per minute in a group, about 30 messages per second for bulk sends. Exceeding them returns 429 errors.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this",
+      "quote": "In a single chat, avoid sending more than one message per second. We may allow short bursts that go over this limit, but eventually you'll begin receiving 429 errors. In a group, bots are not be able to send more than 20 messages per minute. For bulk notifications, bots are not able to broadcast more than about 30 messages per second, unless they enable paid broadcasts to increase the limit.",
+      "checked_on": "2026-09-23",
+      "notes": "A 429 response carries ResponseParameters.retry_after: \"Optional. In case of exceeding flood control, the number of seconds left to wait before the request can be repeated\" (https://core.telegram.org/bots/api#responseparameters)."
+    },
+    {
+      "id": "tg-15",
+      "topic": "Telegram: message text length",
+      "claim": "sendMessage text must be 1-4096 characters after entity parsing.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#sendmessage",
+      "quote": "Text of the message to be sent, 1-4096 characters after entities parsing",
+      "checked_on": "2026-09-23",
+      "notes": "editMessageText uses the same limit: \"New text of the message, 1-4096 characters after entity parsing\"."
+    },
+    {
+      "id": "tg-16",
+      "topic": "Telegram: parse_mode options",
+      "claim": "parse_mode accepts MarkdownV2, HTML and legacy Markdown.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api#formatting-options",
+      "quote": "To use this mode, pass MarkdownV2 in the parse_mode field. [...] To use this mode, pass HTML in the parse_mode field. [...] This is a legacy mode, retained for backward compatibility. To use this mode, pass Markdown in the parse_mode field.",
+      "checked_on": "2026-09-23",
+      "notes": "HTML with html.escape() on dynamic text is the least error-prone choice. MarkdownV2 requires escaping many reserved characters. Entities can be sent instead of parse_mode."
+    },
+    {
+      "id": "tg-17",
+      "topic": "Telegram: link previews",
+      "claim": "Link previews are controlled with link_preview_options (is_disabled). disable_web_page_preview was replaced in Bot API 7.0 and no longer appears on the current API page.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/api-changelog",
+      "quote": "Added the class LinkPreviewOptions and replaced the parameter disable_web_page_preview with link_preview_options in the methods sendMessage and editMessageText.",
+      "checked_on": "2026-09-23",
+      "notes": "LinkPreviewOptions.is_disabled: \"Optional. True, if the link preview is disabled\" (https://core.telegram.org/bots/api#linkpreviewoptions). The docs do not say whether the server still accepts the old parameter; do not rely on it."
+    },
+    {
+      "id": "tg-18",
+      "topic": "Telegram: BotFather /newbot token",
+      "claim": "/newbot in @BotFather creates a bot and returns its token, which grants full control of the bot.",
+      "verdict": "confirmed",
+      "source_url": "https://core.telegram.org/bots/features#creating-a-new-bot",
+      "quote": "Use the /newbot command to create a new bot. @BotFather will ask you for a name and username, then generate an authentication token for your new bot. [...] The token is a string, like 110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw, which is required to authorize the bot and send requests to the Bot API. Keep your token secure and store it safely, it can be used by anyone to control your bot.",
+      "checked_on": "2026-09-23",
+      "notes": "Usernames: \"Usernames are 5-32 characters long and not case sensitive [...] Your bot's username must end in 'bot’\". The owner can create the bot from the phone; the token then has to reach the server over a secure path."
+    },
+    {
+      "id": "tg-19",
+      "topic": "Telegram: revoking a bot token",
+      "claim": "BotFather's /revoke command revokes a token.",
+      "verdict": "not documented",
+      "source_url": "https://core.telegram.org/bots/features#generating-an-authentication-token",
+      "quote": "If your existing token is compromised or you lost it for some reason, use the /token command to generate a new one.",
+      "checked_on": "2026-09-23",
+      "notes": "The current official pages name /token, not /revoke. The tutorial says: \"Each bot has a unique token which can also be revoked at any time via @BotFather.\" (https://core.telegram.org/bots/tutorial). The spec should say 'regenerate the token in @BotFather (/token or the BotFather Mini App)'."
+    },
+    {
+      "id": "gh-01",
+      "topic": "GitHub device flow: code lifetime and format",
+      "claim": "Device and user codes expire after 900 s by default. The user code is 8 characters with a hyphen in the middle and is entered at https://github.com/login/device.",
+      "verdict": "confirmed",
+      "source_url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#device-flow",
+      "quote": "The user verification code is displayed on the device so the user can enter the code in a browser. This code is 8 characters with a hyphen in the middle. [...] The number of seconds before the device_code and user_code expire. The default is 900 seconds or 15 minutes. [...] The user must enter a valid code within 15 minutes (or 900 seconds).",
+      "checked_on": "2026-09-23",
+      "notes": "Example code: WDJB-MJHT. The verification URL is https://github.com/login/device, which works in a phone browser."
+    },
+    {
+      "id": "gh-02",
+      "topic": "GitHub device flow: polling interval and errors",
+      "claim": "Polling must respect 'interval' (5 s in the example). Polling too fast returns slow_down, which adds 5 s. Other errors: authorization_pending, expired_token, access_denied.",
+      "verdict": "confirmed",
+      "source_url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#error-codes-for-the-device-flow",
+      "quote": "When you receive the slow_down error, 5 extra seconds are added to the minimum interval or timeframe required between your requests using POST https://github.com/login/oauth/access_token. [...] The error response includes the new interval that you must use. [...] When a user clicks cancel during the authorization process, you'll receive a access_denied error and the user won't be able to use the verification code again.",
+      "checked_on": "2026-09-23",
+      "notes": "The table row is 'expired_token' but its description text says 'token_expired'; handle both. The docs also give a rate limit of \"50 submissions in an hour per application\" when users submit codes."
+    },
+    {
+      "id": "gh-03",
+      "topic": "GitHub OAuth: 10-token limit per user/app/scope",
+      "claim": "An OAuth app (the GitHub CLI app included) gets at most 10 live tokens per user and scope set. An 11th revokes an older token.",
+      "verdict": "confirmed",
+      "source_url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#creating-multiple-tokens-for-oauth-apps",
+      "quote": "There is a limit of ten tokens that are issued per user/application/scope combination, and a rate limit of ten tokens created per hour. If an application creates more than ten tokens for the same user and the same scopes, GitHub revokes one of the existing tokens with the same user/application/scope combination, chosen in this order: The oldest token that has never been used and that was created more than one minute ago. [...] If there is no such token, but at least one token has been used, the token that was least recently used.",
+      "checked_on": "2026-09-23",
+      "notes": "Every gh login on every machine for the same account and scopes counts against the same budget, so repeated re-logins by one programme can silently revoke another programme's gh token."
+    },
+    {
+      "id": "gh-04",
+      "topic": "gh auth login flags",
+      "claim": "gh auth login supports --web, --hostname, --git-protocol, --scopes, --skip-ssh-key, --insecure-storage, --clipboard and --with-token.",
+      "verdict": "confirmed",
+      "source_url": "https://cli.github.com/manual/gh_auth_login",
+      "quote": "-p, --git-protocol <string> The protocol to use for git operations on this host: {ssh|https} -h, --hostname <string> The hostname of the GitHub instance to authenticate with --insecure-storage Save authentication credentials in plain text instead of credential store -s, --scopes <strings> Additional authentication scopes to request --skip-ssh-key Skip generate/upload SSH key prompt -w, --web Open a browser to authenticate --with-token Read token from standard input",
+      "checked_on": "2026-09-23",
+      "notes": "Manual text: \"The default authentication mode is a web-based browser flow. After completion, an authentication token will be stored securely in the system credential store. If a credential store is not found or there is an issue using it gh will fallback to writing the token to a plain text file.\""
+    },
+    {
+      "id": "gh-05",
+      "topic": "gh auth login without a TTY",
+      "claim": "Without a TTY, gh auth login needs no --web and never waits for Enter. It writes the one-time code and the URL https://github.com/login/device to stderr, then polls until the user authorises.",
+      "verdict": "confirmed",
+      "source_url": "https://github.com/cli/cli/blob/trunk/internal/authflow/flow.go",
+      "quote": "w := IO.ErrOut [...] fmt.Fprintf(w, \"%s First copy your one-time code: %s\\n\", cs.Yellow(\"!\"), cs.Bold(code)) [...] if !isInteractive { fmt.Fprintf(w, \"%s to continue in your web browser: %s\\n\", cs.Bold(\"Open this URL\"), authURL)",
+      "checked_on": "2026-09-23",
+      "notes": "Source-level behaviour (trunk, v2.101.0 era); the manual does not describe it. login.go: \"if opts.IO.CanPrompt() && opts.Token == \\\"\\\" { opts.Interactive = true }\". iostreams.go: CanPrompt() returns false when prompting is disabled, else \"s.IsStdinTTY() && s.IsStdoutTTY()\". shared/login_flow.go: \"if opts.Web { authMode = 0 } else if opts.Interactive {\" [...] (authMode stays 0 otherwise), so non-interactive runs default to the browser/device flow. cli/oauth DetectFlow uses the device flow and falls back to the web-app flow only when the device flow is unsupported. Non-interactive runs also skip the git-protocol, credential-helper and SSH-key prompts (run 'gh auth setup-git' separately if HTTPS git is needed). The stderr lines are UI text, not an API: pin gh, and test the parser after each upgrade."
+    },
+    {
+      "id": "gh-06",
+      "topic": "gh environment: GH_PROMPT_DISABLED, GH_CONFIG_DIR, GH_TOKEN",
+      "claim": "GH_PROMPT_DISABLED turns off prompting, GH_CONFIG_DIR moves the config directory, and GH_TOKEN takes precedence over stored credentials.",
+      "verdict": "confirmed",
+      "source_url": "https://cli.github.com/manual/gh_help_environment",
+      "quote": "GH_CONFIG_DIR: the directory where gh will store configuration files. If not specified, the default value will be one of the following paths (in order of precedence): $XDG_CONFIG_HOME/gh (if $XDG_CONFIG_HOME is set), $AppData/GitHub CLI (on Windows if $AppData is set), or $HOME/.config/gh. GH_PROMPT_DISABLED: set to any value to disable interactive prompting in the terminal. [...] GH_TOKEN, GITHUB_TOKEN (in order of precedence): an authentication token that will be used when a command targets either github.com or a subdomain of ghe.com. Setting this avoids being prompted to authenticate and takes precedence over previously stored credentials.",
+      "checked_on": "2026-09-23",
+      "notes": "gh auth login refuses to store credentials while GH_TOKEN is set (login.go prints \"The value of the %s environment variable is being used for authentication.\"). Unset GH_TOKEN in the login subprocess."
+    },
+    {
+      "id": "gh-07",
+      "topic": "gh: does GH_CONFIG_DIR alone isolate two programmes' credentials?",
+      "claim": "Separate GH_CONFIG_DIRs fully isolate two programmes' gh logins on the same OS user.",
+      "verdict": "contradicted",
+      "source_url": "https://github.com/cli/cli/blob/trunk/internal/config/config.go",
+      "quote": "setErr = keyring.Set(keyringServiceName(hostname), username, token) [...] _ = keyring.Delete(keyringServiceName(hostname), \"\") _ = keyring.Delete(keyringServiceName(hostname), username) [...] func keyringServiceName(hostname string) string { return \"gh:\" + hostname }",
+      "checked_on": "2026-09-23",
+      "notes": "Source-level. When a system keyring (Secret Service) is available, the token lives under service 'gh:github.com' and key <username>. That key does not depend on GH_CONFIG_DIR, so two config dirs logged into the same account share and overwrite one entry, and 'gh auth logout' in either deletes it. Isolation holds only if tokens are stored in the config dir: 'gh auth login --insecure-storage' writes to hosts.yml inside GH_CONFIG_DIR, and gh also falls back to that file when no keyring works (keyring calls time out after 60 s). Per-programme GH_TOKEN also works."
+    },
+    {
+      "id": "gh-08",
+      "topic": "gh auth logout scope; revoking the GitHub CLI app",
+      "claim": "gh auth logout only removes local credentials. Revoking the 'GitHub CLI' OAuth app revokes every gh token on every device.",
+      "verdict": "confirmed",
+      "source_url": "https://cli.github.com/manual/gh_auth_logout",
+      "quote": "This command removes the stored authentication configuration for an account. The authentication configuration is only removed locally. This command does not revoke authentication tokens. To revoke all authentication tokens generated by the GitHub CLI: [...] Note: this procedure will revoke all authentication tokens ever generated by the GitHub CLI across all your devices.",
+      "checked_on": "2026-09-23",
+      "notes": "The device-flow docs add: \"Revoking all permission from an OAuth app deletes any SSH keys the application generated on behalf of the user, including deploy keys.\""
+    },
+    {
+      "id": "gh-09",
+      "topic": "gh default scopes vs workflow scope",
+      "claim": "gh requests repo, read:org and gist by default. The OAuth 'workflow' scope is needed to add or update workflow files.",
+      "verdict": "confirmed",
+      "source_url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps",
+      "quote": "workflow | Grants the ability to add and update GitHub Actions workflow files. Workflow files can be committed without this scope if the same file (with both the same path and contents) exists on another branch in the same repository.",
+      "checked_on": "2026-09-23",
+      "notes": "gh manual: \"The minimum required scopes for the token are: repo, read:org, and gist.\" flow.go: minimumScopes := []string{\"repo\", \"read:org\", \"gist\"}. Add '-s workflow' only if the server must push .github/workflows over HTTPS with gh's token."
+    },
+    {
+      "id": "gh-10",
+      "topic": "Fine-grained PAT: pre-fill URL template",
+      "claim": "https://github.com/settings/personal-access-tokens/new accepts the query parameters name, description, target_name, expires_in and one parameter per permission (e.g. contents=write).",
+      "verdict": "confirmed",
+      "source_url": "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#pre-filling-fine-grained-personal-access-token-details-using-url-parameters",
+      "quote": "Each supported field can be set using a specific query parameter. All parameters are optional and validated by the token generation form to ensure that the combinations of permissions and resource owner make sense. [...] https://github.com/settings/personal-access-tokens/new ?name=Repo-reading+token &description=Just+contents:read &target_name=octodemo &expires_in=45 &contents=read",
+      "checked_on": "2026-09-23",
+      "notes": "Limits: name \"≤ 40 characters, URL-encoded\"; description \"≤ 1024 chars\"; target_name \"If not provided, defaults to the current user's account.\" Permissions: \"Valid access levels are read, write, and admin [...] write always includes read\". Documented repository permission names include actions, administration, contents, deployments, environments, issues, metadata (read), pages, pull_requests, secrets, actions_variables, workflows (write only)."
+    },
+    {
+      "id": "gh-11",
+      "topic": "Fine-grained PAT: expiry",
+      "claim": "Pre-fill expires_in accepts 1-366 days or 'none'. Non-expiring fine-grained tokens are allowed unless an org/enterprise policy blocks them. The default is 30 days.",
+      "verdict": "confirmed",
+      "source_url": "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token",
+      "quote": "expires_in | integer | 30 or none | Integer between 1 and 366, or none | Days until expiration or none for non-expiring. If not provided, the default is 30 days, or less if the target has a token lifetime policy set. [...] Under Expiration, select an expiration for the token. Infinite lifetimes are allowed but may be blocked by a maximum lifetime policy set by your organization or enterprise owner.",
+      "checked_on": "2026-09-23",
+      "notes": "Also: \"There is a limit of 50 fine-grained personal access tokens you can create.\" and \"GitHub automatically removes personal access tokens that haven't been used in a year.\""
+    },
+    {
+      "id": "gh-12",
+      "topic": "Fine-grained PAT: repository selection cannot be pre-filled",
+      "claim": "There is a URL parameter that pre-selects specific repositories.",
+      "verdict": "not documented",
+      "source_url": "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#supported-query-parameters",
+      "quote": "To create your own token template, follow the query parameter details provided in this table:",
+      "checked_on": "2026-09-23",
+      "notes": "The table that follows lists only name, description, target_name, expires_in and <permission>; there is no repository-selection parameter. The creation steps say: \"Under Repository access, select which repositories you want the token to access. [...] If you selected Only select repositories in the previous step, under the Selected repositories dropdown, select the repositories\". The phone user must make this choice by hand. Also: \"Tokens always include read-only access to all public repositories on GitHub.\""
+    },
+    {
+      "id": "gh-13",
+      "topic": "GitHub Pages from a private repo on Pro is public",
+      "claim": "A Pages site built from a private repository on GitHub Pro is public on the internet. Private (access-controlled) Pages need an organisation on Enterprise Cloud.",
+      "verdict": "confirmed",
+      "source_url": "https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site",
+      "quote": "GitHub Pages sites are publicly available on the internet, even if the repository for the site is private (if your plan or organization allows it). If you have sensitive data in your site's repository, you may want to remove the data before publishing.",
+      "checked_on": "2026-09-23",
+      "notes": "Availability (about-github-pages): \"GitHub Pages is available in public repositories with GitHub Free and GitHub Free for organizations, and in public and private repositories with GitHub Pro, GitHub Team, GitHub Enterprise Cloud, and GitHub Enterprise Server.\" Plans page: \"To publish a GitHub Pages site privately, you need to have an organization account. Additionally, your organization must use GitHub Enterprise Cloud.\""
+    },
+    {
+      "id": "gh-14",
+      "topic": "Pre-filled new-issue URL",
+      "claim": "/issues/new accepts title and body (plus labels, milestone, assignees, projects, template). Over-long URLs return 414; no numeric limit is documented.",
+      "verdict": "confirmed",
+      "source_url": "https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue#creating-an-issue-from-a-url-query",
+      "quote": "If you create an invalid URL using query parameters, or if you don't have the proper permissions, the URL will return a 404 Not Found error page. If you create a URL that exceeds the server limit, the URL will return a 414 URI Too Long error page. [...] https://github.com/octo-org/octo-repo/issues/new?title=New+bug+report&body=Describe+the+problem. creates an issue with the title \"New bug report\" and the comment \"Describe the problem\" in the issue body.",
+      "checked_on": "2026-09-23",
+      "notes": "The numeric URL limit is not documented. Keep the ciphertext small (a hybrid-encrypted short secret is a few hundred characters base64) and test the largest payload once. The user still has to tap submit."
+    },
+    {
+      "id": "gh-15",
+      "topic": "Deleting an issue",
+      "claim": "Only the owner account can delete issues in a personal-account repository (admins/owners in org repos). gh has 'gh issue delete --yes'.",
+      "verdict": "confirmed",
+      "source_url": "https://docs.github.com/en/issues/tracking-your-work-with-issues/administering-issues/deleting-an-issue",
+      "quote": "People with admin permissions in a repository can permanently delete an issue from a repository. [...] The ability to delete issues depends on whether the repository is owned by a personal account or an organization: The only account that can delete issues in a repository owned by a personal account is that account. Only accounts with admin or owner permissions can delete issues in a repository owned by an organization.",
+      "checked_on": "2026-09-23",
+      "notes": "gh manual (https://cli.github.com/manual/gh_issue_delete): \"gh issue delete {<number> | <url>} [flags] [...] --yes Confirm deletion without prompting\". A deploy key is git-only and cannot delete issues. The server's gh session (the owner's OAuth token) can. The fine-grained-PAT permission needed for issue deletion is not documented."
+    },
+    {
+      "id": "gh-16",
+      "topic": "Repository rulesets on GitHub Pro",
+      "claim": "Branch and tag rulesets are available for private repos on Pro. Push rulesets (e.g. 'Restrict file paths') are only on GitHub Team (private/internal repos).",
+      "verdict": "confirmed",
+      "source_url": "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets",
+      "quote": "Rulesets are available in public repositories with GitHub Free and GitHub Free for organizations, and in public and private repositories with GitHub Pro, GitHub Team, and GitHub Enterprise Cloud. See GitHub's plans. Push rulesets are available for the GitHub Team plan in internal and private repositories, and forks of repositories that have push rulesets enabled.",
+      "checked_on": "2026-09-23",
+      "notes": "'Restrict file paths' is a push rule (\"Prevent commits that include changes in specified file paths from being pushed to the repository.\", available-rules-for-rulesets), so a personal Pro repo cannot use it to block .github/workflows/** changes. Documented bypass actors for branch/tag rulesets (creating-rulesets-for-a-repository), one per line: \"Repository admins, organization owners, and enterprise owners\" / \"The maintain or write role, or custom repository roles based on the write role\" / \"Teams, excluding secret teams.\" / \"GitHub Apps\" / \"Dependabot.\" Deploy keys are not listed."
+    },
+    {
+      "id": "gh-17",
+      "topic": "Deploy key write access level",
+      "claim": "A deploy key with write access has the same rights as a collaborator on a personal repository and is limited to one repository.",
+      "verdict": "confirmed",
+      "source_url": "https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys#deploy-keys",
+      "quote": "Deploy keys with write access can perform the same actions as an organization member with admin access, or a collaborator on a personal repository. [...] Deploy keys are read-only by default, but you can give them write access when adding them to a repository. [...] Deploy keys only grant access to a single repository.",
+      "checked_on": "2026-09-23",
+      "notes": "Also: \"Deploy keys are usually not protected by a passphrase, making the key easily accessible if the server is compromised.\" and \"You can't reuse a deploy key for multiple repositories.\""
+    },
+    {
+      "id": "gh-18",
+      "topic": "Deploy keys and .github/workflows",
+      "claim": "A write deploy key cannot push changes to .github/workflows because the 'workflow' scope requirement applies to it.",
+      "verdict": "not documented",
+      "source_url": "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps",
+      "quote": "workflow | Grants the ability to add and update GitHub Actions workflow files.",
+      "checked_on": "2026-09-23",
+      "notes": "Official docs define the workflow restriction only for OAuth-app scopes (and the fine-grained 'workflows' permission). They do not say whether it applies to SSH deploy keys. Community reports (e.g. github.com/hivecommons/hive/issues/7959, not authoritative) describe deploy keys pushing workflow changes. Design assumption: a write deploy key CAN change workflows."
+    },
+    {
+      "id": "g-01",
+      "topic": "Google device flow: allowed scopes",
+      "claim": "The OAuth 2.0 flow for TV and limited-input devices allows https://www.googleapis.com/auth/drive.file.",
+      "verdict": "confirmed",
+      "source_url": "https://developers.google.com/identity/protocols/oauth2/limited-input-device#allowedscopes",
+      "quote": "The OAuth 2.0 flow for devices is supported only for the following scopes: OpenID Connect, Google Sign-In email openid profile Drive API https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file YouTube API https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.readonly",
+      "checked_on": "2026-09-23",
+      "notes": "Page footer: \"Last updated 2026-09-14 UTC.\" Full drive and drive.readonly are NOT allowed in the device flow."
+    },
+    {
+      "id": "g-02",
+      "topic": "Google device flow: client type and endpoints",
+      "claim": "The device flow needs an OAuth client of type 'TVs and Limited Input devices'. It uses POST https://oauth2.googleapis.com/device/code, and the user enters the code at the verification_url (sample https://www.google.com/device) on another device.",
+      "verdict": "confirmed",
+      "source_url": "https://developers.google.com/identity/protocols/oauth2/limited-input-device",
+      "quote": "Select the TVs and Limited Input devices application type. [...] Even though your application runs on a device with limited input capabilities, users must have separate access to a device with richer input capabilities to complete this authorization flow. [...] \"verification_url\": \"https://www.google.com/device\", \"expires_in\": 1800, \"interval\": 5 [...] invalid_client | 401 | [...] The OAuth client type is incorrect. Ensure that the application type for the client id is set to TVs and Limited Input devices.",
+      "checked_on": "2026-09-23",
+      "notes": "1800 s is from the sample response; use the expires_in and interval actually returned. Polling errors: authorization_pending (HTTP 428) and slow_down (HTTP 403). The user_code \"is case-sensitive and shouldn't be modified in any way\". The token response includes a refresh_token: \"Note that refresh tokens are always returned for devices.\" A 'Desktop app' client (the kind rclone's guide creates) gets invalid_client in this flow."
+    },
+    {
+      "id": "g-03",
+      "topic": "Google: refresh-token expiry in Testing status",
+      "claim": "Refresh tokens issued while an External app is in 'Testing' expire after 7 days (unless only basic identity scopes are requested).",
+      "verdict": "confirmed",
+      "source_url": "https://developers.google.com/identity/protocols/oauth2#expiration",
+      "quote": "A Google Cloud Platform project with an OAuth consent screen configured for an external user type and a publishing status of \"Testing\" is issued a refresh token expiring in 7 days, unless the only OAuth scopes requested are a subset of name, email address, and user profile (through the userinfo.email, userinfo.profile, openid scopes, or their OpenID Connect equivalents).",
+      "checked_on": "2026-09-23",
+      "notes": "The same section lists other expiry causes: \"The refresh token has not been used for six months.\" and \"There is currently a limit of 100 refresh tokens per Google Account per OAuth 2.0 client ID. If the limit is reached, creating a new refresh token automatically invalidates the oldest refresh token without warning.\" Manage App Audience says: \"Projects configured with a publishing status of Testing are limited to up to 100 test users [...] Authorizations by a test user will expire seven days from the time of consent.\" (https://support.google.com/cloud/answer/15549945)."
+    },
+    {
+      "id": "g-04",
+      "topic": "Google: verification for non-sensitive scopes",
+      "claim": "An app that uses only non-sensitive scopes need not complete OAuth app verification. Brand verification is only needed to show the app name and logo.",
+      "verdict": "confirmed",
+      "source_url": "https://support.google.com/cloud/answer/13463073",
+      "quote": "If your app utilizes only non-sensitive scopes, it is not mandatory for your app to complete the app verification process. However, if you want your app to display an app name and logo on the OAuth consent screen, you will need to complete a lighter-weight verification process known as \"brand-verification\".",
+      "checked_on": "2026-09-23",
+      "notes": "OAuth app state overview (https://developers.google.com/identity/protocols/oauth2/production-readiness/overview), row Published/External/Unverified: \"Any Google user can access. Strongly discouraged. Because the app has not completed brand verification, the app's name and logo are not displayed on the consent screen. Additionally, for apps requesting sensitive or restricted scopes, unverified app warnings (Danger UI) will be displayed to users, and a hard cap of 100 total users applies.\" So with only drive.file there is no Danger UI. 'When is verification not needed' (answer 13464323) also exempts \"Personal Use apps [...] (fewer than 100 users)\"."
+    },
+    {
+      "id": "g-05",
+      "topic": "Google: homepage and privacy policy for production",
+      "claim": "Publishing an External app to 'In production' requires a homepage URL and a privacy policy URL, even with only non-sensitive scopes.",
+      "verdict": "not documented",
+      "source_url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/policy-compliance",
+      "quote": "Every production app that uses OAuth 2.0 must have a publicly accessible home page. [...] Your application's home page must include a description of the app's functionality, as well as links to a privacy policy and optional terms of service. The home page must exist on a verified domain under your ownership.",
+      "checked_on": "2026-09-23",
+      "notes": "Google states this as a policy requirement for production apps, but no fetched Google page says the 'Publish app' button is blocked without these URLs. That console gate is described only by rclone (https://rclone.org/drive/#making-your-own-client-id): \"If the \\\"PUBLISH APP\\\" button is greyed out, Google now requires a homepage URL and a privacy policy URL before publishing, even for a personal single-user app. [...] a free GitHub Pages site is fine for these if you don't have a domain of your own - then \\\"Authorized domains\\\" with the domain you used\". Google's App Homepage guide (answer 13807376) adds, for verification: \"Your homepage and privacy policy should not be hosted on a third-party platform where you can't verify that you own your subdomain.\""
+    },
+    {
+      "id": "g-06",
+      "topic": "Google Drive: drive.file is non-sensitive",
+      "claim": "https://www.googleapis.com/auth/drive.file is classed as a non-sensitive scope.",
+      "verdict": "confirmed",
+      "source_url": "https://developers.google.com/workspace/drive/api/guides/api-specific-auth",
+      "quote": "Non-sensitive scopes The following Drive API scopes are recommended for most use cases: [...] https://www.googleapis.com/auth/drive.file | Create new Drive files, or modify existing files, that you open with an app or that the user shares with an app while using the Google Picker API or the app's file picker.",
+      "checked_on": "2026-09-23",
+      "notes": "Page updated 2026-09-03. Its definition says non-sensitive scopes \"only require basic OAuth App Verification\", which reads slightly differently from the Help Center's 'not mandatory' (g-04). drive and drive.readonly are listed as Restricted."
+    },
+    {
+      "id": "g-07",
+      "topic": "Google: refreshing device-flow tokens",
+      "claim": "Device-flow access tokens are refreshed with a standard refresh_token grant at https://oauth2.googleapis.com/token using client_id (client_secret listed as optional).",
+      "verdict": "confirmed",
+      "source_url": "https://developers.google.com/identity/protocols/oauth2/limited-input-device#offline",
+      "quote": "To refresh an access token, your application sends an HTTPS POST request to Google's authorization server (https://oauth2.googleapis.com/token) that includes the following parameters in the request body: [...] client_id [...] client_secret Optional [...] grant_type [...] this field's value must be set to refresh_token. refresh_token",
+      "checked_on": "2026-09-23",
+      "notes": "This is the same grant rclone uses to refresh tokens, so rclone should be able to refresh a device-flow token if its config holds the same TV-type client_id and secret. Neither rclone nor Google documents that combination: test it once."
+    },
+    {
+      "id": "rc-01",
+      "topic": "rclone: shared Google client_id retirement",
+      "claim": "rclone's shared Google Drive client_id is being retired during 2026, so an own client_id is required.",
+      "verdict": "confirmed",
+      "source_url": "https://rclone.org/drive/#making-your-own-client-id",
+      "quote": "This shared client_id is being retired and will stop working during 2026. To avoid interruption you must create and use your own client_id, so creating one is now required rather than merely recommended. New remotes created with rclone config will warn you if you leave the client_id blank.",
+      "checked_on": "2026-09-23",
+      "notes": "Page last updated 2026-09-03. The config help text says: \"The shared client_id is being retired and will stop working during 2026, so creating your own is now strongly recommended.\""
+    },
+    {
+      "id": "rc-02",
+      "topic": "rclone: 'Making your own client_id' steps",
+      "claim": "rclone's guide: enable the Drive API; configure the consent screen (External); add scopes; add yourself as a test user; create an OAuth client of type 'Desktop app'; publish the app; give rclone the client ID and secret.",
+      "verdict": "confirmed",
+      "source_url": "https://rclone.org/drive/#making-your-own-client-id",
+      "quote": "Go to Overview on the left panel, click \"Create OAuth client\". Choose an application type of \"Desktop app\" and click \"Create\". [...] Go to \"Audience\" and then click \"PUBLISH APP\" button and confirm. [...] Keeping the application in \"Testing\" will work as well, but the limitation is that any grants will expire after a week, which can be annoying to refresh constantly.",
+      "checked_on": "2026-09-23",
+      "notes": "rclone's guide creates a 'Desktop app' client (loopback redirect), NOT the 'TVs and Limited Input devices' type the Google device flow needs (g-02). Its default scope list (docs, drive, drive.metadata.readonly) is broader than drive.file. The guide can be done from a phone browser on the Cloud Console, but that is tedious."
+    },
+    {
+      "id": "rc-03",
+      "topic": "rclone: drive.file scope behaviour",
+      "claim": "With scope drive.file, rclone sees and changes only files and folders it created; they are visible in the Drive web UI.",
+      "verdict": "confirmed",
+      "source_url": "https://rclone.org/drive/#scopes",
+      "quote": "drive.file With this scope rclone can read/view/modify only those files and folders it creates. So if you uploaded files to drive via the web interface (or any other means) they will not be visible to rclone. This can be useful if you are using rclone to backup data and you want to be sure confidential data on your drive is not visible to rclone. Files created with this scope are visible in the web interface.",
+      "checked_on": "2026-09-23",
+      "notes": "The config menu adds: \"File authorization is revoked when the user deauthorizes the app.\" A pre-existing Drive folder chosen by the user is invisible under drive.file; let rclone create the target folder."
+    },
+    {
+      "id": "rc-04",
+      "topic": "rclone: token supplied from elsewhere",
+      "claim": "rclone's drive backend reads the OAuth token as a JSON blob from the 'token' config key (or RCLONE_DRIVE_TOKEN). Format: access_token, token_type, refresh_token, expiry.",
+      "verdict": "confirmed",
+      "source_url": "https://rclone.org/drive/#drive-token",
+      "quote": "--drive-token OAuth Access Token as a JSON blob. Properties: Config: token Env Var: RCLONE_DRIVE_TOKEN Type: string Required: false",
+      "checked_on": "2026-09-23",
+      "notes": "The config example on the same page shows the format: token: {\"access_token\":\"XXX\",\"token_type\":\"Bearer\",\"refresh_token\":\"XXX\",\"expiry\":\"2014-03-16T13:57:58.955387075Z\"}. Google's device-flow response gives expires_in (seconds), so the bridge must compute an RFC3339 'expiry'."
+    },
+    {
+      "id": "rc-05",
+      "topic": "rclone: non-interactive creation with an existing token",
+      "claim": "'rclone config create NAME drive client_id=.. client_secret=.. scope=drive.file token=<json> config_refresh_token=false' creates the remote without starting a browser flow.",
+      "verdict": "confirmed",
+      "source_url": "https://rclone.org/commands/rclone_config_create/",
+      "quote": "The options should be passed in pairs of key value or as key=value. [...] So for example if you wanted to configure a Google Drive remote but using remote authorization you would do this: rclone config create mydrive drive config_is_local=false [...] The flag --non-interactive is for use by applications that wish to configure rclone themselves, rather than using rclone's text based configuration questions.",
+      "checked_on": "2026-09-23",
+      "notes": "The docs show that config questions are answered by passing their Name as key=value. The question name 'config_refresh_token' comes from rclone source lib/oauthutil/oauthutil.go: \"tokenString, ok := m.Get(\\\"token\\\") if ok && tokenString != \\\"\\\" { return fs.ConfigConfirm(newState(\\\"*oauth-confirm\\\"), true, \\\"config_refresh_token\\\", \\\"Token already configured - replace it?\\\")\" and \"if in.Result == \\\"false\\\" { return fs.ConfigGoto(newState(\\\"*oauth-done\\\")) }\". Its default is true, so pass false explicitly or rclone tries to start a new auth flow. Test it once against rclone v1.75.x."
+    },
+    {
+      "id": "rc-06",
+      "topic": "rclone: headless / remote setup options",
+      "claim": "rclone documents three headless methods, and none of them works from a phone alone: 'rclone authorize' on a second machine that has rclone and a browser, copying a config file, or an SSH tunnel to port 53682.",
+      "verdict": "confirmed",
+      "source_url": "https://rclone.org/remote_setup/",
+      "quote": "If you are trying to set rclone up on a remote or headless machine with no browser available on it (e.g. a NAS or a server in a datacenter), then you will need to use an alternative means of configuration. There are three ways of doing it, described below. [...] For this to work, you will need rclone available on a machine that has a web browser available. [...] ssh -L localhost:53682:localhost:53682 username@remote_server",
+      "checked_on": "2026-09-23",
+      "notes": "rclone authorize synopsis (https://rclone.org/commands/rclone_authorize/): \"Remote authorization. Used to authorize a remote or headless rclone from a machine with a browser.\" The loopback listener is \"on http://127.0.0.1:53682/\" (drive page). rclone has no Google device-flow mode: none is documented, and oauthutil.go contains no device-flow code."
+    }
+  ],
+  "design_implications": [
+    "drive.file IS allowed in Google's TV/limited-input device flow, so Drive authorisation can be done entirely on the phone (google.com/device plus a code), with no browser next to the server. The catch: it needs a 'TVs and Limited Input devices' OAuth client, and rclone has no device-flow mode. The bridge must run the device flow itself (POST oauth2.googleapis.com/device/code, poll /token), then inject token JSON, client_id, client_secret and scope=drive.file into rclone with config_refresh_token=false. rclone refreshing a TV-client token is undocumented: add a one-time integration test.",
+    "rclone's own headless methods (rclone authorize on a second machine, copying the config, an SSH tunnel to 53682) all need a computer. None is phone-only, so they are fallback paths, not the main path.",
+    "The Google Cloud project must be set to 'In production' (published). In 'Testing', Drive refresh tokens die after 7 days. With only drive.file (non-sensitive) no verification is required and no unverified-app Danger UI appears. The console may still demand homepage and privacy-policy URLs before publishing (per rclone docs); a GitHub Pages page can serve both.",
+    "rclone's shared client_id stops working during 2026, so a user-created client_id is mandatory, not optional. Creating the client and consent screen is a one-time Cloud Console task that is tedious on a phone.",
+    "A dedicated bot token is REQUIRED for receiving updates. A second getUpdates poller on the user's existing bot would trigger 409 'Conflict: terminated by other getUpdates request' and would steal updates from the other service, or lose them to it.",
+    "Do not persist and replay the getUpdates offset across restarts. The server already tracks confirmations, and after a week idle update_id restarts at a random value, so a stale offset can silently drop the new update. Start without an offset, dedupe by update_id and make handlers idempotent (delivery is at-least-once).",
+    "Updates are kept for at most 24 h. If the bridge was down longer, re-send open needs rather than waiting for button presses that are gone.",
+    "The owner must send /start to the new bot once before it can message them. Capture the owner's chat id from that first private-chat update as a bootstrap step. Anyone can find and /start the bot, so accept only chat.type=='private' with from.id==owner_id, for both messages and callback_query. Disable group joins via /setjoingroups.",
+    "Keep callback_data within 64 bytes (e.g. 'd:<id>', 'l:<id>', 'n:<id>', 's:<id>'). Treat it as untrusted and look it up in a server-side table. Always call answerCallbackQuery first, then remove the buttons with editMessageReplyMarkup (confirm the removal form in a live test).",
+    "If the owner pastes a secret into Telegram, the bot can delete that incoming message (private chat, within 48 h). Deletion is best-effort, so use the encrypted Pages-to-issue path for real secrets.",
+    "Send at most about 1 message per second to the owner's chat and honour 429 retry_after. Split text over 4096 characters. Use parse_mode=HTML with escaping, and link_preview_options={is_disabled:true} (disable_web_page_preview was replaced in Bot API 7.0).",
+    "gh device login works from the phone. Run 'gh auth login -h github.com -p https' as a subprocess without a TTY (GH_TOKEN unset). gh prints '! First copy your one-time code: XXXX-XXXX' and 'Open this URL to continue in your web browser: https://github.com/login/device' on stderr and polls. The code lives 15 min, so the 'Send a new code' button must restart the command. These stderr lines are UI text: pin the gh version and test the parser on upgrade.",
+    "Isolating the two programmes' gh sessions: GH_CONFIG_DIR alone is NOT enough when a Secret Service keyring exists. Tokens are keyed 'gh:github.com'/<username> regardless of config dir, and gh auth logout deletes that shared entry. Use a dedicated GH_CONFIG_DIR plus --insecure-storage (0600 hosts.yml), or a per-programme GH_TOKEN.",
+    "Never tell the user to 'Revoke access' to the GitHub CLI app: that kills every gh token on every device. 'gh auth logout' does not revoke anything. Avoid more than 10 gh logins with an identical scope set on the account, because GitHub then revokes the oldest or least-used gh token, which may be the other programme's.",
+    "gh's default scopes are repo, read:org and gist, without 'workflow'. Add '-s workflow' only if the server must push .github/workflows over HTTPS.",
+    "Fine-grained PAT from the phone: a pre-filled link can set name (<=40 chars), description, target_name, expires_in (1-366 or none; non-expiring is allowed) and permissions such as contents=write. It cannot pre-select repositories, so the Telegram message must tell the user to pick 'Only select repositories' and the dashboard repo by hand.",
+    "The GitHub Pages site from the private repo is PUBLIC on Pro. Publish only the static encrypt page and the server's public key there, never secrets or state. Private Pages would need an Enterprise Cloud organisation.",
+    "Issue hand-back: the title and body query params are documented. There is no numeric URL limit, only a 414 error, so keep ciphertext to a few hundred bytes of base64 and test the maximum size. The user must still tap Submit. Only the owner account can delete an issue in a personal repo, so the server deletes it with its gh session ('gh issue delete N --yes'); a deploy key cannot.",
+    "On Pro, branch rulesets exist, but push rulesets ('Restrict file paths' such as .github/workflows/**) are Team-only, and deploy keys are not a documented bypass actor. Whether the workflow-file check applies to deploy keys is undocumented, so assume a write deploy key CAN modify workflows and keep high-value Actions secrets out of that repo, or behind protected environments.",
+    "core.telegram.org (the docs site) is unreachable from both this PC and sail-gpu, while api.telegram.org answered from sail-gpu. The bridge can run on sail-gpu, but Codex cannot fetch the Telegram docs from there, so this file is the offline reference."
+  ]
+}

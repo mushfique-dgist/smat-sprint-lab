@@ -1,0 +1,396 @@
+{
+  "meta": {
+    "title": "SMAT implementation-grade specification, extracted from the two SMAT PDFs for an independent reconstruction",
+    "prepared": "2026-09-23",
+    "status": "FINAL",
+    "sources": {
+      "O": {"file": "sail-lab-application-kb/2603.07618v1.pdf", "id": "arXiv:2603.07618v1 (8 Mar 2026), IROS 2026 to appear per E ref [14]", "pages": 8, "sha256": "1550dbc1643440cd7e2f1dc31809b931468ae0cf3c5de3497a28bfabb4cb1f3e"},
+      "E": {"file": "sail-lab-application-kb/2608.00715v1.pdf", "id": "arXiv:2608.00715v1 (1 Aug 2026), submitted to IEEE (journal not named)", "pages": "14 (main pp1-11, supplement pp12-14)", "sha256": "0be9cf8edab7c98bf400ecd007d7e0545329c30cdc994fee3c19efb830327a39"}
+    },
+    "conventions": [
+      "Locators: 'O pN' / 'E pN' = printed page of that PDF; Table/Fig/Eq numbers are as printed in THAT paper.",
+      "'not reported' = absent from both PDFs. 'derived' = our arithmetic or analysis from published equations/tables, not an author claim. 'read from Fig. N, approximate' = visual read of the rendered page, no digitisation.",
+      "'measured' vs 'argued': simulation numbers are author-reported outputs of their runs; causal explanations in the text are argued unless an ablation tests them.",
+      "Symbols: dt = 0.02 s; u_j = normalized exo command in [-1,1] (j in {l,r}); omega_j = hip flexion angular velocity (rad/s); w_j = omega_hat_j = clip(omega_j / 2.0, -1, 1); a_j = muscle activation in [0,1]."
+    ],
+    "equation_map_O_to_E": {
+      "total_stage1": "O Eq1 = E Eq1 (terms reordered)",
+      "r_fwd": "O Eq2a = E Eq2a",
+      "r_muscle": "O Eq2b = E Eq3a",
+      "r_qpos": "O Eq2c = E Eq2b",
+      "r_qvel": "O Eq2d = E Eq2c",
+      "r_delta_a": "O Eq2e = E Eq3b",
+      "r_hip_act": "O Eq3 = E Eq4",
+      "r_exo_stage3": "O Eq4 = E Eq5",
+      "r_exo_stage4": "O Eq5 = E Eq6",
+      "r_delta_tau": "O Eq6 = E Eq7",
+      "MPP_MNP": "O Eq7 = E Eq9",
+      "metabolic_brockway": "E Eq8 only",
+      "PPO_table": "O Table II = E Table S4 (identical)",
+      "reward_weight_table": "O Table I = E Table S2 (identical numbers, different footnote)",
+      "hardware_table": "O Table III (Pi 4B, encoders) vs E Table I (Pi 5, encoders or 3 IMUs)"
+    }
+  },
+
+  "simulator": {
+    "name": "MyoAssist (MuJoCo / MyoSuite-based musculoskeletal simulation)",
+    "citation": "O ref [12] = E ref [19]: Tan et al., 'MyoAssist 0.1: MyoSuite for dexterity and agility in bionic humans', ICORR 2025",
+    "version_or_commit": "not reported",
+    "physics_engine_version": "not reported",
+    "physics_timestep": "not reported",
+    "frame_skip": "not reported",
+    "control_timestep_s": 0.02,
+    "control_rate_hz": 50,
+    "control_source": "O p3 (text after Eq2; Algorithm 1 'Require: v* = 1.25 m/s, dt = 0.02 s (50 Hz), gamma = 0.99'); E p3",
+    "target_speed_mps": 1.25,
+    "target_speed_source": "O p3; E p2-3",
+    "terrain": "level ground only (E p8: 'trained on level ground only'); treadmill vs overground plane in simulation not reported",
+    "episode_length": "not reported",
+    "reset_initial_state": "not reported",
+    "termination": "not reported",
+    "domain_randomization": "not reported (none described)",
+    "sensor_noise_in_sim": "not reported; E p5: 'the policy was trained on unfiltered kinematics'",
+    "reward_time_scaling": "every reward term is multiplied by dt so that 'the reward magnitude [is] independent of control frequency' (O p3; E p3)",
+    "episode_reward_scale_constraint_derived": "Fig. 2 (O p5) episode reward plateaus near 6.5-7 in Stages 1 and 2 (read from Fig. 2, approximate). Max Stage-1 per-step reward from Table S2/S3 = 0.02*(0.8 + 1.85 + 1.89 + 0.005) = 0.091 (bilateral DOFs counted on both sides; r_muscle <= 0 ignored), so a ~6.5 plateau needs at least ~72 control steps per episode and more with realistic tracking error. This is a weak consistency check only; episode length is not reported."
+  },
+
+  "body_model": {
+    "muscle_count": 26,
+    "muscles_per_side": 13,
+    "source": "O p1-2; E p2; E Fig. 2 caption p4 ('26-muscle musculoskeletal model used for training (13 muscles per side, red)')",
+    "muscles_named_in_papers": ["iliopsoas", "gluteus maximus", "rectus femoris", "hamstrings", "gastrocnemius", "soleus"],
+    "muscles_named_source": "O p3 (M_hip), O Fig. 4 p6, E p3 (M_hip), E Fig. 4 p6; E p9-10 also mentions 'several other distal muscles', so the 13 per side contain more distal muscles than gastrocnemius and soleus",
+    "full_muscle_list": "not reported",
+    "dimensionality": "3D, inferred (not stated): E Table S3 tracks pelvis_tz, pelvis_list, pelvis_rotation, hip_adduction and hip_rotation, and the device has passive abduction joints",
+    "dofs_named": ["pelvis_tx", "pelvis_ty", "pelvis_tz", "pelvis_tilt", "pelvis_list", "pelvis_rotation", "hip_flexion_l/r", "hip_adduction_l/r", "hip_rotation_l/r", "knee_angle_l/r", "ankle_angle_l/r", "mtp_angle_l/r"],
+    "dofs_source": "E Table S3 p14 (tracked DOFs; 18 DOFs if bilateral counted twice). Whether the model has further untracked DOFs (e.g., subtalar) is not reported.",
+    "model_file_or_hash": "not reported",
+    "muscle_parameters": "not reported",
+    "contact_model": "not reported",
+    "human_body_mass_in_sim": "not reported (r_constraint and r_foot normalise by body weight mg; which m is used is not reported)",
+    "activation_dynamics": "not reported. O p2: actor 'directly outputs 26 muscle activations a in [0,1]^26 (13 per side)' and 'The policy directly controls muscle excitations'. E p2: '26 muscle excitations e in [0,1]^26'. Rewards use activation a_j (O p3; E p2-3).",
+    "joint_angle_conventions": "not reported; read from Fig. 2 (O p5), approximate: knee plotted negative in flexion (0 to about -60 deg), hip about +25 to -15 deg, ankle about +10 to -20 deg over the gait cycle"
+  },
+
+  "device_model": {
+    "components": "pelvis-mounted frame and bilateral thigh links 'parented directly to the corresponding human body segments, coupling the device mass and inertia into the body dynamics' (O p3; E p3 'parented to the corresponding body segments')",
+    "actuation": "assistance torques act coaxially at the human hip flexion joints (O p3); 'The exoskeleton actuators apply torque directly to the human hip flexion joints' (E p3)",
+    "passive_joints": "passive abduction joints providing lateral compliance (O p3; E p3 refers to Fig. 2 hinge 4)",
+    "joint_axes": "sagittal flexion/extension axis coaxial with the human hip flexion joint (O p3); on hardware the exo axis is aligned with the anatomical hip axis during fitting (O p4; E p4)",
+    "sim_mass_kg": "not reported. Hardware total mass is 5.94 kg (O Table III p4; E Table I p4). Whether the simulated device uses 5.94 kg, and its split between pelvis frame and thigh links, is not reported.",
+    "sim_inertias": "not reported",
+    "sim_actuator_model": "not reported beyond ideal torque at the human hip flexion joints: no motor inertia, friction, backdrive, delay, bandwidth or torque-speed limit is described",
+    "command_interface": "normalized u in [-1,1]^2 (right, left) scaled by a stage-dependent torque limit tau_max (O p2; E p2)",
+    "torque_limit_by_stage_Nm": {"stage1": "no device attached", "stage2": 0, "stage3": 6, "stage4": 25},
+    "torque_limit_source": "O p3 (Stage 2: 'the exoskeleton actuator torque limit is set to zero in the simulation model, so no assistance torque is applied regardless of the actor output'); O Algorithm 1 lines 9, 15, 22 p3; E p3-4; E Algorithm S1 lines 6-7, 13, 20 p13",
+    "ctrl_range": "[-1, 1] normalized (O p2)",
+    "stage2_attach_wording": "O Alg. 1 line 9: 'Attach exoskeleton structure (mass/inertia added); load pi_h(1); set exoskeleton torque to zero'. E Alg. S1 line 6: 'Attach the passive exoskeleton (mass/inertia only)'; line 7: 'Set exoskeleton torque tau = 0'.",
+    "passive_joint_implementation": "not reported (with thigh links parented to the femur, an explicit abduction hinge is either redundant or needs an equality constraint)",
+    "sim_device_burden_reported": "E p9-10: 'in simulation several hip muscles were less active at Stage 2 than at Stage 1'; gastrocnemius and several other distal muscles rose, soleus fell. The simulated device therefore did not raise hip-muscle activation, unlike the +13.1% human metabolic penalty (E p7)."
+  },
+
+  "control": {
+    "rate_hz": 50,
+    "dt_s": 0.02,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "effective_horizon_derived": "1/(1-gamma) = 100 control steps = 2 s (about two strides)",
+    "action_delay_in_sim": "not reported",
+    "hardware_timing": "fixed 20 ms loop; torque command transmitted at the end of each cycle, controller idle until the next update (E p5), i.e., up to one control period between sensing and actuation; whether simulation models this delay is not reported",
+    "source": "O p3 Algorithm 1; O Table II p4; E p4-5; E Table S4 p14"
+  },
+
+  "human_actor": {
+    "architecture": "MLP, hidden sizes [256, 128]",
+    "source": "O p2; E p2",
+    "hidden_activation": "not reported",
+    "inputs": "'a musculoskeletal body-state observation' (O p2; E p2). No list, dimension, ordering or normalisation is given anywhere. Fig. 1 (O p2; E p3) only shows 'Observation' going to the actors and critic and 'Current State' going to the imitation reward.",
+    "input_dimension": "not reported",
+    "reference_or_phase_in_observation": "not reported",
+    "stage4_extra_inputs": {
+      "what": "current normalized exoskeleton torques [u_r, u_l] (2 dims)",
+      "how": "input layer expanded by 2; learned Stage 2 weights kept for the original inputs; weights for the 2 new inputs randomly initialized (scale not reported)",
+      "source": "O p4 and Algorithm 1 lines 23-24 p3; E p4 and Algorithm S1 line 21 p13",
+      "timing_ambiguity": "'current' torque: this step's exo command (exo acts first) vs the last applied command, not reported"
+    },
+    "outputs": "26 values in [0,1] (13 per side). O p2 calls them 'muscle activations a' and says the policy 'directly controls muscle excitations'; E p2 calls them 'muscle excitations e'.",
+    "output_distribution": "not reported (distribution family, clip vs squash, log-std parameterisation and initial value are all unreported)",
+    "trained_in": "Stages 1, 2, 4",
+    "frozen_in": "Stage 3 (O Alg. 1 line 15; E Alg. S1 line 12)",
+    "frozen_action_mode": "not reported (deterministic mean vs stochastic sample while frozen)"
+  },
+
+  "exo_actor": {
+    "architecture": "MLP, hidden sizes [128, 64]",
+    "source": "O p2; E p2",
+    "hidden_activation": "not reported",
+    "input_count": 18,
+    "inputs": "three-step history of bilateral hip flexion angles and angular velocities (12 dims, 4 per timestep) plus a three-step history of its own normalized torque outputs [u_r, u_l] (6 dims, 2 per timestep) (O p2). E p2 adds: 'with no explicit gait-phase or timing variable provided'. E p5 (deployment): 'a three-step history of bilateral hip angles, angular velocities, and its own normalized torque outputs'.",
+    "per_timestep_block_assumed": "[q_hip_r, q_hip_l, qdot_hip_r, qdot_hip_l] + [u_r, u_l]; the order is not reported",
+    "sample_spacing": "one control step (20 ms), implied by '4 dims per timestep' and E p5 'At the 50 Hz control rate, the actor consumed the same 18-dimensional observation as in training'; not stated explicitly",
+    "window_derived": "three consecutive samples span 40 ms oldest-to-newest",
+    "includes_current_sample": "not reported (kinematics t, t-1, t-2 plausible; own actions are necessarily past actions t-1, t-2, t-3)",
+    "observation_normalisation": "not reported. omega_s = 2.0 rad/s appears only in the Stage 4 reward (O Eq5 p4; E Eq6 p4), not as an observation scaling.",
+    "units": "not reported (rad and rad/s plausible; hardware angle = pelvis-femur IMU difference, velocity = thigh gyro minus pelvis gyro about the flexion axis, E p5)",
+    "history_initialisation_at_reset": "not reported",
+    "action_stored_in_history": "not reported (sampled, mean or clipped action)",
+    "filtering": "none in training or deployment (E p5: trained on unfiltered kinematics; no online filtering at deployment)",
+    "outputs": "normalized bilateral hip torque commands u in [-1,1]^2, multiplied by the stage torque limit (O p2; E p2)",
+    "output_nonlinearity": "not reported (tanh squash vs clipping)",
+    "initialisation": "initialised at start (O Alg. 1 line 2) and re-initialised at the start of Stage 3 (O Alg. 1 line 15; E Alg. S1 line 12)",
+    "trained_in": "Stages 3 and 4",
+    "deployed": "Stage 4 exo actor only (O p4; E p5)"
+  },
+
+  "critic": {
+    "architecture": "one MLP critic V_psi, hidden sizes [256, 128], shared by both actors",
+    "source": "O p2, p4; E p2, p4; O Alg. 1; E Alg. S1",
+    "inputs": "'the full system state' (O p4; E p4 'sharing a single critic over the full system state'); contents, dimension and any change across stages not reported",
+    "continuity_across_stages": "initialised once (O Alg. 1 line 2; E Alg. S1 line 1) and updated in every stage; no reset or re-initialisation described",
+    "updated_with": {"stage1": "pi_h, V_psi", "stage2": "pi_h, V_psi", "stage3": "pi_e, V_psi", "stage4": "pi_h, pi_e, V_psi jointly"},
+    "value_heads": "not reported (a single V_psi is written; E cites the MADDPG centralised-critic paper [20] for the MARL formulation)",
+    "value_target": "not reported beyond PPO with GAE (lambda 0.95, gamma 0.99)",
+    "reward_to_actor_assignment": "not reported explicitly. Table I / Table S2 give ONE weight per term per stage, which reads as a single scalar team reward shared by both actors. O p4 also says stage-specific reward terms 'can be enabled or disabled per agent', which leaves per-agent reward sets possible.",
+    "joint_update_form": "not reported (one joint PPO ratio over the product policy vs separate clipped losses per actor with a common advantage; one vs several optimizers)"
+  },
+
+  "rewards": [
+    {"name": "r_fwd", "equation": "r_fwd = dt * exp(-5 * (v - v_star)^2)", "symbols": {"v": "forward pelvis speed (m/s)", "v_star": "1.25 m/s", "dt": "0.02 s"}, "weights_by_stage": [0.8, 0.8, 1.5, 1.5], "source": "O Eq2a p3, E Eq2a p2; weights O Table I p2, E Table S2 p13"},
+    {"name": "r_qpos (imitation, position)", "equation": "r_qpos = dt * sum_{i in J} w_i * exp(-8 * (q_i - q_i_ref)^2)", "symbols": {"J": "set of tracked joints", "w_i": "per-joint weights (E Table S3)", "q_i_ref": "reference joint position"}, "weights_by_stage": [1.0, 1.0, 1.0, 1.0], "stage_note": "1.0* in Stages 3-4: hip imitation zeroed through w_i (E: all hip DOFs; O footnote: hip flexion only). E Table S2 footnote: 'The magnitude of the imitation terms is carried by the per-joint weights in Table S3.'", "source": "O Eq2c p3, E Eq2b p2; O Table I, E Tables S2-S3"},
+    {"name": "r_qvel (imitation, velocity)", "equation": "r_qvel = dt * sum_{i in J} w_i * exp(-8 * (qdot_i - rho * qdot_i_ref)^2), rho = v_star / qdot_pelvis_ref(t)", "symbols": {"rho": "time-dependent scaling of reference joint velocities to the target speed (written with (t))", "qdot_pelvis_ref(t)": "reference forward pelvis velocity at time t"}, "weights_by_stage": [1.0, 1.0, 1.0, 1.0], "stage_note": "as r_qpos; reference positions are NOT rescaled, only velocities", "derived_note": "for pelvis_tx the scaled reference velocity equals v_star at every t, so the pelvis_tx velocity term (w = 0.80 / 0.40) acts as a second forward-speed term with kernel exp(-8 (v - 1.25)^2)", "source": "O Eq2d p3, E Eq2c p2"},
+    {"name": "r_muscle", "equation": "r_muscle = -(dt / N_m) * sum_{j=1..N_m} a_j", "symbols": {"N_m": "26", "a_j": "activation of muscle j in [0,1]"}, "weights_by_stage": [0.01, 0.01, 0.15, 0.15], "source": "O Eq2b p3, E Eq3a p2"},
+    {"name": "r_delta_a (activation smoothness bonus)", "equation": "r_delta_a = (dt / N_m) * sum_{j=1..N_m} exp(-4 * (a_{j,t} - a_{j,t-1})^2)", "symbols": {"a_{j,t-1}": "previous-step activation"}, "weights_by_stage": [0.005, 0.005, 0.05, 0.05], "note": "a positive bonus, maximal (= dt) when activations do not change; E p2 describes it as 'penalizing ... its rate of change'", "source": "O Eq2e p3, E Eq3b p2"},
+    {"name": "r_hip_act", "equation": "r_hip_act = -dt * (1 / |M_hip|) * sum_{m in M_hip} a_m^2", "symbols": {"M_hip": "O p3: 'includes iliopsoas, gluteus maximus, rectus femoris, and hamstrings on both legs'; E p3: 'comprises major hip flexors and extensors such as the iliopsoas, gluteus maximus, rectus femoris, and hamstrings on both legs'", "a_m": "activation in [0,1]"}, "weights_by_stage": [null, null, 2.0, 5.0], "note": "the muscles in this reward are exactly the four groups whose right-side activation reduction is the O headline (10.1%)", "source": "O Eq3 p3, E Eq4 p3"},
+    {"name": "r_exo (Stage 3 form)", "equation": "r_exo3 = dt * sum_{j in {l,r}} alpha_d * u_j^2 * sign(u_j * omega_j)", "symbols": {"alpha_d": "0.5", "u_j": "normalized torque command", "omega_j": "hip joint angular velocity (not normalized)"}, "weights_by_stage": [null, null, 4.0, null], "derived_optimum": "maximised by bang-bang u_j = sign(omega_j), |u_j| = 1", "source": "O Eq4 p3, E Eq5 p3; weight row 'r_exo' in O Table I / E Table S2 denotes Eq4 in Stage 3"},
+    {"name": "r_exo (Stage 4 form)", "equation": "r_exo4 = dt * sum_{j in {l,r}} ( alpha * u_j * omega_hat_j - beta * u_j^2 - lambda_s * max(0, |u_j| - delta)^2 ), omega_hat_j = clip(omega_j / omega_s, -1, 1)", "symbols": {"alpha": "0.3", "beta": "0.15", "lambda_s": "2.0", "delta": "0.8", "omega_s": "2.0 rad/s"}, "weights_by_stage": [null, null, null, 4.0], "derived_optimum": "per joint, instantaneous: u* = omega_hat for |omega_hat| <= 0.8; u* = sign(omega_hat) * (0.3 |omega_hat| + 3.2) / 4.3 above (u* = 0.814 at |omega_hat| = 1). Numerically verified.", "source": "O Eq5 p4, E Eq6 p4; same weight row denotes Eq5 in Stage 4"},
+    {"name": "r_delta_tau (torque-rate penalty)", "equation": "r_delta_tau = -dt * sum_{j in {l,r}} (u_{j,t} - u_{j,t-1})^2", "symbols": {"u_{j,t}": "normalized command at step t"}, "weights_by_stage": [null, null, null, 1.0], "source": "O Eq6 p4, E Eq7 p4"},
+    {"name": "r_constraint", "equation": "r_constraint = -dt * max_k( |f_k_joint| / (m * g) )", "symbols": {"f_k_joint": "joint limit (constraint) force k", "m g": "body weight"}, "weights_by_stage": [null, null, 0.5, 0.5], "source": "O p4, E p4 (unnumbered)"},
+    {"name": "r_foot", "equation": "r_foot = -dt * max(0, (|f_r| + |f_l|) / (m * g) - 1.2)", "symbols": {"f_r, f_l": "right/left foot contact force", "1.2": "threshold in body weights"}, "weights_by_stage": [null, null, 0.3, 0.3], "source": "O p4, E p4 (unnumbered)"},
+    {"name": "total reward", "equation": "Stage 1 (O Eq1 p3; E Eq1 p2): r1 = w_fwd r_fwd + w_mus r_muscle + w_qpos r_qpos + w_qvel r_qvel + w_da r_delta_a. Stages 2-4: weighted sum of the active terms with Table I / S2 weights (no explicit equation printed).", "symbols": {}, "weights_by_stage": [null, null, null, null], "note": "Stage 2 uses 'the same reward in Eqs. (1) and (2)' (O p3) / 'the same Stage 1 reward, Eqs. (1), (2), and (3)' (E p3). Inactive terms marked '-' in the tables are null here.", "source": "O p3, Table I; E p2-3, Table S2"}
+  ],
+
+  "imitation_weights": {
+    "source": "E Table S3 p14 (bilateral DOFs use identical left/right weights and are listed once; '-' = not tracked in that term; pelvis translation along x/z tracked in velocity only)",
+    "columns": ["qpos_stage1_2", "qpos_stage3_4", "qvel_stage1_2", "qvel_stage3_4"],
+    "per_joint": {
+      "pelvis_tx": [null, null, 0.80, 0.40],
+      "pelvis_ty": [0.25, 0.30, 0.15, 0.15],
+      "pelvis_tz": [null, null, 0.10, 0.08],
+      "pelvis_tilt": [0.20, 0.40, 0.10, 0.15],
+      "pelvis_list": [0.05, 0.05, 0.03, 0.03],
+      "pelvis_rotation": [0.05, 0.05, 0.03, 0.03],
+      "hip_flexion (bilateral)": [0.20, 0.00, 0.10, 0.00],
+      "hip_adduction (bilateral)": [0.05, 0.00, 0.03, 0.00],
+      "hip_rotation (bilateral)": [0.03, 0.00, 0.02, 0.00],
+      "knee_angle (bilateral)": [0.20, 0.30, 0.10, 0.10],
+      "ankle_angle (bilateral)": [0.15, 0.15, 0.08, 0.08],
+      "mtp_angle (bilateral)": [0.02, 0.02, 0.01, 0.00]
+    },
+    "weight_sums_derived": {"qpos_s12": 1.85, "qpos_s34": 1.74, "qvel_s12": 1.89, "qvel_s34": 1.20, "note": "bilateral DOFs counted on both sides"},
+    "O_variant": "O Table I footnote p2: 'Hip flexion imitation weights are set to zero in Stages 3 and 4 while other joint imitation terms remain active.' O prints no per-joint table. If reproducing O literally, hip_adduction and hip_rotation would keep their Stage 1-2 weights (0.05/0.03 and 0.03/0.02) in Stages 3-4; this is a sweep option, E Table S3 is the default.",
+    "stage_group_note": "Table S3 has only two columns per term (Stages 1-2, Stages 3-4); Stage 3 and Stage 4 share the same imitation weights. The non-hip weights also change at Stage 3 (e.g., pelvis_tilt qpos 0.20->0.40, knee qpos 0.20->0.30, pelvis_tx qvel 0.80->0.40, mtp qvel 0.01->0.00)."
+  },
+
+  "ppo_by_stage": {
+    "source": "O Table II p4 = E Table S4 p14 ('Values are shared across stages unless noted otherwise')",
+    "stage1": {"learning_rate": 5e-5, "clip_range": 0.15, "rollout_steps_per_env": 2048, "minibatch_size": 16384, "epochs_per_update": 20, "gamma": 0.99, "gae_lambda": 0.95, "target_kl": 0.01, "max_grad_norm": 0.5, "entropy_coef": 0.001, "parallel_envs": 32},
+    "stage2": {"learning_rate": 3e-5, "clip_range": 0.15, "rollout_steps_per_env": 2048, "minibatch_size": 16384, "epochs_per_update": 20, "gamma": 0.99, "gae_lambda": 0.95, "target_kl": 0.01, "max_grad_norm": 0.5, "entropy_coef": 0.001, "parallel_envs": 32},
+    "stage3": {"learning_rate": 3e-5, "clip_range": 0.15, "rollout_steps_per_env": 2048, "minibatch_size": 16384, "epochs_per_update": 20, "gamma": 0.99, "gae_lambda": 0.95, "target_kl": 0.01, "max_grad_norm": 0.5, "entropy_coef": 0.003, "parallel_envs": 32},
+    "stage4": {"learning_rate": 3e-5, "clip_range": 0.15, "rollout_steps_per_env": 2048, "minibatch_size": 16384, "epochs_per_update": 20, "gamma": 0.99, "gae_lambda": 0.95, "target_kl": 0.01, "max_grad_norm": 0.5, "entropy_coef": 0.003, "parallel_envs": 32},
+    "derived_per_update": "32 envs x 2048 = 65,536 transitions per update; 4 minibatches of 16,384 per epoch; up to 80 gradient steps per update (fewer if target-KL early stopping triggers)",
+    "derived_updates_per_stage": {"aggregate_count": {"s1": 4883, "s2": 2441, "s3": 16.8, "s4": 1007}, "per_env_count": {"s1": 156250, "s2": 78125, "s3": 537, "s4": 32227}},
+    "hyperparameter_names_note": "the parameter set (n_steps per env, batch_size, n_epochs, target_kl, max_grad_norm, ent_coef, n_envs) matches Stable-Baselines3 PPO naming; SB3 use is not stated in either paper",
+    "not_reported": ["optimizer (Adam assumed) and its epsilon", "learning-rate schedule (constant assumed)", "target-KL semantics (early stop threshold)", "value-loss coefficient", "value clipping", "advantage normalisation", "observation normalisation / reward normalisation", "action distribution, log-std init and whether log-std is state dependent", "orthogonal/other weight init", "whether actors and critic share one optimizer or one learning rate", "seeds", "total wall-clock per stage (only 28 h / 100M overall rate)"],
+    "throughput_reported": "all training on an Intel Xeon W-2145 (3.70 GHz, 8-core), approximately 28 h per 100 M simulation steps (O p4; E p4)"
+  },
+
+  "stages": [
+    {"stage": 1, "name": "Human baseline gait learning (human only)", "device": "not attached", "trained": ["pi_h", "V_psi"], "frozen": [], "exo_actor": "initialised (O Alg. 1 line 2) but not used", "torque_scale_Nm": "n/a (no device)", "steps": "approximately 320 M simulation steps ('converging over approximately 320 M', O p5; E p6); counting unit not stated", "lr": 5e-5, "entropy": 0.001, "rewards_active": {"r_fwd": 0.8, "r_muscle": 0.01, "r_delta_a": 0.005, "imitation": "1.0 with Table S3 Stage 1-2 weights"}, "transition_rule": "start from random pi_h, pi_e, V_psi; end: save pi_h(1). Stopping rule: not reported beyond 'converging'.", "source": "O p2-3, Alg. 1 lines 1-7, Tables I-II; E p2, Alg. S1 lines 1-5, Tables S2-S4"},
+    {"stage": 2, "name": "Human adaptation to the added (passive) exoskeleton mass", "device": "attached, mass/inertia only", "trained": ["pi_h", "V_psi"], "frozen": [], "exo_actor": "present but its output has no effect (torque limit 0)", "torque_scale_Nm": 0, "steps": "approximately 160 M ('convergence is reached within approximately 160 M steps ... roughly half the steps required in Stage 1', O p5; E p6)", "lr": 3e-5, "entropy": 0.001, "rewards_active": "identical to Stage 1 (O p3; E p3)", "transition_rule": "load pi_h(1); attach device; set exo torque to zero; critic continues (no reset described); optimizer, log-std and normalisation carry-over not reported; end: save pi_h(2)", "figure_note": "read from Fig. 2 (O p5), approximate: Stage 2 episode reward starts near the bottom of the axis (about 0-1) rather than at the Stage 1 plateau (about 6.5) and climbs back to about 6.8 by 160 M; i.e., attaching the device initially degrades the Stage 1 policy substantially, or the logger/episode setup differs", "source": "O p3, p5, Alg. 1 lines 8-13; E p3, p6, Alg. S1 lines 6-11"},
+    {"stage": 3, "name": "Assistance-timing learning with frozen human", "device": "attached", "trained": ["pi_e", "V_psi"], "frozen": ["pi_h(2)"], "exo_actor": "re-initialised", "torque_scale_Nm": 6, "steps": "approximately 1.1 M ('Stage 3 establishes an initial flexion-assist timing pattern in approximately 1.1 M simulation steps', O p5; E p6)", "lr": 3e-5, "entropy": 0.003, "rewards_active": {"r_fwd": 1.5, "r_muscle": 0.15, "r_delta_a": 0.05, "r_hip_act": 2.0, "r_exo3": 4.0, "imitation": "1.0 with Table S3 Stage 3-4 weights (hip DOFs zero)", "r_constraint": 0.5, "r_foot": 0.3}, "transition_rule": "set tau_max = 6 Nm; freeze pi_h(2); re-initialise pi_e; disable hip imitation; add r_hip_act and r_exo3 (Algorithms). The re-weighting of r_fwd/r_muscle/r_delta_a and activation of r_constraint/r_foot appear only in Table I/S2. End: save pi_e(3).", "rationale_argued": "freezing removes non-stationarity; 6 Nm constrains destabilising exploration; hip imitation disabled 'to prevent the exoskeleton from exploiting tracking rewards by resisting hip motion change' (O p3, O p7)", "source": "O p3, p5, p7, Alg. 1 lines 14-20; E p3, p6, Alg. S1 lines 12-18"},
+    {"stage": 4, "name": "Human-exoskeleton co-adaptation", "device": "attached", "trained": ["pi_h", "pi_e", "V_psi"], "frozen": [], "exo_actor": "loaded from Stage 3", "torque_scale_Nm": 25, "steps": "approximately 66 M ('Stage 4 refines this through full co-adaptation over approximately 66 M steps', O p5; E p6)", "lr": 3e-5, "entropy": 0.003, "rewards_active": {"r_fwd": 1.5, "r_muscle": 0.15, "r_delta_a": 0.05, "r_hip_act": 5.0, "r_exo4": 4.0, "r_delta_tau": 1.0, "imitation": "1.0 with Table S3 Stage 3-4 weights (hip DOFs zero)", "r_constraint": 0.5, "r_foot": 0.3}, "transition_rule": "set tau_max = 25 Nm; load pi_e(3); unfreeze pi_h(2); augment human observation with current [u_r, u_l]; expand human input by 2 (copy existing weights, random init for new); replace r_exo3 by r_exo4; add r_delta_tau; r_hip_act 2.0 -> 5.0 (table only). Joint PPO update of (pi_h, pi_e, V_psi).", "output": "final co-adapted policies; the Stage 4 exo actor is the deployed controller", "source": "O p3-4, p5, Alg. 1 lines 21-28; E p3-4, p6, Alg. S1 lines 19-25"}
+  ],
+
+  "evaluation_metrics": [
+    {"name": "stage1_bilateral_symmetry_pearson_r", "definition_as_published": "O p5: 'The learned gait shows strong bilateral symmetry across all joints (Pearson r > 0.92)'. E p6: 'strongly symmetric joint kinematics (Pearson r > 0.92)'. It is LEFT-vs-RIGHT symmetry across ALL joints, not a hip-only metric and not a correlation with the reference motion.", "published_value": "r > 0.92 (lower bound for every joint)", "uncertainty": "none (threshold statement)", "source": "O p5, Fig. 2 p5 (hip, knee, ankle, right solid vs left dashed, mean +/- 1 s.d. over normalized gait cycle); E p6", "ambiguities": ["which joints ('all joints'; Fig. 2 shows hip, knee, ankle)", "computed on per-limb gait-cycle-normalized mean curves (each limb normalized to its own cycle, as Fig. 2 overlays them) vs raw time series", "number of cycles/episodes, deterministic vs stochastic policy", "Pearson r is insensitive to amplitude scaling and offsets"], "tolerance_basis": "published only as a bound; no seed spread reported. Proposal (not published): per-joint left-right Pearson r >= 0.92 for hip, knee and ankle on every seed, plus an additional (unpublished) correlation-and-RMSE check against the reference trajectory because symmetry alone can pass an abnormal gait."},
+    {"name": "stage1_toe_off_percent_gait_cycle", "definition_as_published": "toe-off timing as % of the gait cycle; O p5: '57.8 +/- 1.1% (right) and 58.5 +/- 0.9% (left) of the gait cycle, consistent with physiological norms for treadmill walking [16]'", "published_value": "right 57.8%, left 58.5% (O); E p6 reports a single '57.8 +/- 1.1%'", "uncertainty": "+/-1.1 (right), +/-0.9 (left); dispersion measure and population (SD across gait cycles presumably) not stated", "source": "O p5; E p6; vertical lines in O Fig. 2 p5", "ambiguities": ["gait-cycle origin (heel strike assumed; hardware analyses use peak hip flexion instead)", "event detection method and force threshold", "cycles pooled across episodes/seeds", "stochastic vs deterministic evaluation"], "tolerance_basis": "the published +/- is cycle-to-cycle spread, not seed spread. Proposal (not published): seed-mean toe-off within 55-61% on both sides and |right - left| <= 2 percentage points."},
+    {"name": "stage2_trajectory_rmse_deg", "definition_as_published": "O p5: 'Joint trajectories are well preserved (RMSE < 3.6 deg for all joints; Pearson r > 0.92 across all joint pairs), and bilateral symmetry is maintained'. E p6: 'preserving the learned trajectories (RMSE < 3.6 deg across all joints) and bilateral symmetry'.", "published_value": "RMSE < 3.6 deg for all joints", "uncertainty": "none (bound)", "source": "O p5; E p6; Fig. 2 right column", "ambiguities": ["comparator: Stage 2 vs Stage 1 trajectories (E wording 'preserving the learned trajectories' implies this) vs the reference motion", "which joints ('all joints')", "RMSE of gait-cycle-normalized means vs pooled samples", "O's 'Pearson r > 0.92 across all joint pairs': Stage1-Stage2 pairs or left-right pairs"], "tolerance_basis": "use the published bound directly: RMSE(Stage 2 mean vs Stage 1 mean, same seed) <= 3.6 deg for hip, knee and ankle, both sides; also report pelvis DOFs."},
+    {"name": "stage_budgets_to_convergence", "definition_as_published": "approximate simulation steps per stage: S1 ~320 M, S2 ~160 M, S3 ~1.1 M, S4 ~66 M", "published_value": "320 M / 160 M / 1.1 M / 66 M (sum 547.1 M, derived)", "uncertainty": "'approximately'; single pipeline; no seed spread", "source": "O p5 and Fig. 2 (x-axes 0-320 M and 0-160 M); Fig. 3a x-axis 'Timesteps (x10^6)' about 0-65; E p6", "ambiguities": ["aggregate over 32 envs vs per env (32x difference)", "whether 'simulation steps' are control steps (50 Hz) or physics steps", "convergence criterion"], "tolerance_basis": "budgets are inputs, not outcomes; run the published budgets under the declared counting convention and sweep the alternative for S3/S4."},
+    {"name": "stage4_exo_power_reward_trend", "definition_as_published": "O p5: 'the exoskeleton assistance power reward increases from -0.12 to 0.08 and the hip muscle activation penalty decreases in magnitude over the course of training' (Fig. 3a, left axis green = exo assistance power reward, right axis red dashed = hip muscle activation penalty)", "published_value": "-0.12 -> 0.08", "uncertainty": "not reported", "source": "O p5, Fig. 3a", "ambiguities": ["logging unit: per-step vs per-episode, with or without dt, with or without the 4.0 weight", "derived: per-step unweighted bracket sum without dt is consistent with the numbers (u ~ omega_hat and RMS hip velocity ~1 rad/s gives ~0.08; a saturated Stage 3 policy gives roughly -0.1 to -0.2)", "right-axis penalty values not legible in the render"], "tolerance_basis": "soft check only (sign change from negative to positive), because the unit is unknown."},
+    {"name": "stage4_peak_normalized_torque", "definition_as_published": "peak of the normalized exo torque u (torque / tau_max) over the gait cycle; O p5: 'peak normalized torque of 0.83 occurring at 75% of the gait cycle during the late-swing flexion phase'; Fig. 3c is a bilateral average with +/-1 SD", "published_value": "0.83 at 75% gait cycle (O p5, E p6, E p7); 0.84 in O p6 ablation text", "uncertainty": "not reported", "source": "O p5 Fig. 3c; O p6; E p6-7", "ambiguities": ["peak of the bilateral mean profile vs mean of per-cycle peaks", "deterministic vs stochastic actions", "gait-cycle origin (heel strike assumed)", "0.83 vs 0.84"], "derived_note": "the reward-optimal value at saturated hip velocity is 0.814, so a peak of about 0.81-0.83 is predicted by r_exo4 alone whenever peak |omega| >= 1.6 rad/s; this metric cannot discriminate SMAT from a velocity-proportional controller", "tolerance_basis": "Proposal (not published): 0.83 +/- 0.08 on each seed, AND report the same metric for the matched velocity baselines."},
+    {"name": "stage4_negative_power_time_fraction", "definition_as_published": "O p5: 'the negative-work time fraction (fraction of the gait cycle where P = tau * qdot < 0) to 10%, as reflected in Fig. 3d'. E p6: 'confines negative work to only 10% of the cycle in simulation (the portion where P = tau * qdot < 0)'.", "published_value": "10% (full SMAT); ablations 32% and 40%", "uncertainty": "not reported", "source": "O p5 Fig. 3d; E p6", "ambiguities": ["computed on the bilateral-average profile (Fig. 3d) or per sample pooled over cycles/sides", "tau = applied torque (tau_max * u) and qdot = hip flexion velocity (assumed)", "it is a TIME fraction, not the energy ratio R_pos used on hardware"], "tolerance_basis": "Proposal (not published): <= 15% per seed (published has no spread); report exact definition used."},
+    {"name": "stage4_vs_stage2_right_hip_activation_reduction", "definition_as_published": "O p6: 'comparing right-side activation between Stage 2 (no assistive torque) and Stage 4 (maximum assistive torque, tau_max = 25 Nm). All four muscles show reduced mean activation with exoskeleton assistance, averaging 10.1% across muscles. ... rectus femoris (-13.5%) and iliopsoas (-10.5%) ... Hamstrings decrease by 9.7% and gluteus maximus by 6.6%'", "published_value": "RF -13.5%, iliopsoas -10.5%, hamstrings -9.7%, gluteus maximus -6.6%; mean 10.1% (simple mean = 10.075, derived)", "uncertainty": "not reported (Fig. 4 bands are +/-1 s.d. across cycles)", "source": "O p6 text and Fig. 4 (right side, Stage 2 blue vs Stage 4 orange, dashed toe-off per condition); restated E p2", "same_device_mass": "yes: both Stage 2 and Stage 4 have the device attached (Stage 2 zero torque, Stage 4 25 Nm)", "confound": "the Stage 4 human policy is a different policy trained 66 M more steps under a different reward (r_muscle 0.01 -> 0.15, r_hip_act 0 -> 5.0 on these very muscles, hip imitation removed, r_fwd 0.8 -> 1.5); no reward-matched zero-torque control is reported", "ambiguities": ["relative (% of Stage 2 mean) vs absolute percentage points: not stated; relative is the natural reading", "'mean activation' = time average over the gait cycle (assumed)", "activation vs excitation signal", "number of cycles/episodes, evaluation mode", "which model actuator(s) constitute 'hamstrings' and 'iliopsoas'"], "figure_note": "read from Fig. 4 (O p6), approximate: rectus femoris and iliopsoas sit at or near activation 1.0 for large parts of the cycle in both Stage 2 and Stage 4; hamstrings reach about 1.0 around 45-60%; Stage 4 toe-off line sits a few % later than Stage 2 (about 58% vs 61-62%)", "tolerance_basis": "no seed spread published. Proposal (not published): direction on every seed (all four groups reduced) and seed-mean four-group reduction within +/-5 percentage points of 10.1; interpret only against the reward-matched zero-torque control and the velocity baselines."},
+    {"name": "stage4_vs_stage2_bilateral_six_group_activation_reduction", "definition_as_published": "E p6: 'Whereas our earlier report quantified one-side activation over the four hip muscle groups, here we average both legs across six muscle groups spanning the hip, knee, and ankle. Relative to Stage 2, in which the exoskeleton is worn without active assistance, Stage 4 assistance lowered activation across all six groups by 6.1% on average (Fig. 4).'", "six_groups": ["gluteus maximus", "hamstrings", "iliopsoas", "rectus femoris", "gastrocnemius", "soleus"], "published_value": "6.1% (average over six groups, both legs averaged)", "uncertainty": "not reported; per-group values not reported", "source": "E p6 text; E Fig. 4 p6 (bilateral-averaged activation; Stage 1 green, Stage 2 purple, Stage 4 orange; bands +/-1 s.d.; dashed mean toe-off)", "ambiguities": ["averaging order (average L/R per group, then relative reduction per group, then mean of six: assumed)", "'lowered activation across all six groups' may or may not mean each group decreased", "whether gastrocnemius is one actuator or two heads in the model"], "tolerance_basis": "Proposal (not published): seed-mean six-group reduction within +/-4 percentage points of 6.1 with the same averaging declared in advance."},
+    {"name": "training_throughput", "definition_as_published": "wall-clock rate on the authors' CPU", "published_value": "approximately 28 h per 100 M simulation steps on an Intel Xeon W-2145 (3.70 GHz, 8-core)", "uncertainty": "'approximately'", "source": "O p4; E p4", "ambiguities": ["whether this includes PPO update time (presumably yes)", "step counting unit"], "derived_note": "992 aggregate steps/s; 153 h for 547.1 M steps (S1 89.6 h, S2 44.8 h, S3 0.3 h, S4 18.5 h)"},
+    {"name": "stage4_profile_shapes_approximate", "definition_as_published": "O Fig. 3b-d (bilateral average, +/-1 SD): hip angular velocity (positive flexion), normalized exo torque, exo mechanical power over the gait cycle", "published_value": "read from Fig. 3, approximate: torque negative (about -0.3 to -0.5) through stance, crossing zero near 50%, about 0.8 plateau from about 60% to 85% of the cycle, falling toward 0 near 95-100%; hip velocity peak about +2.5 rad/s in early-mid swing; exo power peak roughly 40-50 W near 75-80% with a smaller early-stance bump", "uncertainty": "figure read only", "source": "O p5 Fig. 3; O p6 Fig. 5 (SMAT curve, right hip)", "ambiguities": ["no numeric tables"], "tolerance_basis": "qualitative shape check only"}
+  ],
+
+  "ablations": [
+    {"name": "Stage 3 only", "definition": "Stage 3 exo policy without Stage 4 co-adaptation", "initialisation": "Stage 3 output (exo trained at 6 Nm against frozen Stage 2 human)", "evaluation_torque_scale": "not reported (6 vs 25 Nm); plotted as normalized torque", "runs": "not reported (single curve)", "budget": "Stage 3 budget presumably (~1.1 M); not stated for the ablation", "published_outcome": "'the torque saturates at +/-tau_hat_max for most of the gait cycle and reverses abruptly near toe-off, imposing impulsive hip loading' (O p6; E p6)", "figure_read": "Fig. 5 (O p6 dashed green; E p7 purple), approximate: about -1 from 0 to ~45%, switching to +1 around 50-55%, +1 until ~85%, back toward -1 near 95-100%", "derived_note": "this is the optimum of r_exo3 (bang-bang sign(omega)), so the outcome is predicted by the Stage 3 reward itself", "source": "O p6 Fig. 5; E p6-7 Fig. 5"},
+    {"name": "Stage 4 only (from Stage 2, no Stage 3)", "definition": "Stage 4 training initialised from the Stage 2 human with a randomly initialised exo actor, full Stage 4 reward including r_exo4", "initialisation": "pi_h(2), random pi_e (O Fig. 5 caption; O p7 'Stage 4 begins from a randomly initialized exoskeleton policy')", "runs": "3 (O Fig. 5 caption: 'dashed red, mean across three runs'); E caption does not state", "budget": "not reported", "published_outcome": "collapse to near-zero output: peak normalized torque 0.14 vs 0.84 (O) / 0.83 (E), an 83% reduction; the minimal torque opposes joint motion over 32% of the cycle (vs 10% in full SMAT)", "authors_explanation_argued": "'the second term of (5) rewards minimising torque magnitude, so the policy discovers that producing no torque maximises that reward component' (O p6; E p7)", "derived_note": "d r_exo4 / du at u = 0 equals 0.3 * omega_hat, not zero; the full r_exo4 is maximised at u = omega_hat. The stated mechanism therefore does not by itself explain the collapse; exploration-noise costs (beta u^2, lambda_s, r_delta_tau under a noisy random policy), critic bias after the reward switch, or human-side terms are untested alternatives.", "source": "O p6 Fig. 5, O p7; E p6-7 Fig. 5"},
+    {"name": "Stage 4 only without r_exo4 (from Stage 2, no Stage 3)", "definition": "as 'Stage 4 only' but with r_exo4 removed", "initialisation": "'initialized from Stage 2' (O Fig. 5 caption); E caption omits the initialisation", "runs": "not reported (single curve)", "budget": "not reported", "published_outcome": "'converge[s] to a slight constant extension torque, which persistently opposes hip flexion during swing and results in negative exo power for 40% of the gait cycle' (O p6; E p7)", "note": "this ablation removes BOTH Stage 3 and r_exo4; it is not 'full SMAT minus r_exo4'", "source": "O p6 Fig. 5; E p7 Fig. 5"},
+    {"name": "Full SMAT (Stage 3 + Stage 4)", "definition": "reference pipeline", "runs": "not reported", "published_outcome": "peak 0.83 (0.84), 10% negative-power time; Fig. 5 solid blue (O) / red (E)", "source": "O p5-6; E p6-7"},
+    {"name": "Discussion claim", "definition": "O p7: 'When Stage 3 is removed and Stage 4 begins from a randomly initialized exoskeleton policy, training consistently converges to a near-zero torque solution, regardless of whether Stage 4 includes r_exo4 or not.'", "runs": "'consistently' is not quantified beyond the three runs of Fig. 5", "published_outcome": "argued", "source": "O p7"},
+    {"name": "Not tested in either paper", "definition": "removal of Stage 2; unstaged simultaneous training from scratch; Stage 3 replaced by another warm start; reward-matched zero-torque human (Stage 4 reward, tau_max = 0); velocity-proportional or phase-based controllers; equal-budget comparisons; seeds for the main pipeline", "published_outcome": "none", "source": "absence in O and E; E p10 admits 'this four-stage decomposition is not necessarily essential for other frameworks' (Luo et al. trained simultaneously)"}
+  ],
+
+  "offline_replay": {
+    "what": "the SMAT exo actor run open-loop on recorded human walking kinematics (no simulated human, no closed loop)",
+    "dataset": "O ref [19]: Molinaro et al., 'Task-agnostic exoskeleton control via biological joint moment estimation', Nature 635:337-344 (2024); Fig. 6 caption calls it 'the GT dataset'. Exact data release, trials and processing not reported.",
+    "dataset_candidate_unverified": "the Georgia Tech open biomechanics dataset associated with Molinaro et al. 2024 (possibly Scherpereel et al., Scientific Data 2023); verify that it contains no-exo level treadmill walking at 0.6/1.2/1.8 m/s with hip moments before use",
+    "subjects": 10,
+    "speeds_mps": [0.6, 1.2, 1.8],
+    "policy_inputs": "'the policy receives only hip kinematics as input' (O p6), i.e., the 18-dim observation built from recorded hip angles/velocities plus its own past outputs",
+    "torque_scale_Nm": 15,
+    "torque_scale_source": "O p6: 'well within the 15 Nm chosen maximum'",
+    "results": {
+      "peak_assistive_torque_Nm": "11.6-12.3 across speeds (O p6)",
+      "lag_vs_biological_hip_torque": "9-20% of the gait cycle (~156-210 ms), 'by cross-correlation of torque waveforms', across all three speeds (O p6)",
+      "peak_exo_power_W": "38-67 in early-to-mid swing (O p6)",
+      "toe_off_line": "about 62% (Fig. 6 caption)"
+    },
+    "figure": "O Fig. 6 p6: top = gait-cycle-normalized group-mean hip torque, solid = exo torque, dashed = biological hip torque from the no-exo condition 'amplitude scaled for timing comparison' (y-axis 'Hip torque (Nm, bio scaled)', stance/swing labels); bottom = hip exo power, thin = individual subjects, bold = group mean; blue/green/red = 0.6/1.2/1.8 m/s",
+    "not_reported": ["which leg(s)", "angle/velocity computation and filtering from motion capture", "resampling to 50 Hz", "action-history initialisation and whether outputs are fed back into the history", "gait-cycle segmentation event", "per-speed lag values", "cross-correlation window and whether it uses group means or per subject", "biological torque normalisation (per kg?) and sign convention", "power definition (exo torque x recorded hip velocity assumed)"],
+    "derived_checks": ["normalized peaks 11.6/15 = 0.77 to 12.3/15 = 0.82, i.e., at the r_exo4 saturation optimum (0.814)", "9% <-> 156 ms implies a 1.73 s cycle and 20% <-> 210 ms a 1.05 s cycle, so 9% must pair with the slowest speed and 20% with the fastest if both conversions are right", "a velocity-proportional controller lags the biological hip moment by construction (hip flexion velocity peaks after the flexion moment), so the 'emergent' delay needs the velocity baseline for interpretation"],
+    "comparison_argued": "O p6: Molinaro et al. imposed a 125 ms delay to maximise positive work; SMAT 'produces a similar phase offset through reward optimization alone'",
+    "source": "O p6 section III-B, Fig. 6; O p8 conclusion"
+  },
+
+  "human_results_not_sim_targets": [
+    "O Table IV p7 (n=5, right leg, 1.25 m/s, encoder sensing, fixed order 0 -> 10 -> 15 Nm): 10 Nm: tau_RMS 6.0 +/- 0.1 Nm, tau_MAX 8.1 +/- 0.1 Nm, MPP 13.6 +/- 2.5 W, MNP -0.1 +/- 0.0 W; 15 Nm: tau_RMS 9.3 +/- 0.3, tau_MAX 12.2 +/- 0.1, MPP 23.8 +/- 4.3, MNP -0.1 +/- 0.0 (all recomputed from the printed rows)",
+    "O p7-8: negative power below 1.3% of MPP (max row ratio 1.28%, derived); peak hip extension about 62-68% of a cycle starting at peak hip flexion (Fig. 7); Lim et al. comparator MPP 9.9-11.6 W at ~6 Nm RMS, 4 km/h (different device)",
+    "O abstract p1: 'mean positive power: 13.6 W at 6 Nm RMS torque to 23.8 W at 9.3 Nm RMS torque'",
+    "E Table S1 p12: 8 adults, 5M/3F, age 27.0 +/- 7.8 (18-44) yr, mass 70.4 +/- 15.0 kg, height 1.73 +/- 0.06 m",
+    "E p7, Table III p8, Fig. 7: net metabolic rate No-Exo 3.11 +/- 0.35, Passive 3.51 +/- 0.41, SMAT 2.83 +/- 0.39 W/kg; Passive vs No-Exo +13.1 +/- 4.9% (t = 7.80, corrected p < 0.001); SMAT vs Passive -19.7 +/- 3.3% (t = -17.00, p < 0.001); SMAT vs No-Exo -9.1 +/- 6.0% (t = -4.50, p < 0.01); Delta(Passive - SMAT) 0.688 +/- 0.114 W/kg; percentages are means of per-subject ratios",
+    "E p7-8: RER 0.84 +/- 0.03 (0.79-0.92; 0.83 No-Exo, 0.84 Passive, 0.85 SMAT); repeat differences 3.5 +/- 2.7% (Passive), 6.9 +/- 5.2% (No-Exo)",
+    "E p7, Fig. 6: hip ROM 44.0 +/- 4.3 deg (No-Exo) -> 62.0 +/- 5.5 deg (SMAT), +40.8% (p < 0.0001); Passive 48.7 +/- 4.0 deg (+10.6%, p = 0.034); peak flexion 33.6 +/- 8.2 -> 56.3 +/- 5.2 deg (p < 0.001); peak extension -10.4 +/- 7.0 -> -5.7 +/- 4.6 deg (p = 0.47); cadence 110.3 +/- 8.2 vs 110.5 +/- 6.1 steps/min; stride 1.366 +/- 0.098 vs 1.361 +/- 0.075 m; peak angular velocity 250.9 +/- 18.9 deg/s flexion, -179.5 +/- 43.2 deg/s extension; peak extension at 63-67% in all conditions; hip-angle waveform Pearson r = 0.98 (No-Exo vs SMAT), 0.97 (Passive vs SMAT)",
+    "E p7, Table II (n=8, both hips averaged, 15 Nm command scale, IMU sensing): tau_RMS 8.84 +/- 0.32 Nm, tau_MAX 12.39 +/- 0.26 Nm, MPP 18.07 +/- 1.77 W, MNP -0.29 +/- 0.16 W, R_pos = MPP/(MPP + |MNP|) = 0.984 +/- 0.009; torque peaks 12.1 +/- 0.2 Nm flexion at 80% and 10.3 +/- 0.8 Nm extension near 25% (cycle from peak hip flexion); power peak 52.8 +/- 4.0 W",
+    "E p8-9, Table IV (n=4: S1, S2, S3, S5; right leg; ~12 Nm peak): MPP 11.6 +/- 3.0 / 17.8 +/- 3.0 / 21.5 +/- 4.8 W, MNP -0.31 +/- 0.12 / -0.43 +/- 0.16 / -0.16 +/- 0.11 W, R_pos 0.974 +/- 0.010 / 0.977 +/- 0.009 / 0.992 +/- 0.005 at 0.76 / 1.25 / 1.74 m/s",
+    "E p8-9, Fig. 9: terrain circuit, n=1 (S3), R_pos 0.96-1.00, no safety intervention",
+    "E p9: 1.3 W metabolic saving per W positive power (47.9 +/- 10.4 W saving vs 36.1 +/- 3.5 W positive power from both legs)",
+    "E p9 literature comparisons (different devices and protocols): Molinaro 12.8% vs zero torque; Luo 24.3% and Barati 15.2% vs no-exo with 3.2 and 2.9 kg devices (18 and 11 Nm peaks); Seo 2.8 kg device 13%; Luo device penalty +5.4%",
+    "E p5: SMAT commanded at 15 Nm so that its ~0.8 normalized peak gives ~12 Nm, matching Ctrl-B commanded at 12 Nm; Ctrl-B results withheld"
+  ],
+
+  "unspecified_choices": [
+    {"choice": "Simulator/model version and files", "what_paper_says": "MyoAssist [12]/[19], 26-muscle lower-limb model; no version, commit, XML or hash", "plausible_options": ["MyoAssist 1.0.0 myolegs26 (server checkout b1baf69, per the request prompt, not the papers)", "an earlier MyoAssist 26-muscle model"], "why_it_matters": "muscle parameters, joint limits and contacts set activation levels, gait and all Stage 1-2 gates"},
+    {"choice": "Physics timestep and frame skip", "what_paper_says": "only control dt = 0.02 s", "plausible_options": ["MyoAssist default physics dt with frame_skip giving 20 ms control", "0.002 s x 10", "0.005 s x 4"], "why_it_matters": "contact stability, muscle dynamics fidelity and throughput"},
+    {"choice": "Meaning of 'activation' vs 'excitation'", "what_paper_says": "O: outputs called activations but 'directly controls muscle excitations'; E: outputs are excitations e, rewards use activations a", "plausible_options": ["actions = MuJoCo muscle ctrl (excitation) with MuJoCo first-order activation dynamics; rewards on data.act", "rewards on ctrl", "actions directly set activation"], "why_it_matters": "r_muscle, r_delta_a, r_hip_act and every activation-reduction metric depend on which signal is used"},
+    {"choice": "Human observation vector (content, dimension, order, normalisation)", "what_paper_says": "'musculoskeletal body-state observation'", "plausible_options": ["MyoAssist imitation-env default observation (record it)", "joint qpos/qvel + pelvis state + muscle states + foot contacts", "with/without reference phase"], "why_it_matters": "dominant factor for Stage 1 learnability and for how the human responds to the device"},
+    {"choice": "Reference motion source", "what_paper_says": "'Reference Gait' / 'Walking Reference Motion'; imitation terms adopted from MyoAssist", "plausible_options": ["MyoAssist bundled walking reference", "an open treadmill dataset near 1.25 m/s"], "why_it_matters": "defines the gait whose symmetry, toe-off and RMSE are gated and the hip kinematics the exo sees"},
+    {"choice": "Phase handling / synchronisation of the reference", "what_paper_says": "not reported", "plausible_options": ["time-indexed reference with random-phase initialisation and phase in the observation", "phase-matched lookup"], "why_it_matters": "whether imitation errors stay meaningful once the exo perturbs timing"},
+    {"choice": "Velocity scaling rho(t)", "what_paper_says": "rho = v_star / qdot_pelvis_ref(t), written per time sample; positions not rescaled", "plausible_options": ["per-sample scaling as written", "stride-mean reference speed"], "why_it_matters": "per-sample scaling distorts reference velocity profiles; the pelvis_tx velocity term becomes a second speed term"},
+    {"choice": "Imitation units and angle wrapping", "what_paper_says": "not reported", "plausible_options": ["radians and metres (exp(-8 e^2) halves at e = 0.29)", "degrees (kernel would be vanishingly narrow)"], "why_it_matters": "sets the effective tracking stiffness"},
+    {"choice": "Human action distribution", "what_paper_says": "not reported", "plausible_options": ["diagonal Gaussian + clip to [0,1] (SB3 default)", "sigmoid/tanh-rescaled squash", "Beta"], "why_it_matters": "clipping at 0 biases activations upward; entropy coefficient meaning; exploration of 26 muscles"},
+    {"choice": "Exo action distribution and history content", "what_paper_says": "outputs in [-1,1]; history of 'its own action (normalized torque) outputs'", "plausible_options": ["Gaussian + clip, clipped action stored", "tanh-squashed Gaussian"], "why_it_matters": "saturation near 0.8, the Stage-4-only collapse and rate-penalty cost under noise"},
+    {"choice": "Log-std parameterisation and initial value", "what_paper_says": "entropy coef 0.001 (S1-S2), 0.003 (S3-S4) only", "plausible_options": ["state-independent learned log-std, init 0", "init -0.5 or -1", "re-init per stage"], "why_it_matters": "exploration noise of the re-initialised exo in Stage 3 and of the unfrozen human in Stage 4"},
+    {"choice": "Network activation functions and initialisation", "what_paper_says": "sizes only", "plausible_options": ["tanh hidden units with orthogonal init (SB3 PPO default)", "ReLU/ELU"], "why_it_matters": "learning dynamics; scale of the Stage 4 input expansion"},
+    {"choice": "Exo observation order, units, normalisation, history init", "what_paper_says": "18 dims = 3 x (2 angles + 2 velocities) + 3 x (2 actions)", "plausible_options": ["[q_r, q_l, qd_r, qd_l] x (t, t-1, t-2) + [u_r, u_l] x (t-1, t-2, t-3), raw rad and rad/s", "velocities divided by 2 rad/s", "history initialised with zeros vs repeated first sample"], "why_it_matters": "effective controller gain, sim-to-real and offline-replay parity"},
+    {"choice": "Critic input ('full system state')", "what_paper_says": "not specified", "plausible_options": ["concat(human obs, exo obs, exo actions) with zero padding for exo parts in Stage 1", "human observation only", "full MuJoCo qpos/qvel/act"], "why_it_matters": "value quality when only the exo learns (Stage 3) and during co-adaptation"},
+    {"choice": "Critic continuity at stage boundaries", "what_paper_says": "V_psi initialised once, updated every stage; no reset described", "plausible_options": ["carry over", "reset at Stage 3", "carry over + value-only warm-up before policy updates"], "why_it_matters": "the Stage 3 reward change (r_fwd 0.8->1.5, r_muscle x15, new terms) makes a carried-over critic biased; could drive or prevent the Stage-4-only collapse"},
+    {"choice": "Reward-to-actor assignment", "what_paper_says": "one weight vector per stage; O p4 says terms 'can be enabled or disabled per agent'", "plausible_options": ["single team reward for both actors (literal default)", "per-agent reward subsets with a two-head critic"], "why_it_matters": "under a team reward the human is paid by r_exo4 for fast hip motion aligned with the torque (hip imitation off), which can enlarge hip ROM; the exo is paid for speed and imitation"},
+    {"choice": "Form of the joint PPO update", "what_paper_says": "'jointly update (pi_h, pi_e, V_psi) using PPO'", "plausible_options": ["one ratio over the product policy (sum of log-probs), one clip", "separate clipped losses per actor with a shared GAE advantage", "separate optimizers"], "why_it_matters": "with 26 + 2 action dims a joint ratio is dominated by the human; affects exo learning speed"},
+    {"choice": "Optimizer, LR schedule, optimizer reset", "what_paper_says": "LR values only", "plausible_options": ["Adam, constant LR, optimizer state reset at each stage", "state carried over"], "why_it_matters": "stability at stage transitions"},
+    {"choice": "Target-KL semantics", "what_paper_says": "target KL 0.01", "plausible_options": ["SB3 early stop when approx_kl > 1.5 x 0.01", "per-minibatch stop", "adaptive LR"], "why_it_matters": "with 20 epochs this probably truncates most updates and sets the real step size"},
+    {"choice": "Observation and reward normalisation", "what_paper_says": "not reported; E p5 claims hardware input statistics matched training", "plausible_options": ["running mean/std on observations, frozen with the policy and carried across stages", "no normalisation"], "why_it_matters": "frozen-policy semantics, Stage 4 new inputs, deployment parity"},
+    {"choice": "Episode length, initial state, termination, truncation handling", "what_paper_says": "not reported", "plausible_options": ["10-20 s episodes", "reference-state initialisation at random phase", "fall termination on pelvis height or non-foot contact", "bootstrap on time-limit truncation"], "why_it_matters": "fall rate, Stage 2 recovery from low reward (Fig. 2), episode-reward scale (~6.5-7)"},
+    {"choice": "Step counting convention", "what_paper_says": "'simulation steps' with 32 envs", "plausible_options": ["aggregate control steps across envs (throughput argument: 28 h / 100 M = 992 steps/s on 8 cores)", "per env (x32)", "physics substeps"], "why_it_matters": "32x change in budget; Stage 3 = 16.8 vs 537 PPO updates"},
+    {"choice": "Stopping and checkpoint selection", "what_paper_says": "'converging' at the approximate budgets", "plausible_options": ["fixed published budgets, last checkpoint", "plateau detector declared in advance"], "why_it_matters": "selecting by the reported metric would bias every gate"},
+    {"choice": "Frozen-human action mode (Stage 3) and evaluation mode", "what_paper_says": "not reported", "plausible_options": ["deterministic mean", "stochastic samples"], "why_it_matters": "the exo learns against a clean or a noisy human; evaluation numbers change"},
+    {"choice": "Stage 4 human input expansion", "what_paper_says": "random init of weights for 2 new inputs", "plausible_options": ["small random (e.g., std 0.01)", "default layer init scale", "zero init as an ablation"], "why_it_matters": "controls how fast the human reacts to the device; zero init preserves Stage 2 behaviour exactly"},
+    {"choice": "Simulated device mass, inertia, distribution", "what_paper_says": "not reported; hardware 5.94 kg", "plausible_options": ["assist_sim Hippo_L1 as-is (~4.9 kg per request prompt)", "rescaled to 5.94 kg", "sweep 0 / 4.9 / 5.94 kg"], "why_it_matters": "Stage 2 difficulty, device burden (E reports no simulated hip burden), Stage 2 baseline for the activation metric"},
+    {"choice": "Actuator model", "what_paper_says": "ideal torque at hip flexion joints (implied)", "plausible_options": ["ideal motor, gear = tau_max, ctrlrange [-1,1]", "add rotor inertia/friction", "add 20 ms command delay and rate limit"], "why_it_matters": "negative-power fraction, lag and sim-to-real"},
+    {"choice": "Passive abduction joint in simulation", "what_paper_says": "'passive abduction joints providing lateral compliance'", "plausible_options": ["thigh link welded to femur (no device joint)", "explicit hinge + equality constraint"], "why_it_matters": "closed-chain artefacts and constraint forces entering r_constraint"},
+    {"choice": "Joint constraint force definition in r_constraint", "what_paper_says": "max_k |f_k_joint| / mg", "plausible_options": ["MuJoCo joint-limit constraint forces (efc rows of limit type)", "qfrc_constraint per DOF", "human mass vs human + device mass"], "why_it_matters": "penalty scale in Stages 3-4"},
+    {"choice": "Foot contact force definition in r_foot", "what_paper_says": "(|f_r| + |f_l|)/mg - 1.2", "plausible_options": ["sum of normal forces on each foot's geoms (incl. toes)", "3D contact force norm"], "why_it_matters": "penalty scale; landing impacts"},
+    {"choice": "M_hip membership", "what_paper_says": "O 'includes' four groups on both legs; E 'such as'", "plausible_options": ["exactly the 8 actuators (4 groups x 2 sides)", "4 groups plus other hip muscles (abductors/adductors)"], "why_it_matters": "r_hip_act gradient; the 10.1% metric uses the same four groups"},
+    {"choice": "Hip imitation release in Stages 3-4", "what_paper_says": "O: flexion only (Table I footnote); E: all hip DOFs (Table S2 footnote, Table S3)", "plausible_options": ["E version (default)", "O version (sweep)"], "why_it_matters": "hip adduction/rotation tracking constrains frontal/transverse hip motion under assistance"},
+    {"choice": "Evaluation protocol", "what_paper_says": "not reported", "plausible_options": ["deterministic policy, >= 10 episodes, discard first 2 strides, >= 50 cycles per side at 1.25 m/s, heel strike from foot-force threshold"], "why_it_matters": "every published simulated number depends on it"},
+    {"choice": "Metric formulas", "what_paper_says": "verbal definitions only (see evaluation_metrics)", "plausible_options": ["declare formulas in eval/ before any Stage 4 result"], "why_it_matters": "peak of mean vs mean of peaks, time vs energy fractions, relative vs absolute reductions"},
+    {"choice": "Seeds and number of runs", "what_paper_says": "only the 'Stage 4 only' ablation is 'mean across three runs'", "plausible_options": [">= 3 seeds per condition, all reported"], "why_it_matters": "no published seed variance exists, so tolerances must come from our own seeds"},
+    {"choice": "Ablation budgets and evaluation settings", "what_paper_says": "not reported", "plausible_options": ["66 M for Stage-4-only variants, 1.1 M for Stage 3 only, Stage 3 only evaluated at 6 and at 25 Nm"], "why_it_matters": "fairness of the 'each stage is necessary' claim"},
+    {"choice": "Offline-replay processing", "what_paper_says": "dataset [19], 10 subjects, 3 speeds, 15 Nm, cross-correlation lag", "plausible_options": ["see offline_replay.not_reported"], "why_it_matters": "the only published check that needs no human model"},
+    {"choice": "Figure logging units", "what_paper_says": "Fig. 2 'Episode reward', Fig. 3a 'Exo power reward' and 'Hip muscle penalty'", "plausible_options": ["per-step unweighted bracket values without dt (consistent with -0.12 -> 0.08, derived)", "per-episode dt-scaled sums"], "why_it_matters": "needed before using figure values as soft checks"},
+    {"choice": "Torque scale used when reporting Stage 4 metrics and its relation to hardware scales", "what_paper_says": "sim Stage 4 at 25 Nm (Fig. 4 legend); hardware at 10/15 Nm", "plausible_options": ["evaluate at 25 Nm (published)", "additionally evaluate the co-adapted pair at 15 Nm"], "why_it_matters": "the human co-adapted at 25 Nm; hardware ran at 15 Nm"}
+  ],
+
+  "inconsistencies": [
+    {"item": "Hip imitation released in Stages 3-4", "O": "Table I footnote p2: hip FLEXION imitation weights zero; other joints active. O text p3 and Alg. 1 line 16 say 'hip imitation terms' (plural) are disabled.", "E": "Table S2 footnote p13: 'All hip DOFs are set to zero'; Table S3 p14 zeros flexion, adduction and rotation", "handling": "E as default, O as sweep option; ask authors"},
+    {"item": "Peak normalized torque of full SMAT", "O": "0.83 (p5) and 0.84 (p6 ablation text)", "E": "0.83 (p6, p7)", "handling": "use 0.83; treat 0.01 as rounding noise"},
+    {"item": "Human actor output name", "O": "'26 muscle activations a' + 'directly controls muscle excitations' (p2)", "E": "'26 muscle excitations e' (p2)", "handling": "actions = excitations, rewards on activations (declare)"},
+    {"item": "M_hip membership", "O": "'includes iliopsoas, gluteus maximus, rectus femoris, and hamstrings on both legs' (p3)", "E": "'comprises major hip flexors and extensors such as ...' (p3)", "handling": "exact 4 groups default"},
+    {"item": "Toe-off reporting", "O": "right 57.8 +/- 1.1%, left 58.5 +/- 0.9% (p5)", "E": "single 57.8 +/- 1.1% (p6)", "handling": "gate both sides"},
+    {"item": "Stage 2 preservation metrics", "O": "RMSE < 3.6 deg AND Pearson r > 0.92 across all joint pairs (p5)", "E": "RMSE < 3.6 deg and bilateral symmetry; the r is dropped (p6)", "handling": "report both"},
+    {"item": "Activation-reduction scope", "O": "right side, 4 hip groups, 10.1% (p6)", "E": "bilateral, 6 groups incl. gastrocnemius and soleus, 6.1% (p6); E p2 restates O's 10.1%", "handling": "different aggregations of possibly the same runs; gate each with its own definition"},
+    {"item": "Ablation captions", "O": "Fig. 5: Stage 4 only = mean of three runs; w/o r_exo4 'initialized from Stage 2'", "E": "Fig. 5: no run count, no initialisation stated for w/o r_exo4; colours changed", "handling": "follow O"},
+    {"item": "Characterisation of Stage-4-only-w/o-r_exo4", "O": "p6: slight constant extension torque, 40% negative power; p7: 'consistently converges to a near-zero torque solution, regardless of whether Stage 4 includes r_exo4 or not'", "E": "p7: as O p6", "handling": "near-zero but not zero; direction (extension) is the reproducible target"},
+    {"item": "Stage-4-only collapse explanation vs algebra", "O": "p6: second term of Eq5 makes zero torque maximise that component", "E": "p7: same", "handling": "derived: the full r_exo4 has gradient 0.3*omega_hat at u=0 and is maximised at u = omega_hat; the explanation is incomplete (untested)"},
+    {"item": "When the exo reward applies", "O": "Table I: Stages 3-4", "E": "Fig. 1 caption p3: 'the exoskeleton reward applies only after the device is introduced' (device is introduced in Stage 2) vs Table S2 and the Fig. 1 box 'active in Stages 3-4'", "handling": "Stages 3-4"},
+    {"item": "'Two agents learn concurrently'", "O": "staged; concurrent only in Stage 4", "E": "p2 'Two agents learn concurrently in a shared physics simulation' vs the staged schedule", "handling": "framing only"},
+    {"item": "Algorithms vs reward tables", "O": "Alg. 1 mentions only hip-imitation removal, r_hip_act, r_exo, r_delta_tau", "E": "Alg. S1 likewise; the r_fwd 0.8->1.5, r_muscle 0.01->0.15, r_delta_a 0.005->0.05, r_hip_act 2->5, r_constraint/r_foot activation and non-hip Table S3 changes appear only in tables", "handling": "tables are authoritative"},
+    {"item": "Hardware sensing and compute", "O": "Pi 4B, built-in motor encoders (Table III)", "E": "Pi 5, 'Motor encoders or 3x IMU' (Table I), IMUs used (p5)", "handling": "human results of O and E come from different input pipelines"},
+    {"item": "Hardware power at the 15 Nm scale", "O": "Table IV right leg: MPP 23.8 +/- 4.3 W, tau_MAX 12.2, MNP -0.1 (n=5)", "E": "Table II both-hip average: MPP 18.07 +/- 1.77 W, tau_MAX 12.39, MNP -0.29 (n=8); Table IV right leg 1.25 m/s: 17.8 +/- 3.0 W (n=4, separate session)", "handling": "not a simulation target; sensing and cohort differ"},
+    {"item": "Offline lag conversion", "O": "'9-20% of the gait cycle (~156-210 ms)' (p6)", "E": "not restated", "handling": "derived: requires 1.73 s cycles at 9% and 1.05 s at 20%; per-speed values needed"},
+    {"item": "Stage 3 torque wording", "O": "'Set tau_max <- 6 Nm'", "E": "p3 'the exoskeleton torque limit is kept at tau_max = 6 Nm' although the Stage 2 limit was 0", "handling": "wording"},
+    {"item": "Simulated vs human device burden", "O": "n/a", "E": "p9-10: sim hip muscles less active in Stage 2 than Stage 1, while humans pay +13.1% net metabolic rate for the passive device (p7)", "handling": "calibrate/sweep device mass; do not assume the sim reproduces the burden"},
+    {"item": "'Each stage is necessary'", "O": "conclusion p8: 'The ablation study confirms each stage is necessary'", "E": "p10: 'this four-stage decomposition is not necessarily essential for other frameworks'", "handling": "only Stage 3 and Stage 4 removals were tested"},
+    {"item": "Stage 4 human input notation", "O": "Alg. 1 line 23: [u_r, u_l]", "E": "p4 'current normalized exoskeleton torques u_j' (index notation) vs Alg. S1 [u_r, u_l]", "handling": "2 inputs"},
+    {"item": "Equation numbering", "O": "Eq1-7", "E": "Eq1-9 with different numbers for the same terms", "handling": "see meta.equation_map_O_to_E"}
+  ],
+
+  "hardware": {
+    "purpose": "sim-to-real awareness only; no hardware work is automated",
+    "common": {"device": "custom bilateral hip exoskeleton, sagittal assistance", "active_dof": "1 per side, hip flexion/extension", "passive_dof": "1 per side, hip abduction/adduction", "actuators": "MyActuator X8-25 BLDC x2, 25 Nm peak per hip", "mass_kg": 5.94, "materials": "aluminium alloy, carbon tube, 3D-printed Onyx (nylon-carbon fibre)", "command": "policy outputs normalized u in [-1,1] per hip, multiplied by a preset per-hip torque limit", "command_logging_rate_hz": "50 / 50", "bus": "CAN to actuators", "safety": "emergency stop, software torque limit, continuous operator supervision", "power_analysis": "P = commanded torque x angular velocity after One-Euro filtering (offline analysis); gait cycles segmented at peak hip flexion because there are no ground-reaction-force sensors", "source": "O Table III p4, O p4-5; E Table I p4, E p4-6"},
+    "O_2026_03": {"compute": "Raspberry Pi 4B mounted on the frame", "sensing": "built-in motor encoders (policy inputs)", "fitting": "exo hip axis aligned with the anatomical hip axis per subject", "torque_scales_used_Nm": [0, 10, 15], "protocol": "5 healthy participants; fixed order: 5 min familiarisation, 5 min no-assist (worn, zero command, back-drivable), 5 min at 10 Nm, 5 min at 15 Nm; 2 min rests; 1.25 m/s treadmill", "limitations_stated": "encoder angles may overestimate biological hip motion due to soft tissue and strap looseness; velocity noisier than motion capture (O p7)", "source": "O p4-5, p7"},
+    "E_2026_08": {"compute": "Raspberry Pi 5 (no deterministic real-time scheduling; 50 Hz chosen for timing reliability and CAN utilisation)", "sensing": "3 x LPMS-B2 IMUs (LP-Research) on pelvis and both thighs via BLE; hip angle = pelvis-femur difference; hip angular velocity = thigh gyro minus pelvis gyro about the flexion axis; IMUs zeroed in standing before each trial; encoders available but IMUs used", "loop": "fixed 20 ms period, command transmitted at end of cycle, idle until next; no timing overruns noted", "filtering": "none online ('trained on unfiltered kinematics')", "torque_scale_Nm": "15 for SMAT (about 12 Nm peak); Ctrl-B commanded at 12 Nm", "mechanics": "adjustable waist width, adjustable thigh-link length, anteroposterior slide of lateral extensions, vertical vest height; carbon-fibre back plate; passive abd/add hinge between waist frame and actuator assembly; fitted once per participant", "protocol": "8 adults; familiarisation 5 min unpowered + 10 min SMAT; order: standing rest, No-Exo, Passive, {SMAT, Ctrl-B} randomised, Passive, No-Exo, standing rest; ~6 min trials, last 2 min averaged; >= 5 min seated rest; 1.25 m/s; COSMED K5", "source": "E p4-6, Table I, Fig. 1, Fig. 3"},
+    "not_reported": ["actuator gear ratio, torque constant, current/torque control mode", "measured (vs commanded) torque; no torque sensor reported", "torque tracking error or bandwidth", "end-to-end latency measurement", "IMU sampling rate and sensor-to-segment calibration beyond standing zero", "One-Euro filter parameters", "backdrive friction of the passive device", "software torque-limit value", "O subject overlap with E subjects"]
+  },
+
+  "derived_analysis": {
+    "label": "derived by us from the published equations; not claims made by the authors",
+    "reward_optimal_exo_policy": "per joint, ignoring human-side effects: maximise 0.3*u*w - 0.15*u^2 - 2*max(0,|u|-0.8)^2 with w = clip(omega/2, -1, 1). Solution u*(w) = w for |w| <= 0.8, sign(w)*(0.3|w| + 3.2)/4.3 for |w| > 0.8; u*(1) = 0.814. Verified by grid search.",
+    "rate_penalty_filter": "inside |u| <= 0.8 and with the Stage 4 weights (r_exo 4.0, r_delta_tau 1.0) the exo-only per-step objective is -0.6*(u_t - w_t)^2 - 1.0*(u_t - u_{t-1})^2 + const. The discounted LQ solution (gamma 0.99, w held constant) is u_t = 0.529*w_t + 0.471*u_{t-1} (pole 0.471, time constant about 27 ms, about 2.4% of a 1.1 s stride); the myopic solution has pole 0.625 (about 43 ms).",
+    "stage3_optimum": "r_exo3 = 0.5*u^2*sign(u*omega) is maximised by u = sign(omega) with |u| = 1 (bang-bang), which is exactly the published 'Stage 3 only' saturation and abrupt reversal",
+    "predictions_from_reward_alone": ["peak normalized torque about 0.81 whenever peak |omega| exceeds about 1.6 rad/s (published sim 0.83; hardware 8.1/10 = 0.81, 12.2/15 = 0.81, 12.39/15 = 0.83; offline 0.77-0.82)", "power tau*omega is nonnegative except where the filtered command lags velocity zero crossings, so a small negative-power time fraction and R_pos near 1 are expected", "peak torque nearly speed-invariant once |omega| saturates (offline 11.6-12.3 Nm across 0.6-1.8 m/s)", "positive power rising with speed (hardware 11.6 -> 17.8 -> 21.5 W)", "a lag relative to the biological hip moment, because hip flexion velocity peaks after the flexion moment"],
+    "mandatory_baselines": [
+      "B0 reward-matched no-assist control: continue the Stage 2 human under the full Stage 4 human reward (r_muscle 0.15, r_hip_act 5.0, hip imitation off, r_fwd 1.5, constraint/foot terms) for the same 66 M steps with tau_max = 0; compare its activations with Stage 2 and with SMAT Stage 4",
+      "B1 u = u*(omega_hat) (instantaneous reward-optimal), tau_max 25 Nm, human co-adapted under the Stage 4 reward at the same budget",
+      "B2 B1 passed through the LQ filter u_t = 0.529*u*(w_t) + 0.471*u_{t-1} (rate-limited velocity controller)",
+      "B3 gain sweep u = clip(k*omega_hat, -0.8, 0.8), k in {0.5, 1, 2}, plus a one-step (20 ms) delay variant for hardware parity",
+      "B4 phase-based fixed profile (e.g., shaped like the published SMAT mean profile, or a hip flexion/extension profile) at matched RMS and peak torque",
+      "B5 unstaged simultaneous two-actor PPO from Stage 2 at matched total budget, with and without a behaviour-cloned u = w warm start (tests whether Stage 3 matters beyond initialisation)"
+    ],
+    "fig_scale_checks": "Fig. 3a -0.12 -> 0.08 is consistent with per-step, unweighted, un-dt-scaled bracket sums of r_exo4 over both hips when u follows omega_hat with RMS hip velocity about 1 rad/s; Fig. 2 episode reward plateau about 6.5-7 bounds episode length from below (see simulator)",
+    "throughput": "28 h / 100 M on 8 cores = 992 aggregate steps/s = 124 steps/s per core = 31 steps/s per env (32 envs). Per-env counting would require about 31,700 aggregate steps/s on 8 cores, which is implausible for a Python-driven 26-muscle MuJoCo env with PPO updates, so aggregate counting is the more likely reading (argued, not stated). Full pipeline 547.1 M = 153 h at their rate; Stages 3+4 (67.1 M) = 18.8 h; Stages 1+2 (480 M) = 134 h."
+  },
+
+  "gate_tolerance_basis": {
+    "label": "facts that constrain tolerance setting; the proposals are ours, not published, and must be frozen before any Stage 4 result is seen",
+    "facts": [
+      "No simulated number in either paper carries a seed-level uncertainty; the only +/- values are cycle-to-cycle spreads (toe-off +/-1.1 / +/-0.9%) and Fig. 3/4 bands (+/-1 SD over cycles).",
+      "Only one simulated condition reports multiple runs: 'Stage 4 only', mean of three runs (O Fig. 5 caption).",
+      "Three published targets are bounds, not point values: symmetry r > 0.92, Stage 2 RMSE < 3.6 deg (and O's r > 0.92).",
+      "Peak normalized torque (0.83; 0.84 once) sits next to the reward optimum 0.814, and the negative-power fraction (10%) and R_pos are largely implied by r_exo4; gates on them test implementation fidelity, not the SMAT mechanism.",
+      "The 10.1% activation reduction is a mean of four relative reductions (13.5, 10.5, 9.7, 6.6; simple mean 10.075); 6.1% is a different aggregation (six groups, both legs).",
+      "The Stage 2 comparator for activation reductions is confounded by reward changes; a reproduction that matches 10.1% without B0 does not reproduce a device effect."
+    ],
+    "proposals": {
+      "L1_symmetry": "per-joint L-R Pearson r >= 0.92 (hip, knee, ankle) on >= 3 seeds, plus declared reference-tracking RMSE reported",
+      "L1_toe_off": "55-61% both sides, |R-L| <= 2 points",
+      "L2_rmse": "Stage 2 vs Stage 1 mean trajectories <= 3.6 deg per joint (bound as published)",
+      "L3_peak_torque": "0.83 +/- 0.08",
+      "L3_negative_power_time": "<= 15%",
+      "L3_activation_4group_right": "all four groups reduced on every seed; seed mean within 10.1 +/- 5 points; reported beside B0 and B1-B3",
+      "L3_activation_6group_bilateral": "6.1 +/- 4 points with the averaging declared in advance",
+      "L3_ablations_direction": "Stage 4 only: peak <= 0.3 and opposing-power time >= 20%; Stage 4 only w/o r_exo4: mean torque in extension during swing and negative-power time >= 25%; Stage 3 only: |u| >= 0.95 for >= 50% of the cycle; each on >= 3 seeds",
+      "offline_replay": "peak 10.5-13.5 Nm at 15 Nm scale on all three speeds; lag 5-25% of the cycle; report the same for B1-B3"
+    }
+  },
+
+  "pages_read": {
+    "O_2603.07618v1": "pp1-8, all pages, via Read-tool page images; full pypdf text extraction cross-checked for every equation, table and number",
+    "E_2608.00715v1": "pp1-14, all pages including supplement pp12-14 (Table S1, Algorithm S1, Tables S2-S4), via Read-tool page images; full pypdf text extraction cross-checked",
+    "arithmetic_rechecked": "O Table IV and E Tables II, III, IV means/SDs recomputed from printed rows (all match); 10.1% = mean(13.5, 10.5, 9.7, 6.6) = 10.075; R_pos rows recomputed; r_exo4 optimum and LQ pole computed numerically",
+    "kb_files_checked": ["sail-lab-application-kb/research-program-2026-09-07/research/smat-reproduction-methods-2026-09-13.md", "sail-lab-application-kb/research-program-2026-09-07/sources/reading-batches/core-sprint-pdf-reading-01.md"]
+  }
+}

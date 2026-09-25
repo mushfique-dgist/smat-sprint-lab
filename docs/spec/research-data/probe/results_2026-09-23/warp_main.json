@@ -1,0 +1,1353 @@
+{
+  "mode": "main",
+  "pid": 1459930,
+  "budget_s": 420.0,
+  "device": {
+    "name": "NVIDIA GeForce RTX 5090",
+    "arch": 120,
+    "total_mem_mb": 32111,
+    "warp": "1.17.0",
+    "mujoco_warp": "3.14.0",
+    "mujoco": "3.14.0",
+    "kernel_cache_dir": "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp-cache/1.17.0",
+    "toolkit_version": "(12, 9)",
+    "driver_version": "(13, 2)",
+    "mempool_release_threshold": 0
+  },
+  "put_model": {
+    "human_plus_hippo": {
+      "stock": {
+        "supported": false,
+        "put_model_s": 0.067,
+        "error": "Traceback (most recent call last):\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py\", line 167, in try_put\n    m = mjw.put_model(mjm)\n        ^^^^^^^^^^^^^^^^^^\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 693, in put_model\n    _check_margin(f\"geom pair ({geom_name(g1)}, {geom_name(g2)})\", t1, t2, (m1, m2))\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 678, in _check_margin\n    raise NotImplementedError(\nNotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.\n",
+        "warnings": [
+          "UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs."
+        ]
+      },
+      "workaround_disable_multiccd": {
+        "supported": true,
+        "put_model_s": 0.037,
+        "geom_pair_type_count": {
+          "PLANE-CAPSULE": 4,
+          "PLANE-ELLIPSOID": 3,
+          "PLANE-MESH": 23,
+          "CAPSULE-MESH": 40,
+          "ELLIPSOID-MESH": 30,
+          "MESH-MESH": 156
+        },
+        "is_sparse": true,
+        "broadphase": "0",
+        "broadphase_filter": "11",
+        "graph_conditional": "True",
+        "run_collision_detection": "True",
+        "warnings": []
+      },
+      "used_for_runs": "workaround_disable_multiccd"
+    },
+    "human": {
+      "stock": {
+        "supported": false,
+        "put_model_s": 0.003,
+        "error": "Traceback (most recent call last):\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py\", line 167, in try_put\n    m = mjw.put_model(mjm)\n        ^^^^^^^^^^^^^^^^^^\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 693, in put_model\n    _check_margin(f\"geom pair ({geom_name(g1)}, {geom_name(g2)})\", t1, t2, (m1, m2))\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 678, in _check_margin\n    raise NotImplementedError(\nNotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.\n",
+        "warnings": [
+          "UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs."
+        ]
+      },
+      "workaround_disable_multiccd": {
+        "supported": true,
+        "put_model_s": 0.01,
+        "geom_pair_type_count": {
+          "PLANE-CAPSULE": 4,
+          "PLANE-ELLIPSOID": 3,
+          "PLANE-MESH": 15,
+          "CAPSULE-MESH": 40,
+          "ELLIPSOID-MESH": 30,
+          "MESH-MESH": 76
+        },
+        "is_sparse": true,
+        "broadphase": "0",
+        "broadphase_filter": "11",
+        "graph_conditional": "True",
+        "run_collision_detection": "True",
+        "warnings": []
+      },
+      "used_for_runs": "workaround_disable_multiccd"
+    }
+  },
+  "gpu_mem_mb_after_put_model": 530,
+  "parity": {
+    "human_plus_hippo": {
+      "model": "human_plus_hippo",
+      "nworld": 4,
+      "nsteps": 400,
+      "dt": 0.002,
+      "control_substeps": 10,
+      "initial_state": "qpos0 (MyoAssist-seated), qvel=0, act=0; same float32-rounded ctrl trace on both",
+      "nconmax": 48,
+      "njmax": 160,
+      "gpu_loop_s_with_readback": 2.75,
+      "warp_cross_world_max_abs_diff": 172.46096801757812,
+      "warp_overflow_flags": [],
+      "at_step": {
+        "1": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.0008823,
+              "mean": 7.548e-05
+            },
+            "qvel": {
+              "max": 0.4412,
+              "mean": 0.03859
+            },
+            "act": {
+              "max": 1.341e-08,
+              "mean": 4.331e-09
+            },
+            "actuator_force": {
+              "max": 0.0002222,
+              "mean": 2.157e-05
+            },
+            "ten_length": {
+              "max": 3.243e-08,
+              "mean": 1.719e-08
+            },
+            "muscle_force": {
+              "max": 0.0002222,
+              "mean": 2.322e-05,
+              "cpu_abs_max": 65.06
+            },
+            "exo_force": {
+              "max": 1.192e-07,
+              "mean": 6.706e-08
+            },
+            "ncon": [
+              6,
+              10
+            ],
+            "nefc": [
+              52,
+              68
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 5.927e-05,
+              "mean": 2.34e-06
+            },
+            "qvel": {
+              "max": 0.02964,
+              "mean": 0.001209
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 0.0002841,
+              "mean": 2.684e-05
+            },
+            "ten_length": {
+              "max": 1.311e-07,
+              "mean": 3.482e-08
+            },
+            "muscle_force": {
+              "max": 0.0002841,
+              "mean": 2.89e-05,
+              "cpu_abs_max": 65.06
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              9,
+              10
+            ],
+            "nefc": [
+              66,
+              68
+            ]
+          }
+        },
+        "10": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.08251,
+              "mean": 0.00639
+            },
+            "qvel": {
+              "max": 5.576,
+              "mean": 0.3272
+            },
+            "act": {
+              "max": 1.467e-08,
+              "mean": 4.008e-09
+            },
+            "actuator_force": {
+              "max": 48.32,
+              "mean": 10.32
+            },
+            "ten_length": {
+              "max": 0.002184,
+              "mean": 0.0004911
+            },
+            "muscle_force": {
+              "max": 48.32,
+              "mean": 11.11,
+              "cpu_abs_max": 776.7
+            },
+            "exo_force": {
+              "max": 1.192e-07,
+              "mean": 6.706e-08
+            },
+            "ncon": [
+              14,
+              8
+            ],
+            "nefc": [
+              90,
+              68
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.0002304,
+              "mean": 1.209e-05
+            },
+            "qvel": {
+              "max": 0.01342,
+              "mean": 0.0006624
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 0.2433,
+              "mean": 0.03319
+            },
+            "ten_length": {
+              "max": 5.883e-06,
+              "mean": 1.039e-06
+            },
+            "muscle_force": {
+              "max": 0.2433,
+              "mean": 0.03574,
+              "cpu_abs_max": 776.7
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              8,
+              8
+            ],
+            "nefc": [
+              68,
+              68
+            ]
+          }
+        },
+        "100": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.1161,
+              "mean": 0.01253
+            },
+            "qvel": {
+              "max": 2.059,
+              "mean": 0.1743
+            },
+            "act": {
+              "max": 7.702e-08,
+              "mean": 2.668e-08
+            },
+            "actuator_force": {
+              "max": 208.9,
+              "mean": 33.24
+            },
+            "ten_length": {
+              "max": 0.003457,
+              "mean": 0.00101
+            },
+            "muscle_force": {
+              "max": 208.9,
+              "mean": 35.8,
+              "cpu_abs_max": 2894.0
+            },
+            "exo_force": {
+              "max": 1.192e-07,
+              "mean": 7.451e-08
+            },
+            "ncon": [
+              9,
+              8
+            ],
+            "nefc": [
+              75,
+              72
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.00402,
+              "mean": 0.0002176
+            },
+            "qvel": {
+              "max": 0.02906,
+              "mean": 0.002168
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 2.461,
+              "mean": 0.467
+            },
+            "ten_length": {
+              "max": 3.987e-05,
+              "mean": 1.397e-05
+            },
+            "muscle_force": {
+              "max": 2.461,
+              "mean": 0.503,
+              "cpu_abs_max": 2894.0
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              8,
+              8
+            ],
+            "nefc": [
+              72,
+              72
+            ]
+          }
+        },
+        "400": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.05211,
+              "mean": 0.008963
+            },
+            "qvel": {
+              "max": 1.129,
+              "mean": 0.08306
+            },
+            "act": {
+              "max": 6.717e-08,
+              "mean": 2.453e-08
+            },
+            "actuator_force": {
+              "max": 114.5,
+              "mean": 19.39
+            },
+            "ten_length": {
+              "max": 0.002522,
+              "mean": 0.000766
+            },
+            "muscle_force": {
+              "max": 114.5,
+              "mean": 20.88,
+              "cpu_abs_max": 3427.0
+            },
+            "exo_force": {
+              "max": 7.451e-08,
+              "mean": 7.078e-08
+            },
+            "ncon": [
+              7,
+              5
+            ],
+            "nefc": [
+              70,
+              62
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.001076,
+              "mean": 0.0001589
+            },
+            "qvel": {
+              "max": 0.01842,
+              "mean": 0.001783
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 0.9662,
+              "mean": 0.2609
+            },
+            "ten_length": {
+              "max": 2.693e-05,
+              "mean": 8.735e-06
+            },
+            "muscle_force": {
+              "max": 0.9662,
+              "mean": 0.2809,
+              "cpu_abs_max": 3427.0
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              5,
+              5
+            ],
+            "nefc": [
+              62,
+              62
+            ]
+          }
+        }
+      },
+      "first_step_qpos_diff_above": {
+        "warp_vs_cpu": {
+          "1e-06": 1,
+          "0.0001": 1,
+          "0.01": 3
+        },
+        "cpu_perturbed_vs_cpu": {
+          "1e-06": 1,
+          "0.0001": 2,
+          "0.01": null
+        }
+      },
+      "qpos_maxdiff_series_every10": {
+        "warp_vs_cpu": [
+          0.0825,
+          0.0771,
+          0.147,
+          0.0797,
+          0.045,
+          0.0691,
+          0.0833,
+          0.103,
+          0.109,
+          0.116,
+          0.0941,
+          0.112,
+          0.127,
+          0.112,
+          0.0847,
+          0.0594,
+          0.0689,
+          0.0788,
+          0.0858,
+          0.0862,
+          0.0821,
+          0.0754,
+          0.0661,
+          0.0572,
+          0.0482,
+          0.042,
+          0.042,
+          0.0567,
+          0.0758,
+          0.0849,
+          0.084,
+          0.0735,
+          0.0603,
+          0.0522,
+          0.0445,
+          0.0442,
+          0.0458,
+          0.0461,
+          0.0494,
+          0.0521
+        ],
+        "cpu_perturbed_vs_cpu": [
+          0.00023,
+          0.000308,
+          0.00518,
+          0.00206,
+          0.000427,
+          0.00143,
+          0.00153,
+          0.00298,
+          0.00413,
+          0.00402,
+          0.00335,
+          0.00154,
+          0.00255,
+          0.00362,
+          0.000685,
+          0.000715,
+          0.0012,
+          0.00117,
+          0.000765,
+          0.000596,
+          0.000899,
+          0.00111,
+          0.00138,
+          0.0016,
+          0.00162,
+          0.00264,
+          0.000706,
+          0.00141,
+          0.00199,
+          0.00221,
+          0.00218,
+          0.00212,
+          0.00205,
+          0.00165,
+          0.000867,
+          0.000951,
+          0.00101,
+          0.00101,
+          0.00106,
+          0.00108
+        ]
+      },
+      "ncon_series_every10": {
+        "cpu": [
+          8,
+          9,
+          5,
+          7,
+          6,
+          5,
+          7,
+          8,
+          9,
+          8,
+          7,
+          8,
+          8,
+          7,
+          8,
+          10,
+          8,
+          8,
+          8,
+          8,
+          8,
+          7,
+          7,
+          7,
+          7,
+          5,
+          7,
+          6,
+          6,
+          5,
+          5,
+          5,
+          6,
+          7,
+          7,
+          6,
+          7,
+          6,
+          5,
+          5
+        ],
+        "warp": [
+          14,
+          11,
+          11,
+          11,
+          6,
+          12,
+          12,
+          10,
+          9,
+          9,
+          9,
+          8,
+          9,
+          9,
+          8,
+          8,
+          8,
+          9,
+          9,
+          8,
+          8,
+          8,
+          9,
+          9,
+          8,
+          8,
+          8,
+          7,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          8,
+          8,
+          7,
+          7
+        ]
+      },
+      "ncon_first_mismatch_step": 1,
+      "ncon_mismatch_fraction": 0.84,
+      "nefc_max": {
+        "cpu": 85,
+        "warp": 95
+      },
+      "ncon_max": {
+        "cpu": 11,
+        "warp": 15
+      }
+    },
+    "human": {
+      "model": "human",
+      "nworld": 4,
+      "nsteps": 400,
+      "dt": 0.002,
+      "control_substeps": 10,
+      "initial_state": "qpos0 (MyoAssist-seated), qvel=0, act=0; same float32-rounded ctrl trace on both",
+      "nconmax": 48,
+      "njmax": 160,
+      "gpu_loop_s_with_readback": 2.18,
+      "warp_cross_world_max_abs_diff": 583.3776245117188,
+      "warp_overflow_flags": [],
+      "at_step": {
+        "1": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.001346,
+              "mean": 0.0001188
+            },
+            "qvel": {
+              "max": 0.6728,
+              "mean": 0.0607
+            },
+            "act": {
+              "max": 1.341e-08,
+              "mean": 4.331e-09
+            },
+            "actuator_force": {
+              "max": 0.0002222,
+              "mean": 2.098e-05
+            },
+            "ten_length": {
+              "max": 3.243e-08,
+              "mean": 1.662e-08
+            },
+            "muscle_force": {
+              "max": 0.0002222,
+              "mean": 2.098e-05,
+              "cpu_abs_max": 65.06
+            },
+            "ncon": [
+              8,
+              12
+            ],
+            "nefc": [
+              60,
+              76
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 5.65e-05,
+              "mean": 3.253e-06
+            },
+            "qvel": {
+              "max": 0.02825,
+              "mean": 0.0017
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 0.0002841,
+              "mean": 2.89e-05
+            },
+            "ten_length": {
+              "max": 1.311e-07,
+              "mean": 3.482e-08
+            },
+            "muscle_force": {
+              "max": 0.0002841,
+              "mean": 2.89e-05,
+              "cpu_abs_max": 65.06
+            },
+            "ncon": [
+              11,
+              12
+            ],
+            "nefc": [
+              74,
+              76
+            ]
+          }
+        },
+        "10": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.08905,
+              "mean": 0.006442
+            },
+            "qvel": {
+              "max": 4.94,
+              "mean": 0.2992
+            },
+            "act": {
+              "max": 1.467e-08,
+              "mean": 4.008e-09
+            },
+            "actuator_force": {
+              "max": 43.17,
+              "mean": 10.24
+            },
+            "ten_length": {
+              "max": 0.002351,
+              "mean": 0.0005277
+            },
+            "muscle_force": {
+              "max": 43.17,
+              "mean": 10.24,
+              "cpu_abs_max": 776.9
+            },
+            "ncon": [
+              14,
+              8
+            ],
+            "nefc": [
+              90,
+              68
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.00497,
+              "mean": 0.0003982
+            },
+            "qvel": {
+              "max": 0.02947,
+              "mean": 0.00247
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 2.206,
+              "mean": 0.5416
+            },
+            "ten_length": {
+              "max": 0.0001746,
+              "mean": 5.322e-05
+            },
+            "muscle_force": {
+              "max": 2.206,
+              "mean": 0.5416,
+              "cpu_abs_max": 776.9
+            },
+            "ncon": [
+              8,
+              8
+            ],
+            "nefc": [
+              68,
+              68
+            ]
+          }
+        },
+        "100": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.1228,
+              "mean": 0.008813
+            },
+            "qvel": {
+              "max": 1.468,
+              "mean": 0.08825
+            },
+            "act": {
+              "max": 7.002e-08,
+              "mean": 2.432e-08
+            },
+            "actuator_force": {
+              "max": 108.2,
+              "mean": 19.83
+            },
+            "ten_length": {
+              "max": 0.002483,
+              "mean": 0.0007757
+            },
+            "muscle_force": {
+              "max": 108.2,
+              "mean": 19.83,
+              "cpu_abs_max": 4283.0
+            },
+            "ncon": [
+              7,
+              6
+            ],
+            "nefc": [
+              68,
+              64
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.001767,
+              "mean": 0.0001106
+            },
+            "qvel": {
+              "max": 0.1313,
+              "mean": 0.005426
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 1.822,
+              "mean": 0.4889
+            },
+            "ten_length": {
+              "max": 2.768e-05,
+              "mean": 6.909e-06
+            },
+            "muscle_force": {
+              "max": 1.822,
+              "mean": 0.4889,
+              "cpu_abs_max": 4283.0
+            },
+            "ncon": [
+              6,
+              6
+            ],
+            "nefc": [
+              64,
+              64
+            ]
+          }
+        },
+        "400": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.07535,
+              "mean": 0.006931
+            },
+            "qvel": {
+              "max": 1.352,
+              "mean": 0.1002
+            },
+            "act": {
+              "max": 7.454e-08,
+              "mean": 3.127e-08
+            },
+            "actuator_force": {
+              "max": 87.18,
+              "mean": 17.51
+            },
+            "ten_length": {
+              "max": 0.002499,
+              "mean": 0.0004989
+            },
+            "muscle_force": {
+              "max": 87.18,
+              "mean": 17.51,
+              "cpu_abs_max": 3861.0
+            },
+            "ncon": [
+              6,
+              7
+            ],
+            "nefc": [
+              65,
+              70
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.0006924,
+              "mean": 4.693e-05
+            },
+            "qvel": {
+              "max": 0.03139,
+              "mean": 0.001665
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 2.298,
+              "mean": 0.4692
+            },
+            "ten_length": {
+              "max": 1.044e-05,
+              "mean": 2.557e-06
+            },
+            "muscle_force": {
+              "max": 2.298,
+              "mean": 0.4692,
+              "cpu_abs_max": 3861.0
+            },
+            "ncon": [
+              7,
+              7
+            ],
+            "nefc": [
+              70,
+              70
+            ]
+          }
+        }
+      },
+      "first_step_qpos_diff_above": {
+        "warp_vs_cpu": {
+          "1e-06": 1,
+          "0.0001": 1,
+          "0.01": 3
+        },
+        "cpu_perturbed_vs_cpu": {
+          "1e-06": 1,
+          "0.0001": 2,
+          "0.01": 78
+        }
+      },
+      "qpos_maxdiff_series_every10": {
+        "warp_vs_cpu": [
+          0.089,
+          0.086,
+          0.122,
+          0.153,
+          0.13,
+          0.102,
+          0.0499,
+          0.0854,
+          0.118,
+          0.123,
+          0.112,
+          0.105,
+          0.0916,
+          0.0824,
+          0.0815,
+          0.0886,
+          0.0945,
+          0.0924,
+          0.0804,
+          0.0643,
+          0.0617,
+          0.0674,
+          0.0738,
+          0.0823,
+          0.0927,
+          0.102,
+          0.115,
+          0.128,
+          0.136,
+          0.124,
+          0.109,
+          0.12,
+          0.131,
+          0.136,
+          0.119,
+          0.0794,
+          0.0699,
+          0.0719,
+          0.0738,
+          0.0753
+        ],
+        "cpu_perturbed_vs_cpu": [
+          0.00497,
+          0.00378,
+          0.00217,
+          0.00115,
+          0.00121,
+          0.00186,
+          0.00393,
+          0.00952,
+          0.00224,
+          0.00177,
+          0.00312,
+          0.00242,
+          0.00128,
+          0.000463,
+          0.000498,
+          0.000596,
+          0.000707,
+          0.00122,
+          0.00124,
+          0.0011,
+          0.00125,
+          0.00142,
+          0.00155,
+          0.00166,
+          0.00181,
+          0.00196,
+          0.0021,
+          0.00209,
+          0.00324,
+          0.00346,
+          0.00309,
+          0.0025,
+          0.00178,
+          0.00122,
+          0.000976,
+          0.000839,
+          0.000747,
+          0.000686,
+          0.000723,
+          0.000692
+        ]
+      },
+      "ncon_series_every10": {
+        "cpu": [
+          8,
+          8,
+          11,
+          10,
+          8,
+          5,
+          9,
+          6,
+          6,
+          6,
+          7,
+          7,
+          7,
+          6,
+          6,
+          10,
+          10,
+          7,
+          8,
+          9,
+          7,
+          7,
+          7,
+          6,
+          7,
+          7,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          6,
+          5,
+          5,
+          5,
+          5,
+          5,
+          7,
+          7
+        ],
+        "warp": [
+          14,
+          12,
+          9,
+          10,
+          6,
+          9,
+          8,
+          10,
+          10,
+          7,
+          8,
+          6,
+          7,
+          6,
+          8,
+          7,
+          9,
+          9,
+          8,
+          8,
+          7,
+          6,
+          9,
+          7,
+          7,
+          8,
+          7,
+          8,
+          7,
+          7,
+          7,
+          7,
+          8,
+          8,
+          6,
+          5,
+          6,
+          7,
+          7,
+          6
+        ]
+      },
+      "ncon_first_mismatch_step": 1,
+      "ncon_mismatch_fraction": 0.78,
+      "nefc_max": {
+        "cpu": 85,
+        "warp": 95
+      },
+      "ncon_max": {
+        "cpu": 12,
+        "warp": 15
+      }
+    }
+  },
+  "throughput": {
+    "human_plus_hippo": [
+      {
+        "model": "human_plus_hippo",
+        "nworld": 256,
+        "substeps": 10,
+        "nconmax": 48,
+        "njmax": 160,
+        "put_data_s": 0.025,
+        "data_array_bytes_mb": 33.2,
+        "graph_capture_s": 0.081,
+        "timed_control_steps": 100,
+        "timed_s": 1.001,
+        "steps_per_s": 255710,
+        "control_transitions_per_s": 25571,
+        "realtime_factor_per_world": 1.998,
+        "gpu_mem_mb_process_steady": 708,
+        "stats_ncon_per_world_mean": 6.252,
+        "stats_nefc_mean": 66.14,
+        "stats_nefc_max": 107,
+        "stats_solver_iter_mean": 1.84,
+        "stats_solver_iter_max": 6,
+        "overflow_flags": [],
+        "nonfinite_worlds": 0,
+        "sync_each_ctrl_step_steps_per_s": 256426,
+        "sync_each_ctrl_step_control_transitions_per_s": 25643,
+        "gpu_mem_mb_process_peak_so_far": 708,
+        "wall_s": 2.7
+      },
+      {
+        "model": "human_plus_hippo",
+        "nworld": 1024,
+        "substeps": 10,
+        "nconmax": 48,
+        "njmax": 160,
+        "put_data_s": 0.081,
+        "data_array_bytes_mb": 132.9,
+        "graph_capture_s": 0.049,
+        "timed_control_steps": 100,
+        "timed_s": 1.297,
+        "steps_per_s": 789460,
+        "control_transitions_per_s": 78946,
+        "realtime_factor_per_world": 1.542,
+        "gpu_mem_mb_process_steady": 1028,
+        "stats_ncon_per_world_mean": 6.319,
+        "stats_nefc_mean": 66.41,
+        "stats_nefc_max": 114,
+        "stats_solver_iter_mean": 1.85,
+        "stats_solver_iter_max": 8,
+        "overflow_flags": [],
+        "nonfinite_worlds": 0,
+        "sync_each_ctrl_step_steps_per_s": 791154,
+        "sync_each_ctrl_step_control_transitions_per_s": 79115,
+        "gpu_mem_mb_process_peak_so_far": 1028,
+        "wall_s": 3.1
+      },
+      {
+        "model": "human_plus_hippo",
+        "nworld": 4096,
+        "substeps": 10,
+        "nconmax": 48,
+        "njmax": 160,
+        "put_data_s": 0.326,
+        "data_array_bytes_mb": 531.5,
+        "graph_capture_s": 0.05,
+        "timed_control_steps": 100,
+        "timed_s": 2.163,
+        "steps_per_s": 1894016,
+        "control_transitions_per_s": 189402,
+        "realtime_factor_per_world": 0.925,
+        "gpu_mem_mb_process_steady": 2180,
+        "stats_ncon_per_world_mean": 6.321,
+        "stats_nefc_mean": 66.46,
+        "stats_nefc_max": 130,
+        "stats_solver_iter_mean": 1.83,
+        "stats_solver_iter_max": 8,
+        "overflow_flags": [],
+        "nonfinite_worlds": 0,
+        "sync_each_ctrl_step_steps_per_s": 1895912,
+        "sync_each_ctrl_step_control_transitions_per_s": 189591,
+        "gpu_mem_mb_process_peak_so_far": 2180,
+        "wall_s": 5.1
+      },
+      {
+        "model": "human_plus_hippo",
+        "nworld": 8192,
+        "substeps": 10,
+        "nconmax": 48,
+        "njmax": 160,
+        "put_data_s": 0.664,
+        "data_array_bytes_mb": 1062.9,
+        "graph_capture_s": 0.05,
+        "timed_control_steps": 100,
+        "timed_s": 3.481,
+        "steps_per_s": 2353437,
+        "control_transitions_per_s": 235344,
+        "realtime_factor_per_world": 0.575,
+        "gpu_mem_mb_process_steady": 3620,
+        "stats_ncon_per_world_mean": 6.312,
+        "stats_nefc_mean": 66.42,
+        "stats_nefc_max": 114,
+        "stats_solver_iter_mean": 1.83,
+        "stats_solver_iter_max": 8,
+        "overflow_flags": [],
+        "nonfinite_worlds": 0,
+        "sync_each_ctrl_step_steps_per_s": 2349092,
+        "sync_each_ctrl_step_control_transitions_per_s": 234909,
+        "gpu_mem_mb_process_peak_so_far": 3620,
+        "wall_s": 8.3
+      }
+    ],
+    "human": [
+      {
+        "model": "human",
+        "nworld": 256,
+        "substeps": 10,
+        "nconmax": 48,
+        "njmax": 160,
+        "put_data_s": 0.024,
+        "data_array_bytes_mb": 32.4,
+        "graph_capture_s": 0.05,
+        "timed_control_steps": 100,
+        "timed_s": 0.936,
+        "steps_per_s": 273627,
+        "control_transitions_per_s": 27363,
+        "realtime_factor_per_world": 2.138,
+        "gpu_mem_mb_process_steady": 2596,
+        "stats_ncon_per_world_mean": 6.14,
+        "stats_nefc_mean": 65.79,
+        "stats_nefc_max": 92,
+        "stats_solver_iter_mean": 1.86,
+        "stats_solver_iter_max": 7,
+        "overflow_flags": [],
+        "nonfinite_worlds": 0,
+        "sync_each_ctrl_step_steps_per_s": 272086,
+        "sync_each_ctrl_step_control_transitions_per_s": 27209,
+        "gpu_mem_mb_process_peak_so_far": 3620,
+        "wall_s": 2.2
+      },
+      {
+        "model": "human",
+        "nworld": 1024,
+        "substeps": 10,
+        "nconmax": 48,
+        "njmax": 160,
+        "put_data_s": 0.081,
+        "data_array_bytes_mb": 129.6,
+        "graph_capture_s": 0.051,
+        "timed_control_steps": 100,
+        "timed_s": 1.199,
+        "steps_per_s": 853779,
+        "control_transitions_per_s": 85378,
+        "realtime_factor_per_world": 1.668,
+        "gpu_mem_mb_process_steady": 2692,
+        "stats_ncon_per_world_mean": 6.164,
+        "stats_nefc_mean": 65.85,
+        "stats_nefc_max": 93,
+        "stats_solver_iter_mean": 1.84,
+        "stats_solver_iter_max": 7,
+        "overflow_flags": [],
+        "nonfinite_worlds": 0,
+        "sync_each_ctrl_step_steps_per_s": 847683,
+        "sync_each_ctrl_step_control_transitions_per_s": 84768,
+        "gpu_mem_mb_process_peak_so_far": 3620,
+        "wall_s": 2.9
+      },
+      {
+        "model": "human",
+        "nworld": 4096,
+        "substeps": 10,
+        "nconmax": 48,
+        "njmax": 160,
+        "put_data_s": 0.329,
+        "data_array_bytes_mb": 518.6,
+        "graph_capture_s": 0.05,
+        "timed_control_steps": 100,
+        "timed_s": 2.048,
+        "steps_per_s": 1999957,
+        "control_transitions_per_s": 199996,
+        "realtime_factor_per_world": 0.977,
+        "gpu_mem_mb_process_steady": 3076,
+        "stats_ncon_per_world_mean": 6.178,
+        "stats_nefc_mean": 65.88,
+        "stats_nefc_max": 104,
+        "stats_solver_iter_mean": 1.84,
+        "stats_solver_iter_max": 7,
+        "overflow_flags": [],
+        "nonfinite_worlds": 0,
+        "sync_each_ctrl_step_steps_per_s": 1999736,
+        "sync_each_ctrl_step_control_transitions_per_s": 199974,
+        "gpu_mem_mb_process_peak_so_far": 3620,
+        "wall_s": 4.9
+      },
+      {
+        "model": "human",
+        "nworld": 8192,
+        "substeps": 10,
+        "nconmax": 48,
+        "njmax": 160,
+        "put_data_s": 0.687,
+        "data_array_bytes_mb": 1037.2,
+        "graph_capture_s": 0.05,
+        "timed_control_steps": 100,
+        "timed_s": 3.324,
+        "steps_per_s": 2464265,
+        "control_transitions_per_s": 246427,
+        "realtime_factor_per_world": 0.602,
+        "gpu_mem_mb_process_steady": 3588,
+        "stats_ncon_per_world_mean": 6.177,
+        "stats_nefc_mean": 65.88,
+        "stats_nefc_max": 106,
+        "stats_solver_iter_mean": 1.84,
+        "stats_solver_iter_max": 8,
+        "overflow_flags": [],
+        "nonfinite_worlds": 0,
+        "sync_each_ctrl_step_steps_per_s": 2456889,
+        "sync_each_ctrl_step_control_transitions_per_s": 245689,
+        "gpu_mem_mb_process_peak_so_far": 3620,
+        "wall_s": 8.0
+      }
+    ]
+  },
+  "gpu_wall_s": 44.3,
+  "gpu_mem_mb_process_peak": 3620,
+  "gpu_util_samples": {
+    "n": 80,
+    "mean": 77.9,
+    "max": 100
+  },
+  "other_gpu_processes_seen": {},
+  "halted": null,
+  "log": [
+    "[    1.8s] put_model human_plus_hippo stock {\"supported\": false, \"put_model_s\": 0.067, \"warnings\": [\"UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs.\"]} Traceback (most recent call last):\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py\", line 167, in try_put\n    m = mjw.put_model(mjm)\n        ^^^^^^^^^^^^^^^^^^\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 693, in put_model\n    _check_margin(f\"geom pair ({geom_name(g1)}, {geom_name(g2)})\", t1, t2, (m1, m2))\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 678, in _check_margin\n    raise NotImplementedError(\nNotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.\n",
+    "[    1.8s] put_model human_plus_hippo workaround_disable_multiccd {\"supported\": true, \"put_model_s\": 0.037, \"geom_pair_type_count\": {\"PLANE-CAPSULE\": 4, \"PLANE-ELLIPSOID\": 3, \"PLANE-MESH\": 23, \"CAPSULE-MESH\": 40, \"ELLIPSOID-MESH\": 30, \"MESH-MESH\": 156}, \"is_sparse\": true, \"broadphase\": \"0\", \"broadphase_filter\": \"11\", \"graph_conditional\": \"True\", \"run_collision_detection\": \"True\", \"warnings\": []} ",
+    "[    1.9s] put_model human stock {\"supported\": false, \"put_model_s\": 0.003, \"warnings\": [\"UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs.\"]} Traceback (most recent call last):\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py\", line 167, in try_put\n    m = mjw.put_model(mjm)\n        ^^^^^^^^^^^^^^^^^^\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 693, in put_model\n    _check_margin(f\"geom pair ({geom_name(g1)}, {geom_name(g2)})\", t1, t2, (m1, m2))\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 678, in _check_margin\n    raise NotImplementedError(\nNotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.\n",
+    "[    1.9s] put_model human workaround_disable_multiccd {\"supported\": true, \"put_model_s\": 0.01, \"geom_pair_type_count\": {\"PLANE-CAPSULE\": 4, \"PLANE-ELLIPSOID\": 3, \"PLANE-MESH\": 15, \"CAPSULE-MESH\": 40, \"ELLIPSOID-MESH\": 30, \"MESH-MESH\": 76}, \"is_sparse\": true, \"broadphase\": \"0\", \"broadphase_filter\": \"11\", \"graph_conditional\": \"True\", \"run_collision_detection\": \"True\", \"warnings\": []} ",
+    "[    4.8s] parity human_plus_hippo 3.0s {\"1\": {\"warp_f32_vs_cpu_f64\": {\"qpos\": {\"max\": 0.0008823, \"mean\": 7.548e-05}, \"qvel\": {\"max\": 0.4412, \"mean\": 0.03859}, \"act\": {\"max\": 1.341e-08, \"mean\": 4.331e-09}, \"actuator_force\": {\"max\": 0.0002222, \"mean\": 2.157e-05}, \"ten_length\": {\"max\": 3.243e-08, \"mean\": 1.719e-08}, \"muscle_force\": {\"max\": 0.0002222, \"mean\": 2.322e-05, \"cpu_abs_max\": 65.06}, \"exo_force\": {\"max\": 1.192e-07, \"mean\": 6.706e-08}, \"ncon\": [6, 10], \"nefc\": [52, 68]}, \"cpu_perturbed_1e7_vs_cpu\": {\"qpos\": {\"max\": 5.927e-05, \"mean\": 2.34e-06}, \"qvel\": {\"max\": 0.02964, \"mean\": 0.001209}, \"act\": {\"max\": 0.0, \"mean\": 0.0}, \"actuator_force\": {\"max\": 0.0002841, \"mean\": 2.684e-05}, \"ten_length\": {\"max\": 1.311e-07, \"mean\": 3.482e-08}, \"muscle_force\": {\"max\": 0.0002841, \"mean\": 2.89e-05, \"cpu_abs_max\": 65.06}, \"exo_force\": {\"max\": 0.0, \"mean\": 0.0}, \"ncon\": [9, 10], \"nefc\": [66, 68]}}, \"10\": {\"warp_f32_vs_cpu_f64\": {\"qpos\": {\"max\": 0.08251, \"mean\": 0.00639}, \"qvel\": {\"max\": 5.576, \"mean\": 0.3272}, \"act\": {\"max\": 1.467e-08, \"mean\": 4.008e-09}, \"actuator_force\": {\"max\": 48.32, \"mean\": 10.32}, \"ten_length\": {\"max\": 0.002184, \"mean\": 0.0004911}, \"muscle_force\": {\"max\": 48.32, \"mean\": 11.11, \"cpu_abs_max\": 776.7}, \"exo_force\": {\"max\": 1.192e-07, \"mean\": 6.706e-08}, \"ncon\": [14, 8], \"nefc\": [90, 68]}, \"cpu_perturbed_1e7_vs_cpu\": {\"qpos\": {\"max\": 0.0002304, \"mean\": 1.209e-05}, \"qvel\": {\"max\": 0.01342, \"mean\": 0.0006624}, \"act\": {\"max\": 0.0, \"mean\": 0.0}, \"actuator_force\": {\"max\": 0.2433, \"mean\": 0.03319}, \"ten_length\": {\"max\": 5.883e-06, \"mean\": 1.039e-06}, \"muscle_force\": {\"max\": 0.2433, \"mean\": 0.03574, \"cpu_abs_max\": 776.7}, \"exo_force\": {\"max\": 0.0, \"mean\": 0.0}, \"ncon\": [8, 8], \"nefc\": [68, 68]}}, \"100\": {\"warp_f32_vs_cpu_f64\": {\"qpos\": {\"max\": 0.1161, \"mean\": 0.01253}, \"qvel\": {\"max\": 2.059, \"mean\": 0.1743}, \"act\": {\"max\": 7.702e-08, \"mean\": 2.668e-08}, \"actuator_force\": {\"max\": 208.9, \"mean\": 33.24}, \"ten_length\": {\"max\": 0.003457, \"mean\": 0.00101}, \"muscle_force\": {\"max\": 208.9, \"mean\": 35.8, \"cpu_abs_max\": 2894.0}, \"exo_force\": {\"max\": 1.192e-07, \"mean\": 7.451e-08}, \"ncon\": [9, 8], \"nefc\": [75, 72]}, \"cpu_perturbed_1e7_vs_cpu\": {\"qpos\": {\"max\": 0.00402, \"mean\": 0.0002176}, \"qvel\": {\"max\": 0.02906, \"mean\": 0.002168}, \"act\": {\"max\": 0.0, \"mean\": 0.0}, \"actuator_force\": {\"max\": 2.461, \"mean\": 0.467}, \"ten_length\": {\"max\": 3.987e-05, \"mean\": 1.397e-05}, \"muscle_force\": {\"max\": 2.461, \"mean\": 0.503, \"cpu_abs_max\": 2894.0}, \"exo_force\": {\"max\": 0.0, \"mean\": 0.0}, \"ncon\": [8, 8], \"nefc\": [72, 72]}}, \"400\": {\"warp_f32_vs_cpu_f64\": {\"qpos\": {\"max\": 0.05211, \"mean\": 0.008963}, \"qvel\": {\"max\": 1.129, \"mean\": 0.08306}, \"act\": {\"max\": 6.717e-08, \"mean\": 2.453e-08}, \"actuator_force\": {\"max\": 114.5, \"mean\": 19.39}, \"ten_length\": {\"max\": 0.002522, \"mean\": 0.000766}, \"muscle_force\": {\"max\": 114.5, \"mean\": 20.88, \"cpu_abs_max\": 3427.0}, \"exo_force\": {\"max\": 7.451e-08, \"mean\": 7.078e-08}, \"ncon\": [7, 5], \"nefc\": [70, 62]}, \"cpu_perturbed_1e7_vs_cpu\": {\"qpos\": {\"max\": 0.001076, \"mean\": 0.0001589}, \"qvel\": {\"max\": 0.01842, \"mean\": 0.001783}, \"act\": {\"max\": 0.0, \"mean\": 0.0}, \"actuator_force\": {\"max\": 0.9662, \"mean\": 0.2609}, \"ten_length\": {\"max\": 2.693e-05, \"mean\": 8.735e-06}, \"muscle_force\": {\"max\": 0.9662, \"mean\": 0.2809, \"cpu_abs_max\": 3427.0}, \"exo_force\": {\"max\": 0.0, \"mean\": 0.0}, \"ncon\": [5, 5], \"nefc\": [62, 62]}}}",
+    "[    7.2s] parity human 2.4s {\"1\": {\"warp_f32_vs_cpu_f64\": {\"qpos\": {\"max\": 0.001346, \"mean\": 0.0001188}, \"qvel\": {\"max\": 0.6728, \"mean\": 0.0607}, \"act\": {\"max\": 1.341e-08, \"mean\": 4.331e-09}, \"actuator_force\": {\"max\": 0.0002222, \"mean\": 2.098e-05}, \"ten_length\": {\"max\": 3.243e-08, \"mean\": 1.662e-08}, \"muscle_force\": {\"max\": 0.0002222, \"mean\": 2.098e-05, \"cpu_abs_max\": 65.06}, \"ncon\": [8, 12], \"nefc\": [60, 76]}, \"cpu_perturbed_1e7_vs_cpu\": {\"qpos\": {\"max\": 5.65e-05, \"mean\": 3.253e-06}, \"qvel\": {\"max\": 0.02825, \"mean\": 0.0017}, \"act\": {\"max\": 0.0, \"mean\": 0.0}, \"actuator_force\": {\"max\": 0.0002841, \"mean\": 2.89e-05}, \"ten_length\": {\"max\": 1.311e-07, \"mean\": 3.482e-08}, \"muscle_force\": {\"max\": 0.0002841, \"mean\": 2.89e-05, \"cpu_abs_max\": 65.06}, \"ncon\": [11, 12], \"nefc\": [74, 76]}}, \"10\": {\"warp_f32_vs_cpu_f64\": {\"qpos\": {\"max\": 0.08905, \"mean\": 0.006442}, \"qvel\": {\"max\": 4.94, \"mean\": 0.2992}, \"act\": {\"max\": 1.467e-08, \"mean\": 4.008e-09}, \"actuator_force\": {\"max\": 43.17, \"mean\": 10.24}, \"ten_length\": {\"max\": 0.002351, \"mean\": 0.0005277}, \"muscle_force\": {\"max\": 43.17, \"mean\": 10.24, \"cpu_abs_max\": 776.9}, \"ncon\": [14, 8], \"nefc\": [90, 68]}, \"cpu_perturbed_1e7_vs_cpu\": {\"qpos\": {\"max\": 0.00497, \"mean\": 0.0003982}, \"qvel\": {\"max\": 0.02947, \"mean\": 0.00247}, \"act\": {\"max\": 0.0, \"mean\": 0.0}, \"actuator_force\": {\"max\": 2.206, \"mean\": 0.5416}, \"ten_length\": {\"max\": 0.0001746, \"mean\": 5.322e-05}, \"muscle_force\": {\"max\": 2.206, \"mean\": 0.5416, \"cpu_abs_max\": 776.9}, \"ncon\": [8, 8], \"nefc\": [68, 68]}}, \"100\": {\"warp_f32_vs_cpu_f64\": {\"qpos\": {\"max\": 0.1228, \"mean\": 0.008813}, \"qvel\": {\"max\": 1.468, \"mean\": 0.08825}, \"act\": {\"max\": 7.002e-08, \"mean\": 2.432e-08}, \"actuator_force\": {\"max\": 108.2, \"mean\": 19.83}, \"ten_length\": {\"max\": 0.002483, \"mean\": 0.0007757}, \"muscle_force\": {\"max\": 108.2, \"mean\": 19.83, \"cpu_abs_max\": 4283.0}, \"ncon\": [7, 6], \"nefc\": [68, 64]}, \"cpu_perturbed_1e7_vs_cpu\": {\"qpos\": {\"max\": 0.001767, \"mean\": 0.0001106}, \"qvel\": {\"max\": 0.1313, \"mean\": 0.005426}, \"act\": {\"max\": 0.0, \"mean\": 0.0}, \"actuator_force\": {\"max\": 1.822, \"mean\": 0.4889}, \"ten_length\": {\"max\": 2.768e-05, \"mean\": 6.909e-06}, \"muscle_force\": {\"max\": 1.822, \"mean\": 0.4889, \"cpu_abs_max\": 4283.0}, \"ncon\": [6, 6], \"nefc\": [64, 64]}}, \"400\": {\"warp_f32_vs_cpu_f64\": {\"qpos\": {\"max\": 0.07535, \"mean\": 0.006931}, \"qvel\": {\"max\": 1.352, \"mean\": 0.1002}, \"act\": {\"max\": 7.454e-08, \"mean\": 3.127e-08}, \"actuator_force\": {\"max\": 87.18, \"mean\": 17.51}, \"ten_length\": {\"max\": 0.002499, \"mean\": 0.0004989}, \"muscle_force\": {\"max\": 87.18, \"mean\": 17.51, \"cpu_abs_max\": 3861.0}, \"ncon\": [6, 7], \"nefc\": [65, 70]}, \"cpu_perturbed_1e7_vs_cpu\": {\"qpos\": {\"max\": 0.0006924, \"mean\": 4.693e-05}, \"qvel\": {\"max\": 0.03139, \"mean\": 0.001665}, \"act\": {\"max\": 0.0, \"mean\": 0.0}, \"actuator_force\": {\"max\": 2.298, \"mean\": 0.4692}, \"ten_length\": {\"max\": 1.044e-05, \"mean\": 2.557e-06}, \"muscle_force\": {\"max\": 2.298, \"mean\": 0.4692, \"cpu_abs_max\": 3861.0}, \"ncon\": [7, 7], \"nefc\": [70, 70]}}}",
+    "[    9.9s] throughput {\"model\": \"human_plus_hippo\", \"nworld\": 256, \"substeps\": 10, \"nconmax\": 48, \"njmax\": 160, \"put_data_s\": 0.025, \"data_array_bytes_mb\": 33.2, \"graph_capture_s\": 0.081, \"timed_control_steps\": 100, \"timed_s\": 1.001, \"steps_per_s\": 255710, \"control_transitions_per_s\": 25571, \"realtime_factor_per_world\": 1.998, \"gpu_mem_mb_process_steady\": 708, \"stats_ncon_per_world_mean\": 6.252, \"stats_nefc_mean\": 66.14, \"stats_nefc_max\": 107, \"stats_solver_iter_mean\": 1.84, \"stats_solver_iter_max\": 6, \"overflow_flags\": [], \"nonfinite_worlds\": 0, \"sync_each_ctrl_step_steps_per_s\": 256426, \"sync_each_ctrl_step_control_transitions_per_s\": 25643, \"gpu_mem_mb_process_peak_so_far\": 708, \"wall_s\": 2.7}",
+    "[   12.9s] throughput {\"model\": \"human_plus_hippo\", \"nworld\": 1024, \"substeps\": 10, \"nconmax\": 48, \"njmax\": 160, \"put_data_s\": 0.081, \"data_array_bytes_mb\": 132.9, \"graph_capture_s\": 0.049, \"timed_control_steps\": 100, \"timed_s\": 1.297, \"steps_per_s\": 789460, \"control_transitions_per_s\": 78946, \"realtime_factor_per_world\": 1.542, \"gpu_mem_mb_process_steady\": 1028, \"stats_ncon_per_world_mean\": 6.319, \"stats_nefc_mean\": 66.41, \"stats_nefc_max\": 114, \"stats_solver_iter_mean\": 1.85, \"stats_solver_iter_max\": 8, \"overflow_flags\": [], \"nonfinite_worlds\": 0, \"sync_each_ctrl_step_steps_per_s\": 791154, \"sync_each_ctrl_step_control_transitions_per_s\": 79115, \"gpu_mem_mb_process_peak_so_far\": 1028, \"wall_s\": 3.1}",
+    "[   18.1s] throughput {\"model\": \"human_plus_hippo\", \"nworld\": 4096, \"substeps\": 10, \"nconmax\": 48, \"njmax\": 160, \"put_data_s\": 0.326, \"data_array_bytes_mb\": 531.5, \"graph_capture_s\": 0.05, \"timed_control_steps\": 100, \"timed_s\": 2.163, \"steps_per_s\": 1894016, \"control_transitions_per_s\": 189402, \"realtime_factor_per_world\": 0.925, \"gpu_mem_mb_process_steady\": 2180, \"stats_ncon_per_world_mean\": 6.321, \"stats_nefc_mean\": 66.46, \"stats_nefc_max\": 130, \"stats_solver_iter_mean\": 1.83, \"stats_solver_iter_max\": 8, \"overflow_flags\": [], \"nonfinite_worlds\": 0, \"sync_each_ctrl_step_steps_per_s\": 1895912, \"sync_each_ctrl_step_control_transitions_per_s\": 189591, \"gpu_mem_mb_process_peak_so_far\": 2180, \"wall_s\": 5.1}",
+    "[   26.3s] throughput {\"model\": \"human_plus_hippo\", \"nworld\": 8192, \"substeps\": 10, \"nconmax\": 48, \"njmax\": 160, \"put_data_s\": 0.664, \"data_array_bytes_mb\": 1062.9, \"graph_capture_s\": 0.05, \"timed_control_steps\": 100, \"timed_s\": 3.481, \"steps_per_s\": 2353437, \"control_transitions_per_s\": 235344, \"realtime_factor_per_world\": 0.575, \"gpu_mem_mb_process_steady\": 3620, \"stats_ncon_per_world_mean\": 6.312, \"stats_nefc_mean\": 66.42, \"stats_nefc_max\": 114, \"stats_solver_iter_mean\": 1.83, \"stats_solver_iter_max\": 8, \"overflow_flags\": [], \"nonfinite_worlds\": 0, \"sync_each_ctrl_step_steps_per_s\": 2349092, \"sync_each_ctrl_step_control_transitions_per_s\": 234909, \"gpu_mem_mb_process_peak_so_far\": 3620, \"wall_s\": 8.3}",
+    "[   28.6s] throughput {\"model\": \"human\", \"nworld\": 256, \"substeps\": 10, \"nconmax\": 48, \"njmax\": 160, \"put_data_s\": 0.024, \"data_array_bytes_mb\": 32.4, \"graph_capture_s\": 0.05, \"timed_control_steps\": 100, \"timed_s\": 0.936, \"steps_per_s\": 273627, \"control_transitions_per_s\": 27363, \"realtime_factor_per_world\": 2.138, \"gpu_mem_mb_process_steady\": 2596, \"stats_ncon_per_world_mean\": 6.14, \"stats_nefc_mean\": 65.79, \"stats_nefc_max\": 92, \"stats_solver_iter_mean\": 1.86, \"stats_solver_iter_max\": 7, \"overflow_flags\": [], \"nonfinite_worlds\": 0, \"sync_each_ctrl_step_steps_per_s\": 272086, \"sync_each_ctrl_step_control_transitions_per_s\": 27209, \"gpu_mem_mb_process_peak_so_far\": 3620, \"wall_s\": 2.2}",
+    "[   31.4s] throughput {\"model\": \"human\", \"nworld\": 1024, \"substeps\": 10, \"nconmax\": 48, \"njmax\": 160, \"put_data_s\": 0.081, \"data_array_bytes_mb\": 129.6, \"graph_capture_s\": 0.051, \"timed_control_steps\": 100, \"timed_s\": 1.199, \"steps_per_s\": 853779, \"control_transitions_per_s\": 85378, \"realtime_factor_per_world\": 1.668, \"gpu_mem_mb_process_steady\": 2692, \"stats_ncon_per_world_mean\": 6.164, \"stats_nefc_mean\": 65.85, \"stats_nefc_max\": 93, \"stats_solver_iter_mean\": 1.84, \"stats_solver_iter_max\": 7, \"overflow_flags\": [], \"nonfinite_worlds\": 0, \"sync_each_ctrl_step_steps_per_s\": 847683, \"sync_each_ctrl_step_control_transitions_per_s\": 84768, \"gpu_mem_mb_process_peak_so_far\": 3620, \"wall_s\": 2.9}",
+    "[   36.3s] throughput {\"model\": \"human\", \"nworld\": 4096, \"substeps\": 10, \"nconmax\": 48, \"njmax\": 160, \"put_data_s\": 0.329, \"data_array_bytes_mb\": 518.6, \"graph_capture_s\": 0.05, \"timed_control_steps\": 100, \"timed_s\": 2.048, \"steps_per_s\": 1999957, \"control_transitions_per_s\": 199996, \"realtime_factor_per_world\": 0.977, \"gpu_mem_mb_process_steady\": 3076, \"stats_ncon_per_world_mean\": 6.178, \"stats_nefc_mean\": 65.88, \"stats_nefc_max\": 104, \"stats_solver_iter_mean\": 1.84, \"stats_solver_iter_max\": 7, \"overflow_flags\": [], \"nonfinite_worlds\": 0, \"sync_each_ctrl_step_steps_per_s\": 1999736, \"sync_each_ctrl_step_control_transitions_per_s\": 199974, \"gpu_mem_mb_process_peak_so_far\": 3620, \"wall_s\": 4.9}",
+    "[   44.3s] throughput {\"model\": \"human\", \"nworld\": 8192, \"substeps\": 10, \"nconmax\": 48, \"njmax\": 160, \"put_data_s\": 0.687, \"data_array_bytes_mb\": 1037.2, \"graph_capture_s\": 0.05, \"timed_control_steps\": 100, \"timed_s\": 3.324, \"steps_per_s\": 2464265, \"control_transitions_per_s\": 246427, \"realtime_factor_per_world\": 0.602, \"gpu_mem_mb_process_steady\": 3588, \"stats_ncon_per_world_mean\": 6.177, \"stats_nefc_mean\": 65.88, \"stats_nefc_max\": 106, \"stats_solver_iter_mean\": 1.84, \"stats_solver_iter_max\": 8, \"overflow_flags\": [], \"nonfinite_worlds\": 0, \"sync_each_ctrl_step_steps_per_s\": 2456889, \"sync_each_ctrl_step_control_transitions_per_s\": 245689, \"gpu_mem_mb_process_peak_so_far\": 3620, \"wall_s\": 8.0}"
+  ]
+}

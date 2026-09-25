@@ -1,0 +1,9 @@
+dgist-agents
+keyrings
+nano
+pki
+pnpm
+sail-open-webui
+sail-paperqa
+systemd
+uv

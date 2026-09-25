@@ -1,0 +1,626 @@
+{
+  "as_of": "2026-09-23",
+  "produced_by": "scoop-checker agent (Claude). Sources: arXiv API + arXiv abs/HTML full text, Semantic Scholar Graph API, OpenAlex, bioRxiv API + bioRxiv full text, Crossref, PubMed E-utilities, GitHub API, 8 WebSearch calls. Web pages were treated as untrusted data.",
+  "verdict_key": "open = nobody has done it; narrowed = parts are done, and the remaining novelty is stated in one_sentence_difference; done = already published",
+  "summary": {
+    "O1": "open. Most dangerous: Exo-Plore (ICLR 2026). It optimises a simple delayed-feedback hip controller inside an RL-driven musculoskeletal human, with code public, but never compares it with a learned policy.",
+    "O2": "narrowed. Most dangerous: MyoAssist 1.0 (bioRxiv 2026-08-26). It is the open human-device framework that SMAT runs on, with separate human/exo RL agents, spline baselines and standardized evaluation, but it runs on the CPU and has no staged protocol. Secondary risk: UniExo's promised code, which is a GPU (MuJoCo Warp/mjlab) co-adaptation pipeline.",
+    "O3": "open. Most dangerous: Lambda-Hold (arXiv 2608.17030), the only RL sprinting musculoskeletal agent, with no device yet. Human anchor: Moon et al. 2023. No simulated sprint-time reduction with any assistive device was found.",
+    "O4": "narrowed. Most dangerous: Assistax (RLC 2026). It already runs a GPU MARL pipeline with a withheld population of humanoid partners, but for robot-arm caregiving tasks, not wearable, musculoskeletal or locomotion tasks."
+  },
+  "openings": [
+    {
+      "id": "O1",
+      "statement": "An independent reproduction of SMAT (or of any learned-in-simulation hip-exo controller) that includes a matched, rate-limited velocity-proportional hip controller and a phase-based profile at equal torque budget, testing whether the learned controller's simulated benefit exceeds what reward-shaped velocity feedback gives.",
+      "verdict": "open",
+      "verdict_rationale": "No independent SMAT reproduction exists; SMAT/UniExo code is still 'to be released' and no GitHub repo was found on 2026-09-23. No paper compares a learned or co-adapted hip-exo policy against a velocity-proportional controller and a phase-based profile at equal torque in simulation. The simple-controller-in-RL-human-simulation ingredient IS published: Exo-Plore (ICLR 2026) and MDOFC (TNSRE 2026) optimise delayed-output-feedback controllers inside RL-driven human models. The learned-vs-simple question is also live in the Collins (2026) vs Luo (2026) exchange. The contribution must therefore be the matched head-to-head plus the reproduction, not the use of simple controllers in simulation. Analytic note (scoop-checker derivation from Eq. 6 of arXiv 2608.00715; not a published claim): SMAT's Stage-4 exo reward term alpha*u*w - beta*u^2 (alpha=0.3, beta=0.15, u and w normalised, w = clip(omega/2 rad/s)) is maximised per step by u = (alpha/(2*beta))*w = w, clipped where the lambda_s penalty starts (|u| > 0.8). That is a velocity-proportional law, about 12.5 N*m*s/rad at the 25 Nm training limit. UniExo's assistance-power term uses the same 0.3/0.15 coefficients. The full objective also contains a hip-activation reward (Stage-4 weight 5.0), a torque-rate penalty and the value function, so the learned policy can deviate. Whether it deviates usefully is exactly the untested question.",
+      "most_dangerous": "Exo-Plore (Leem et al., ICLR 2026, arXiv 2601.22550)",
+      "nearest_work": [
+        {
+          "title": "Exo-Plore: Exploring Exoskeleton Control Space through Human-aligned Simulation",
+          "authors_short": "Leem, Lee, Lee, Song, Won",
+          "year": 2026,
+          "venue": "ICLR 2026 (arXiv comments: 'ICLR 2026 accepted')",
+          "arxiv_id_or_doi": "arXiv:2601.22550",
+          "url": "https://arxiv.org/abs/2601.22550",
+          "what_it_did": "Deep-RL-driven 164-muscle human wearing a hip exoskeleton that runs Samsung's delayed output feedback law tau = kappa*u(t - dt), with u = sin(theta_r) - sin(theta_l). The human reward is tuned to match experimental assisted-gait trends. A surrogate network over (kappa, dt) finds speed-dependent optimal parameters that minimise simulated metabolic cost of transport, and the method is extended to pathological gaits. Code is public (daebangstn.github.io/exo-plore).",
+          "what_it_left_open": "Optimises only a 2-parameter simple controller. There is no learned or co-adapted exo policy, no velocity-proportional or phase-spline arm, no equal-torque head-to-head, and no SMAT.",
+          "verified": true
+        },
+        {
+          "title": "Design and Validation of a Modified Delayed Output Feedback Controller for Hip Exoskeleton Assistance",
+          "authors_short": "Yoon, Lee, Lee, Koo",
+          "year": 2026,
+          "venue": "IEEE Transactions on Neural Systems and Rehabilitation Engineering",
+          "arxiv_id_or_doi": "10.1109/tnsre.2026.3682054",
+          "url": "https://doi.org/10.1109/tnsre.2026.3682054",
+          "what_it_did": "Adds harmonic components to DOFC while keeping 2 parameters. Parameters are optimised by forward-dynamic gait simulation with an RL-based neural-network human controller. In simulation MDOFC gives a larger net metabolic reduction than DOFC. In human experiments its metabolic reduction is comparable to DOFC with 8.8% less mechanical power.",
+          "what_it_left_open": "Compares simple controllers only against each other. There is no learned or co-adapted exo policy and no matched-torque velocity-proportional or phase-profile arm.",
+          "verified": true
+        },
+        {
+          "title": "SMAT: Staged Multi-Agent Training for Co-Adaptive Exoskeleton Control",
+          "authors_short": "Yuan, Androwis, Zhou",
+          "year": 2026,
+          "venue": "arXiv (to appear IROS 2026)",
+          "arxiv_id_or_doi": "arXiv:2603.07618",
+          "url": "https://arxiv.org/abs/2603.07618",
+          "what_it_did": "Four-stage human/exo curriculum in MyoAssist with the 26-muscle model. In simulation it reduced hip-muscle activation by 10.1% versus no assist. The only ablations are of Stages 3 and 4. It adds an open-loop check on a 10-subject open dataset (0.6-1.8 m/s). On hardware (n=5), MPP was 13.6 W at 6 Nm RMS and 23.8 W at 9.3 Nm RMS, compared against Lim et al. 2019's published MPP (9.9-11.6 W at about 6 Nm RMS) rather than a matched run. Code is promised 'upon acceptance'.",
+          "what_it_left_open": "No simple-controller baseline at a matched budget in simulation. The exo reward is itself a power term whose myopic optimum is velocity-proportional (see verdict_rationale), so the value of learning over reward-shaped velocity feedback is untested.",
+          "verified": true
+        },
+        {
+          "title": "Staged Multi-Agent Training (SMAT) for Hip Exoskeletons: Metabolic and Biomechanical Validation of a Simulation-Trained Co-Adaptive Controller",
+          "authors_short": "Yuan, Wolf, Androwis, Zhou",
+          "year": 2026,
+          "venue": "arXiv (extended version of IROS 2026 paper)",
+          "arxiv_id_or_doi": "arXiv:2608.00715",
+          "url": "https://arxiv.org/abs/2608.00715",
+          "what_it_did": "Human study (n=8): net metabolic rate was 19.7% lower than with the passive device (p<0.001), with positive-power ratio 0.98. Simulated activation fell 6.1% across six muscle groups versus the exo-worn Stage 2. A second learned controller (Ctrl-B, trained with metabolic-energy rewards) was run in the protocol but its results are withheld. The policy was commanded at 15 Nm (peak about 12 Nm).",
+          "what_it_left_open": "Comparisons are only against no-exo and the passive device, with no simple-controller arm in simulation or in the metabolic study. Ctrl-B is unreported.",
+          "verified": true
+        },
+        {
+          "title": "Experiment-free learning of exoskeleton assistance remains an unsolved problem",
+          "authors_short": "Collins, De Groote, Gregg, Huang, Lenzi, Sartori, Sawicki, Si, Slade, Young",
+          "year": 2026,
+          "venue": "bioRxiv (2026-04-06)",
+          "arxiv_id_or_doi": "10.64898/2026.04.01.715109",
+          "url": "https://doi.org/10.64898/2026.04.01.715109",
+          "what_it_did": "Critique of Luo et al. 2024. It argues the reported energy ratios exceed physiological limits and that code was not shared. Its hardware replication at Harvard (N=10, 1.25 m/s, 4.8 kg custom hip exo) replayed Luo's average torque trajectory at 0/5/10/15% gait-cycle timing shifts. No shift gave a significant metabolic reduction; the best was about 1%. It recommends fixing learning methods and model evaluation.",
+          "what_it_left_open": "No simulation reproduction of the learning pipeline. It replays a fixed profile, not the policy. No matched velocity-feedback or phase-profile comparison in simulation.",
+          "verified": true
+        },
+        {
+          "title": "Experiment-free learning of exoskeleton assistance is not an unsolved problem",
+          "authors_short": "Luo, Jiang, Zhang, Zhu, Yu, ..., Su",
+          "year": 2026,
+          "venue": "bioRxiv (2026-06-17)",
+          "arxiv_id_or_doi": "10.64898/2026.06.16.731058",
+          "url": "https://doi.org/10.64898/2026.06.16.731058",
+          "what_it_did": "Reply to Collins et al. Disputes the energy-ratio ceiling and says the replication used a fixed torque curve instead of the roughly 10k-parameter policy, with heel-strike timing offsets and a device about 50% heavier (4.8 vs 3.2 kg). Compares Luo 2024 with Lim et al. 2019 DOFC at unmatched torque (14.1 vs 10.9 Nm peak; 24.3% vs 21% metabolic reduction). Cites independent learning-in-simulation results: Barati 2026, Zhou 2025, Park 2026, Leem 2026, Zuo 2026.",
+          "what_it_left_open": "No matched-torque simulated comparison. The learned-vs-simple question is argued from literature numbers.",
+          "verified": true
+        },
+        {
+          "title": "Experiment-free exoskeleton assistance via learning in simulation",
+          "authors_short": "Luo, Jiang, Zhang, Zhu, Yu, ..., Su",
+          "year": 2024,
+          "venue": "Nature 630",
+          "arxiv_id_or_doi": "10.1038/s41586-024-07382-4",
+          "url": "https://doi.org/10.1038/s41586-024-07382-4",
+          "what_it_did": "Learning-in-simulation hip-exo controller transferred to hardware without human experiments. Reported a 24.3% walking metabolic reduction, plus running and stair-climbing results.",
+          "what_it_left_open": "Code not released (per Collins et al. 2026). No matched simple-controller baseline in simulation. Contested.",
+          "verified": true
+        },
+        {
+          "title": "End-to-End Policy Learning for Hip Exoskeleton via Reinforcement Learning and Reflex-Based Musculoskeletal Simulation",
+          "authors_short": "Barati, Kim, Nguyen, Lee, Park",
+          "year": 2026,
+          "venue": "IEEE Robotics and Automation Letters 11(7):8672-8679",
+          "arxiv_id_or_doi": "10.1109/lra.2026.3699246",
+          "url": "https://doi.org/10.1109/lra.2026.3699246",
+          "what_it_did": "Reflex-driven planar musculoskeletal model with PPO, domain randomisation and sensor noise, comparing LSTM-PPO against an MLP-PPO baseline. Hardware (n=8) net metabolic reductions versus unassisted walking were 15.2% (LSTM) and 11.0% (MLP).",
+          "what_it_left_open": "The only baseline is another learned policy. Per the abstract, no simple controller was compared at matched torque, in simulation or on hardware.",
+          "verified": true
+        },
+        {
+          "title": "Adaptive Negative Damping Control for User-Dependent Multi-Terrain Walking Assistance with a Hip Exoskeleton",
+          "authors_short": "Ramella, Ijspeert, Bouri",
+          "year": 2025,
+          "venue": "arXiv",
+          "arxiv_id_or_doi": "arXiv:2503.03662",
+          "url": "https://arxiv.org/abs/2503.03662",
+          "what_it_did": "Adaptive virtual negative damping hip controller (the velocity-proportional class) with Bayesian-optimised gain. Metabolic cost was 7.2% below free walking (n=5), with less than 2% negative power.",
+          "what_it_left_open": "Hardware only. Never simulated, and never compared with a learned-in-simulation controller at equal torque.",
+          "verified": true
+        },
+        {
+          "title": "PositiveAssist: Energy-Gated Control for Positive Power Assistance of Exoskeleton in Walking, Running, and Stair Climbing",
+          "authors_short": "Zhou, Gao, Huang, Lin, Wu, et al.",
+          "year": 2026,
+          "venue": "IEEE/ASME Transactions on Mechatronics",
+          "arxiv_id_or_doi": "10.1109/tmech.2026.3691108",
+          "url": "https://doi.org/10.1109/tmech.2026.3691108",
+          "what_it_did": "Fixed-parameter, energy-gated controller driven by two thigh IMUs. More than 97.8% of delivered power was positive in walking and more than 94.8% in running (0.75-3.5 m/s, n=6), with no phase detection.",
+          "what_it_left_open": "No metabolic or learned comparison. It does show that SMAT's headline positive-power ratio of 0.98 is reachable by a simple rule, so that metric cannot separate learned from simple controllers.",
+          "verified": true
+        },
+        {
+          "title": "Learning Hip Exoskeleton Control Policy via Predictive Neuromusculoskeletal Simulation",
+          "authors_short": "Park, Song, Kang",
+          "year": 2026,
+          "venue": "arXiv",
+          "arxiv_id_or_doi": "arXiv:2603.04166",
+          "url": "https://arxiv.org/abs/2603.04166",
+          "what_it_did": "Hip-exo policy learned in predictive neuromusculoskeletal simulation (SAC, muscle-synergy prior, two-stage curriculum), then distilled to a student that takes femur angular velocity as input. In simulation it reduced activation by up to 3.4% and positive joint power by up to 7.0%. Hardware profile agreement was r=0.82.",
+          "what_it_left_open": "Compares its torque shape with spline and bio-torque controllers only as normalised profile plots, not as simulated controllers at equal torque.",
+          "verified": true
+        }
+      ],
+      "one_sentence_difference": "This is the first independent, code-released reconstruction of SMAT in MyoAssist. It pits the co-adapted exo policy against (a) a rate-limited velocity-proportional hip controller tau = clip(k*omega), which is the per-step optimum of SMAT's own power reward, and (b) a phase-based spline profile, each tuned at equal peak/RMS torque and torque-rate budget and each given the same human re-adaptation stage. It tests the falsifiable claim that SMAT's simulated hip-activation reduction exceeds the best matched simple controller by more than seed-to-seed spread.",
+      "required_comparisons": [
+        "No-exo and exo-worn-zero-torque (SMAT Stage 2) references, reproduced with at least 5 seeds and confidence intervals.",
+        "Rate-limited velocity-proportional ('virtual negative damping') hip controller: gain tuned in simulation, with peak torque, RMS torque and torque-rate limit matched to SMAT; the human policy is re-adapted with the controller frozen (a Stage-4 analogue) so both arms get equal adaptation.",
+        "Lim et al. 2019 delayed output feedback (DOI 10.1109/tro.2019.2913318), with (kappa, dt) tuned as in Exo-Plore (reuse its public code or reported optima as an external check).",
+        "Phase-based 4-parameter spline profile (MyoAssist ctrl_optim/ctrl/exo/fourparam_spline_ctrl.py) at equal torque budget.",
+        "Biological-moment-proportional controller (Molinaro et al. 2024 Nature, DOI 10.1038/s41586-024-08157-7; equivalent to UniExo's Stage-1 hip-moment predictor) at equal torque.",
+        "SMAT's own ablations (Stage 3 only; Stage 4 only from Stage 2; Stage 4 without r_exo) to confirm the reconstruction.",
+        "Metrics beyond positive-power fraction, which PositiveAssist shows a fixed rule reaches: hip and whole-leg activation, a muscle metabolic probe, and joint-power offload. Check EMG plausibility, because MuJoCo activations track EMG poorly (Ahmad et al. 2026, arXiv 2609.21909).",
+        "Transfer test of each controller against human policies it was not co-trained with (links to O4)."
+      ],
+      "searches_run": [
+        "arXiv abs + HTML full text of 2603.07618, 2608.00715, 2609.19690 (grep: baseline, velocity, delayed output, compared, ablation, unseen, code)",
+        "Semantic Scholar citations of arXiv:2603.07618 (4), arXiv:2608.00715 (1), arXiv:2609.19690 (0)",
+        "OpenAlex: 'experiment-free learning exoskeleton assistance unsolved problem'; 'Experiment-free exoskeleton assistance via learning in simulation'",
+        "bioRxiv API + full text: 10.64898/2026.04.01.715109 (Collins) and 10.64898/2026.06.16.731058 (Luo reply); Europe PMC lookup PPR1216358",
+        "arXiv: abs:exoskeleton AND (negative damping | velocity-based | delayed output feedback | velocity feedback | angular velocity)",
+        "arXiv (by date): (exoskeleton | exosuit) AND 'reinforcement learning' AND (musculoskeletal | simulation)",
+        "arXiv HTML full-text grep: 2601.22550 (Exo-Plore), 2603.04166, 2604.09431, 2603.07629, 2603.09218",
+        "OpenAlex (2025+): 'exoskeleton metabolic reinforcement learning simulation'; 'exoskeleton running reinforcement learning simulation metabolic reduction'; 'Barati exoskeleton'",
+        "OpenAlex/Crossref/S2 records: PositiveAssist; 10.1109/lra.2026.3699246 (Barati); 10.1109/tnsre.2026.3682054 (MDOFC); Lim 2019 DOFC; Molinaro 2024; 'A simulation-based lower-limb exoskeleton control method' (Zhou 2025, not found)",
+        "WebSearch: 'Barati 2026 exoskeleton learning in simulation metabolic reduction reinforcement learning'",
+        "WebSearch: 'hip exoskeleton simulation learned controller versus velocity-based OR negative damping OR delayed output feedback controller same torque comparison musculoskeletal'",
+        "GitHub API: UniExo; SMAT+exoskeleton; exoskeleton+co-adaptation; hip+exoskeleton+multi-agent (no official code found)"
+      ]
+    },
+    {
+      "id": "O2",
+      "statement": "An open GPU-batched benchmark of STAGED human-device co-adaptation (separate human and device policies, frozen-partner stages, joint stages) with matched baselines.",
+      "verdict": "narrowed",
+      "verdict_rationale": "Each ingredient exists somewhere, but no single open artefact combines them. MyoAssist 1.0 is an open human-device framework with separate human and exo RL agents, structured and spline exo controllers, and standardized evaluation, but it runs on CPU/Stable-Baselines3 with no staged protocol. UniExo has GPU (MuJoCo Warp + mjlab) human-exo co-adaptation with a shared critic, but its code is not yet released and it is not a benchmark. Assistax is an open GPU MARL human-robot benchmark with held-out partners, but for robot-arm caregiving tasks. An unpublished GitHub overlay (Luk7-sb) implements staged dual-PPO human/exo training on MJX/MuscleMimic, with no paper, data or baselines. The remaining novelty is the staged protocol as a reproducible benchmark with matched simple-controller baselines on GPU for wearables. Scoop risk is high once UniExo's code is released or MyoAssist adds MJX/Warp.",
+      "most_dangerous": "MyoAssist 1.0 (Robbins ... Song, bioRxiv 2026-08-26); secondary: UniExo code release (arXiv 2609.19690)",
+      "nearest_work": [
+        {
+          "title": "MyoAssist 1.0: An Open-Source Framework for Neuromechanical Simulation of Physical Human-Device Interaction",
+          "authors_short": "Robbins, Son, Tan, Wang, van Kanten, Sartori, Durandau, Kumar, Caggiano, Song",
+          "year": 2026,
+          "venue": "bioRxiv (2026-08-26); code github.com/neumovelab/myoassist",
+          "arxiv_id_or_doi": "10.64898/2026.08.25.746839",
+          "url": "https://doi.org/10.64898/2026.08.25.746839",
+          "what_it_did": "Human-device-task composition inside MyoSuite with 15 device models and models up to a 416-muscle full body. Provides an RL framework (SB3; separate rl_agent_human / rl_agent_exo networks; exo-off and partial-observation configs) and a controller-optimisation framework (reflex controller with CMA-ES; 4-parameter and n-point spline exo controllers), with standardized evaluation outputs for comparing learned and structured controllers. SMAT itself was built on MyoAssist.",
+          "what_it_left_open": "CPU MuJoCo with no GPU batching, no staged co-adaptation protocol (frozen-partner or joint stages) as a benchmark, and no velocity-proportional baseline.",
+          "verified": true
+        },
+        {
+          "title": "UniExo: Unified Multi-Skill Policies for Musculoskeletal Locomotion and Co-Adaptive Exoskeleton Control",
+          "authors_short": "Yuan, Wolf, Androwis, Zhou",
+          "year": 2026,
+          "venue": "arXiv (2026-09-17)",
+          "arxiv_id_or_doi": "arXiv:2609.19690",
+          "url": "https://arxiv.org/abs/2609.19690",
+          "what_it_did": "80-muscle MyoLeg unified human policy (distilled experts plus RL fine-tuning) on MuJoCo Warp + mjlab/rsl_rl. The exo actor is initialised from a hip-moment predictor and co-adapted through a shared critic, with 8192 human environments and 2048 co-adaptation environments at 3.7e4 env steps/s on one RTX PRO 6000. The only controller comparison is predictor vs co-adapted, on positive/negative power and the positive-work fraction. Hardware n=6 with no metabolic measurement.",
+          "what_it_left_open": "Code 'will be made publicly available' (no repo found on 2026-09-23). Not a benchmark, with no matched simple-controller baselines and no stage-protocol comparisons.",
+          "verified": true
+        },
+        {
+          "title": "Assistax: A Multi-Agent Hardware-Accelerated Reinforcement Learning Benchmark for Assistive Robotics",
+          "authors_short": "Hinckeldey, Fosong, Miller, Rubavicius, McInroe, Zhang, et al.",
+          "year": 2025,
+          "venue": "Reinforcement Learning Conference 2026 (arXiv comments); arXiv v3 2026-07-21",
+          "arxiv_id_or_doi": "arXiv:2507.21638",
+          "url": "https://arxiv.org/abs/2507.21638",
+          "what_it_did": "JAX/MuJoCo-MJX GPU suite of 5 assistive tasks (Scratch, Tooth Brushing, Feeding, Bed Bathing, Arm Assist) with an active humanoid partner trained by MARL, simulating tremor, weakness and limited range of motion. Includes an ad-hoc-teamwork pipeline with withheld partner populations and released pretrained humanoid policies. Up to 412x faster than CPU environments.",
+          "what_it_left_open": "Robot arms, not wearables. The humanoid is torque-driven, not musculoskeletal. No locomotion, no staged frozen-partner curriculum, and no metabolic or muscle outcomes.",
+          "verified": true
+        },
+        {
+          "title": "MyoAssist Dual-PPO Hip Exoskeleton Control (GitHub repository, Luk7-sb/myoassist-dual-ppo-control)",
+          "authors_short": "Luk7-sb (GitHub user)",
+          "year": 2026,
+          "venue": "GitHub (created 2026-08-26; no paper)",
+          "arxiv_id_or_doi": "GitHub:Luk7-sb/myoassist-dual-ppo-control",
+          "url": "https://github.com/Luk7-sb/myoassist-dual-ppo-control",
+          "what_it_did": "Overlay on MuscleMimic (JAX/MJX). The human policy outputs Hill-muscle activations and the exo outputs two hip torques, each with its own actor, critic, GAE and PPO. Training is staged: zero-assist baseline, small-torque probe, frozen human with exo training, low-learning-rate joint training, then multi-seed ON/OFF matched-initial-state audits. Includes deployment perturbations and a ±10 N·m limit.",
+          "what_it_left_open": "No paper, data, checkpoints or benchmark suite, and no matched simple-controller baselines reported. The README says it validates simulation only, and effort is an activation-squared proxy.",
+          "verified": true
+        },
+        {
+          "title": "mjlab: A Lightweight Framework for GPU-Accelerated Robot Learning (plus MyoHub/mjlab_myosuite integration)",
+          "authors_short": "Zakka, Liao, Yi, Le Lay, Sreenath, Abbeel",
+          "year": 2026,
+          "venue": "arXiv; GitHub MyoHub/mjlab_myosuite (early prototype, last push 2026-03-06)",
+          "arxiv_id_or_doi": "arXiv:2601.22074",
+          "url": "https://arxiv.org/abs/2601.22074",
+          "what_it_did": "Isaac-Lab-style manager API on MuJoCo Warp; UniExo's GPU substrate. mjlab_myosuite registers MyoSuite environments with mjlab, including the MJX/Warp branch.",
+          "what_it_left_open": "Generic infrastructure with no exo co-adaptation tasks, protocol or baselines.",
+          "verified": true
+        },
+        {
+          "title": "Simulation study of exoskeleton-musculoskeletal coupling for exoskeleton assistance via multi-agent reinforcement learning",
+          "authors_short": "Sun, Li, Deng, Wang",
+          "year": 2026,
+          "venue": "Medical & Biological Engineering & Computing (online 2026-07-22)",
+          "arxiv_id_or_doi": "10.1007/s11517-026-03634-9",
+          "url": "https://doi.org/10.1007/s11517-026-03634-9",
+          "what_it_did": "Heterogeneous MARL (MATD3, CTDE) with an OpenSim 7-DOF musculoskeletal model and a hip exo as separate agents. Kinematic tracking at 0.86/1.2/1.5 m/s; peak iliopsoas force fell from over 3000 N to under 1600 N.",
+          "what_it_left_open": "CPU OpenSim, not open as a benchmark, with no staged protocol or matched baselines.",
+          "verified": true
+        },
+        {
+          "title": "Towards Embodied AI with MuscleMimic: Unlocking full-body musculoskeletal motor learning at scale",
+          "authors_short": "Li, Wang, Ziliotto, Simos, Kovecses, Durandau, et al.",
+          "year": 2026,
+          "venue": "arXiv",
+          "arxiv_id_or_doi": "arXiv:2603.25544",
+          "url": "https://arxiv.org/abs/2603.25544",
+          "what_it_did": "Open GPU (massively parallel) motion-imitation framework for 126-muscle upper-body and 416-muscle full-body models, with validated walking/running kinematics (r=0.90) and released code, models and checkpoints.",
+          "what_it_left_open": "No devices and no co-adaptation.",
+          "verified": true
+        }
+      ],
+      "one_sentence_difference": "An open, GPU-batched (MuJoCo Warp/MJX) benchmark whose unit of evaluation is the staged protocol itself (human only, device mass, frozen-human device learning, joint co-adaptation), with fixed seeds, fixed torque/rate budgets and matched simple-controller baselines (velocity-proportional, DOFC, spline, moment-proportional). This turns 'staging helps' from a single ablation figure into a re-runnable, falsifiable claim, which neither MyoAssist 1.0 (CPU, no staging) nor UniExo (no released code, no baselines) provides.",
+      "required_comparisons": [
+        "Physics parity: the same MyoAssist 26-muscle model on CPU MuJoCo (MyoAssist 1.0) and on GPU (MuJoCo Warp/MJX) must agree in kinematics and activations before any benchmark claim.",
+        "Throughput against UniExo's reported 3.7e4 env-steps/s (RTX PRO 6000, learning update included) and against MyoAssist on a 64-core CPU (optionally the MuJoCoUni BatchEnvPool, arXiv 2605.24922).",
+        "Staged (SMAT 4 stages) vs joint-from-scratch vs frozen-human-only vs alternating updates, with at least 5 seeds each and a fixed compute budget.",
+        "In-benchmark matched baselines: velocity-proportional, DOFC (Exo-Plore parameterisation), 4-parameter spline (MyoAssist), and moment-predictor (UniExo Stage 1 / Molinaro-style), all at equal torque and torque-rate budget.",
+        "A held-out-partner evaluation track in the style of Assistax's ad-hoc-teamwork split (see O4).",
+        "Fidelity reporting (EMG alignment, cf. arXiv 2609.21909) so benchmark scores are not read as physiological effects."
+      ],
+      "searches_run": [
+        "GitHub API: 'myoassist' (13 repos), 'mjlab myosuite', 'mjlab_myosuite'; READMEs of neumovelab/myoassist, MyoHub/mjlab_myosuite, Luk7-sb/myoassist-dual-ppo-control; recursive tree grep of neumovelab/myoassist",
+        "bioRxiv API: 10.64898/2026.08.25.746839 (MyoAssist 1.0)",
+        "arXiv: ('co-adaptation' | 'co-adaptive' | coadaptation) AND (exoskeleton | prosthesis | prosthetic | 'assistive device' | exosuit | wearable)",
+        "arXiv: benchmark AND (exoskeleton | prosthesis | prosthetic | 'assistive device') AND (musculoskeletal | simulation)",
+        "arXiv: MyoChallenge | MuscleMimic | ExoGym | 'exoskeleton gym'",
+        "arXiv: musculoskeletal AND (GPU | MJX | 'MuJoCo Warp' | 'massively parallel')",
+        "arXiv: ('human-device' | 'human-exoskeleton' | 'human-prosthesis' | 'wearable robot') AND (benchmark | gym | 'open-source framework' | testbed)",
+        "arXiv ids: 2601.22074 (mjlab), 2311.02496 (LocoMuJoCo), 2605.24922 (MuJoCoUni), 2605.15650 (MyoChallenge 2025)",
+        "PubMed efetch PMID 42484814 + OpenAlex DOI 10.1007/s11517-026-03634-9",
+        "WebSearch: 'open-source GPU benchmark human-exoskeleton co-adaptation multi-agent reinforcement learning MuJoCo 2026'"
+      ]
+    },
+    {
+      "id": "O3",
+      "statement": "Learned hip-exosuit assistance that reduces SIMULATED 200 m (or 100 m / maximal) sprint time under realistic cable actuator limits (tension-only, delay, torque-speed-power limits, device mass).",
+      "verdict": "open",
+      "verdict_rationale": "Not found anywhere: arXiv, OpenAlex, Semantic Scholar, the citation trails of Moon et al. 2023 (13 citers in OpenAlex, 10 in S2), Lambda-Hold (0 citers) and Uchida 2016, or web search. No simulation of any assistive device, ideal or realistic, reports reduced sprint time. The closest pieces are separate: ideal devices in running at up to 5 m/s for metabolic cost (Uchida 2016), predictive sprint-acceleration simulations that alter joint moments rather than adding a device (Haralabidis 2022), an RL sprinting musculoskeletal agent without a device (Lambda-Hold 2026), and the human hardware effect (Moon 2023). Validity threat to plan for: Lambda-Hold's agent tops out near 4.7 m/s because hip-flexor force-velocity caps swing drive, and relieving that raises it to 6.5 m/s. A simulated hip-flexion assist gain could therefore partly compensate a model deficit.",
+      "most_dangerous": "Lambda-Hold Control (Lee, Lee, Ahn, arXiv 2608.17030); human anchor Moon et al. 2023 (Sci. Robot.)",
+      "nearest_work": [
+        {
+          "title": "Lambda-Hold Control: Human-Like Movement Emerges from a Minimal Task Reward in Predictive Musculoskeletal Simulation",
+          "authors_short": "Lee, Lee, Ahn",
+          "year": 2026,
+          "venue": "arXiv (2026-08-17)",
+          "arxiv_id_or_doi": "arXiv:2608.17030",
+          "url": "https://arxiv.org/abs/2608.17030",
+          "what_it_did": "Equilibrium-point (lambda) threshold control with stretch-reflex recruitment and held commands. A muscle-actuated model learns human-like sprinting from a standing start, using a minimal reward exp(v_x)*exp(-(v_z/0.1)^2), within about an hour. Top speed is about 4.7 m/s, limited by hip-flexor force-velocity; relieving that gives 6.5 m/s. The model has no arms. Validated against running kinematics and GRF at 2.5-4.5 m/s and EMG at 5.0 m/s.",
+          "what_it_left_open": "No device, no sprint-time distance (100/200 m), and no assistance or co-adaptation.",
+          "verified": true
+        },
+        {
+          "title": "Reducing sprint time with exosuit assistance in the real world",
+          "authors_short": "Moon, Nam, Ryu, Kim, Yun, Yang, Yang, Lee",
+          "year": 2023,
+          "venue": "Science Robotics",
+          "arxiv_id_or_doi": "10.1126/scirobotics.adf5611",
+          "url": "https://doi.org/10.1126/scirobotics.adf5611",
+          "what_it_did": "Cable-driven hip-extension exosuit that reduced real-world sprint time. The programme brief gives 200 m, -0.97 +/- 0.41 s (SEM), nine men; the one-sentence OpenAlex abstract confirms only that hip-extension assistance reduced sprint time, and the numbers were not re-verified here.",
+          "what_it_left_open": "No simulation, no learned controller, and no co-adaptation model. No follow-up sprint-time study (2024-2026) was found among its citers.",
+          "verified": true
+        },
+        {
+          "title": "Simulating Ideal Assistive Devices to Reduce the Metabolic Cost of Running",
+          "authors_short": "Uchida, Seth, Pouya, Dembia, Hicks, Delp",
+          "year": 2016,
+          "venue": "PLoS ONE",
+          "arxiv_id_or_doi": "10.1371/journal.pone.0163417",
+          "url": "https://doi.org/10.1371/journal.pone.0163417",
+          "what_it_did": "OpenSim muscle-driven simulations of 10 subjects running at 2 and 5 m/s with ideal, massless assistive devices at each joint. Predicts metabolic savings and the recruitment changes they cause.",
+          "what_it_left_open": "Metabolic cost only, not speed or sprint time. Ideal massless actuators with no cable, delay or power limits. Tracking rather than predictive human, so no human adaptation.",
+          "verified": true
+        },
+        {
+          "title": "Modifications to the net knee moments lead to the greatest improvements in accelerative sprinting performance: a predictive simulation study",
+          "authors_short": "Haralabidis, Colyer, Serrancoli, Salo, Cazzola",
+          "year": 2022,
+          "venue": "Scientific Reports",
+          "arxiv_id_or_doi": "10.1038/s41598-022-20023-y",
+          "url": "https://doi.org/10.1038/s41598-022-20023-y",
+          "what_it_did": "3D musculoskeletal model of an international sprinter solved with direct collocation for the first steps of acceleration. Freeing net joint moments improved performance by 13.8% (knee-free) and 21.9% (knee-hip-free).",
+          "what_it_left_open": "Technique modifications, not an external device. Early acceleration steps only, not a 100/200 m time. No actuator limits and no learned controller.",
+          "verified": true
+        },
+        {
+          "title": "Limitations to maximum sprinting speed imposed by muscle mechanical properties",
+          "authors_short": "Miller, Umberger, Caldwell",
+          "year": 2012,
+          "venue": "Journal of Biomechanics 45(6)",
+          "arxiv_id_or_doi": "10.1016/j.jbiomech.2011.04.040",
+          "url": "https://doi.org/10.1016/j.jbiomech.2011.04.040",
+          "what_it_did": "Simulation identifying the muscle force-velocity relation as the dominant contractile limit on maximum sprint speed. Lambda-Hold cites it for its own speed ceiling.",
+          "what_it_left_open": "No device.",
+          "verified": true
+        },
+        {
+          "title": "Inclusion of actuator dynamics in simulations of assisted human movement",
+          "authors_short": "Nguyen, LaPre, Price, Umberger, Sup",
+          "year": 2020,
+          "venue": "International Journal for Numerical Methods in Biomedical Engineering",
+          "arxiv_id_or_doi": "10.1002/cnm.3334",
+          "url": "https://doi.org/10.1002/cnm.3334",
+          "what_it_did": "Shows that modelling device mass and inertia has small effects, but motor electrical dynamics significantly change the results of assisted-movement simulations. Adds a new OpenSim electric-motor actuator class.",
+          "what_it_left_open": "Walking-type movements. No sprinting, cables or learned controllers.",
+          "verified": true
+        },
+        {
+          "title": "Learning to Run challenge solutions: Adapting reinforcement learning methods for neuromusculoskeletal environments",
+          "authors_short": "Kidzinski, Mohanty, Ong, Huang, Zhou, Pechenko, et al.",
+          "year": 2018,
+          "venue": "arXiv (NIPS 2017 competition)",
+          "arxiv_id_or_doi": "arXiv:1804.00361",
+          "url": "https://arxiv.org/abs/1804.00361",
+          "what_it_did": "Deep-RL controllers for a musculoskeletal model tasked to run as fast as possible through an obstacle course.",
+          "what_it_left_open": "No device, gaits that are not human-like, no sprint-time distance, and no physiological validation.",
+          "verified": true
+        },
+        {
+          "title": "Musculoskeletal Motion Imitation for Learning Personalized Exoskeleton Control Policy in Impaired Gait",
+          "authors_short": "Choi, Park, Halilaj, Kang",
+          "year": 2026,
+          "venue": "arXiv",
+          "arxiv_id_or_doi": "arXiv:2604.09431",
+          "url": "https://arxiv.org/abs/2604.09431",
+          "what_it_did": "RL imitation plus exo policies at the hip and ankle across 0.6-2.2 m/s walking and running. Profiles align with optimised splines from the literature, and simulated metabolic cost falls. Also covers deficit-specific assistance.",
+          "what_it_left_open": "Submaximal speeds and metabolic outcome only. No sprint, sprint time or actuator realism.",
+          "verified": true
+        },
+        {
+          "title": "Simulation-Driven Exoskeleton Control: Predicting Soft Pneumatic Gel Muscle Actuator Assistance to Reduce Metabolic Cost at Different Walking Speeds",
+          "authors_short": "Renganathan, Luis, Gutierrez-Farewik, Tada, Kurita",
+          "year": 2026,
+          "venue": "IEEE Transactions on Neural Systems and Rehabilitation Engineering",
+          "arxiv_id_or_doi": "10.1109/tnsre.2026.3671348",
+          "url": "https://doi.org/10.1109/tnsre.2026.3671348",
+          "what_it_did": "Models soft pneumatic gel muscle actuators at the hip in musculoskeletal simulation, using bilevel optimisation of stiffness, onset and duration across placements. Predicts 5.3-17.5% metabolic savings in walking.",
+          "what_it_left_open": "Walking only and a non-learned parametric controller. A precedent for modelling soft actuators, not for sprinting.",
+          "verified": true
+        }
+      ],
+      "one_sentence_difference": "This would be the first simulation in which a learned hip-exosuit controller reduces the predicted 200 m (or 100 m) sprint time of a physiology-grounded sprinting musculoskeletal agent, under a tension-only cable actuator model with delay, torque-speed-power limits and added mass. The gain would be benchmarked against the Moon et al. 2023 human effect and against matched simple controllers, with the human model's force-velocity ceiling controlled for.",
+      "required_comparisons": [
+        "No-suit, suit-worn-zero-tension (mass, drag and delay penalty), an ideal massless hip torque source (Uchida-style upper bound), and the realistic cable model.",
+        "Matched simple controllers at equal peak tension/power: a Moon-style phase-based hip-extension profile and velocity-proportional extension assist.",
+        "Frozen human vs a staged re-adapted human (SMAT-style), to separate device effect from learned compensation.",
+        "Sensitivity to the human model's force-velocity limitation, e.g. Lambda-Hold with force-velocity relieved (6.5 m/s ceiling) or scaled muscle strength. The assist gain should not be only a patch for a model deficit.",
+        "Actuator realism ablation (after Nguyen 2020): with and without motor/cable dynamics, delay and power limit.",
+        "Report the effect in seconds over 200 m (and 100 m) with seed confidence intervals, next to Moon et al.'s human effect size."
+      ],
+      "searches_run": [
+        "arXiv abs + HTML full text of 2608.17030 (speed, force-velocity limit, reward, references)",
+        "Semantic Scholar citations of arXiv:2608.17030 (0) and DOI:10.1126/scirobotics.adf5611 (10)",
+        "OpenAlex: DOI 10.1126/scirobotics.adf5611 and filter cites:W4387091793 (13 citing works; none simulate sprint)",
+        "arXiv: (sprint | sprinting | ti:sprint) AND (exoskeleton | exosuit | assistance | assistive | musculoskeletal)",
+        "arXiv: ('lambda-hold' | 'equilibrium point' | 'equilibrium-point') AND (musculoskeletal | locomotion | sprint)",
+        "arXiv: (exoskeleton | exosuit) AND running AND (simulation | 'reinforcement learning') AND metabolic (0 hits)",
+        "OpenAlex: 'exosuit sprint performance'; 'predictive simulation sprinting assistive device torque'; 'simulation sprinting exoskeleton assistance maximal running speed musculoskeletal'",
+        "OpenAlex records: 10.1371/journal.pone.0163417 (Uchida); 10.1038/s41598-022-20023-y (Haralabidis); 'Inclusion of actuator dynamics in simulations of assisted human movement'; 'Limitations to maximum sprinting speed imposed by muscle mechanical properties'; 10.1109/tnsre.2026.3671348",
+        "arXiv ids: 1804.00361 (Learning to Run), 1902.02441 (AI for Prosthetics)",
+        "WebSearch: 'sprint exosuit OR exoskeleton simulation reinforcement learning musculoskeletal sprint time 2026'",
+        "WebSearch: 'Giuk Lee exosuit sprint 2025 OR 2026 follow-up hip extension assistance sprinting acceleration'",
+        "WebSearch: 'predictive simulation sprint hip exoskeleton OR exosuit assistance sprint performance musculoskeletal simulation cable actuator'"
+      ]
+    },
+    {
+      "id": "O4",
+      "statement": "Partner-transfer evaluation: testing a co-adapted device controller against HELD-OUT independently trained human policies (not only its co-trained partner), as in zero-shot coordination (Other-Play; fictitious co-play), applied to exoskeleton/prosthesis/human-robot physical interaction.",
+      "verdict": "narrowed",
+      "verdict_rationale": "The held-out-partner protocol has been applied to physical assistive HRI: Assistax (RLC 2026) pretrains a diverse MARL humanoid population and evaluates robot policies on withheld partners, finding a coordination gap. It has not been applied to wearable devices, muscle-driven humans or locomotion. The SMAT family tests 'unseen subjects' only open-loop, by feeding recorded kinematics from a 10-subject dataset to the exo actor, and then on hardware. UniExo co-adapts with a single unified human policy. No exo or prosthesis paper reports a self-play vs cross-play gap against independently trained musculoskeletal human policies. MS-Emulator (2026) supports the premise that distinct muscle-control policies can yield near-identical kinematics.",
+      "most_dangerous": "Assistax (Hinckeldey et al., RLC 2026, arXiv 2507.21638)",
+      "nearest_work": [
+        {
+          "title": "Assistax: A Multi-Agent Hardware-Accelerated Reinforcement Learning Benchmark for Assistive Robotics",
+          "authors_short": "Hinckeldey, Fosong, Miller, Rubavicius, McInroe, Zhang, et al.",
+          "year": 2025,
+          "venue": "Reinforcement Learning Conference 2026 (arXiv comments)",
+          "arxiv_id_or_doi": "arXiv:2507.21638",
+          "url": "https://arxiv.org/abs/2507.21638",
+          "what_it_did": "Frames human-robot assistance as ad-hoc teamwork. A diverse humanoid partner population (disabilities and preferences) is pretrained with MARL, and robot policies are evaluated on a withheld set with crossplay. Reveals a coordination gap on unseen partners. GPU (JAX/MJX); pretrained partners released on Hugging Face.",
+          "what_it_left_open": "Robot arms with a torque-driven humanoid. No wearable device, no musculoskeletal human, no locomotion, and no co-adapted device controller transferred across partners.",
+          "verified": true
+        },
+        {
+          "title": "Collaborating with Humans without Human Data (Fictitious Co-Play)",
+          "authors_short": "Strouse, McKee, Botvinick, Hughes, Everett",
+          "year": 2021,
+          "venue": "NeurIPS 2021",
+          "arxiv_id_or_doi": "arXiv:2110.08176",
+          "url": "https://arxiv.org/abs/2110.08176",
+          "what_it_did": "Trains an agent as the best response to a population of self-play partners and their past checkpoints, and shows better generalisation to held-out partners and humans than self-play or population play (Overcooked).",
+          "what_it_left_open": "Discrete cooperative games only. No physical coupling and no device.",
+          "verified": true
+        },
+        {
+          "title": "'Other-Play' for Zero-Shot Coordination",
+          "authors_short": "Hu, Lerer, Peysakhovich, Foerster",
+          "year": 2020,
+          "venue": "ICML 2020",
+          "arxiv_id_or_doi": "arXiv:2003.02979",
+          "url": "https://arxiv.org/abs/2003.02979",
+          "what_it_did": "Defines zero-shot coordination with independently trained partners and a cross-play evaluation. Other-Play exploits symmetries to avoid arbitrary conventions (Hanabi).",
+          "what_it_left_open": "Discrete games. No physical human-device interaction.",
+          "verified": true
+        },
+        {
+          "title": "SMAT: Staged Multi-Agent Training for Co-Adaptive Exoskeleton Control (and extended version arXiv:2608.00715)",
+          "authors_short": "Yuan, (Wolf,) Androwis, Zhou",
+          "year": 2026,
+          "venue": "arXiv (IROS 2026)",
+          "arxiv_id_or_doi": "arXiv:2603.07618",
+          "url": "https://arxiv.org/abs/2603.07618",
+          "what_it_did": "Partner-generalisation evidence is only (a) open-loop inference of the exo actor on a 10-subject open dataset at 0.6/1.2/1.8 m/s, and (b) hardware with 5 and 8 participants without per-subject retraining.",
+          "what_it_left_open": "No closed-loop simulated evaluation against human policies not co-trained with the exo, and no self-play vs cross-play gap.",
+          "verified": true
+        },
+        {
+          "title": "UniExo: Unified Multi-Skill Policies for Musculoskeletal Locomotion and Co-Adaptive Exoskeleton Control",
+          "authors_short": "Yuan, Wolf, Androwis, Zhou",
+          "year": 2026,
+          "venue": "arXiv",
+          "arxiv_id_or_doi": "arXiv:2609.19690",
+          "url": "https://arxiv.org/abs/2609.19690",
+          "what_it_did": "Co-adapts one exo controller with a single unified human policy. User variability is handled by domain randomisation of input kinematics (time warp, angle scaling/offset, velocity bump, noise). Tested on 6 participants on hardware.",
+          "what_it_left_open": "One training partner. No held-out independently trained human policies in simulation.",
+          "verified": true
+        },
+        {
+          "title": "Scaling Whole-Body Human Musculoskeletal Behavior Emulation for Specificity and Diversity (MS-Emulator)",
+          "authors_short": "Wei, Zuo, Zhuang, Gong, Liu, Sui",
+          "year": 2026,
+          "venue": "arXiv",
+          "arxiv_id_or_doi": "arXiv:2603.29332",
+          "url": "https://arxiv.org/abs/2603.29332",
+          "what_it_did": "GPU-parallel RL for a roughly 700-muscle whole-body model. Identifies distinct muscle-control policies that converge to nearly identical external kinematics and mechanics.",
+          "what_it_left_open": "No device. Provides the premise (partner diversity hidden behind identical kinematics), not the transfer test.",
+          "verified": true
+        },
+        {
+          "title": "A Replay-Constrained Simulation Framework for Personalization of Powered Knee-Ankle Prosthesis Controllers",
+          "authors_short": "Le, Posh, Cheng, Ghaffari, Gregg",
+          "year": 2026,
+          "venue": "arXiv",
+          "arxiv_id_or_doi": "arXiv:2607.22858",
+          "url": "https://arxiv.org/abs/2607.22858",
+          "what_it_did": "Takes the opposite stance: the human partner is 'un-modelable', so recorded hip kinematics and ground reactions are replayed. It personalises prosthesis impedance with deep RL and shows strong sim-to-hardware predictive validity (n=3).",
+          "what_it_left_open": "No human policy at all, so no partner-transfer test. It is a useful contrast arm for the O4 argument.",
+          "verified": true
+        },
+        {
+          "title": "Redefining Robot Generalization Through Interactive Intelligence",
+          "authors_short": "Dey",
+          "year": 2025,
+          "venue": "arXiv (position paper)",
+          "arxiv_id_or_doi": "arXiv:2502.05963",
+          "url": "https://arxiv.org/abs/2502.05963",
+          "what_it_did": "Argues that wearable robots (prostheses, orthoses, exoskeletons) need interactive multi-agent and ad-hoc-teamwork models of the human partner.",
+          "what_it_left_open": "No experiments.",
+          "verified": true
+        }
+      ],
+      "one_sentence_difference": "This would be the first closed-loop evaluation of a co-adapted exoskeleton controller against a withheld population of independently trained musculoskeletal human policies (different seeds, reward weights, strength deficits and controller families, e.g. imitation-based vs Lambda-Hold), reporting the self-play-to-cross-play gap in muscle-effort reduction. The falsifiable claim is that SMAT-style co-adaptation overfits its training partner (cross-play benefit is below self-play benefit) and that population training in the fictitious co-play style closes the gap.",
+      "required_comparisons": [
+        "Full self-play vs cross-play matrix over at least 5 independently trained human partners, following the Assistax / zero-shot-coordination protocol.",
+        "Partner-agnostic simple controllers (velocity-proportional, DOFC, spline) on the same partners. They should show near-zero self-play/cross-play gap, which calibrates what overfitting looks like.",
+        "Exo trained against a single partner (SMAT) vs a partner population (fictitious co-play style), with equal compute.",
+        "Partner axes: random seed; reward weights; muscle strength or impairment (Choi et al. 2026 style deficits); human controller family (imitation-based vs Lambda-Hold).",
+        "Open-loop dataset test (as SMAT does) vs closed-loop partner test, to show whether the open-loop check predicts closed-loop transfer."
+      ],
+      "searches_run": [
+        "arXiv (relevance): ('zero-shot coordination' | 'ad hoc teamwork' | 'fictitious co-play' | 'other-play' | 'held-out partners' | 'unseen partners') AND (assistive | exoskeleton | prosthesis | 'physical human-robot' | 'human-robot interaction' | caregiving | dressing)",
+        "arXiv HTML full-text grep of 2507.21638 (tasks, withheld partners, humanoid model)",
+        "arXiv: (exoskeleton | prosthesis | exosuit) AND (population | 'diverse human' | cross-subject | 'different users' | 'unseen users' | 'human variability') AND ('reinforcement learning' | policy)",
+        "arXiv ids: 2003.02979, 2110.08176, 2502.05963, 2510.05780, 2603.29332, 2607.22858",
+        "Full-text grep of SMAT (2603.07618) for 'unseen'/'dataset' and UniExo (2609.19690) for 'partner'/'held-out'/'unseen'",
+        "WebSearch: 'exoskeleton OR prosthesis controller evaluated with held-out independently trained human policies zero-shot coordination musculoskeletal'",
+        "WebSearch: 'exoskeleton OR prosthesis controller robustness to diverse simulated human policies population partner generalization co-adaptation reinforcement learning'"
+      ]
+    }
+  ],
+  "other_relevant_2026_work": [
+    {
+      "title": "Beyond Kinematics: Benchmarking Simulation Fidelity for Muscle-Driven Imitation Learning",
+      "authors_short": "Ahmad, Borden, Tucker",
+      "year": 2026,
+      "venue": "arXiv (2026-09-18)",
+      "arxiv_id_or_doi": "arXiv:2609.21909",
+      "url": "https://arxiv.org/abs/2609.21909",
+      "what_it_did": "Compares SCONE/HyFyDy and MuJoCo/MyoSim imitation pipelines against the same motion capture and EMG. Kinematics are similar in both, but muscle activations align with EMG much better in HyFyDy (pooled RMSE, r = 0.164, 0.4) than in MuJoCo (0.344, 0.11).",
+      "what_it_left_open": "No devices. It is a direct threat to any MyoAssist/MuJoCo activation-based benefit claim (Phase 1 and Phase 2), so cite it and add activation-fidelity checks.",
+      "verified": true
+    },
+    {
+      "title": "Musculoskeletal Motion Imitation for Learning Personalized Exoskeleton Control Policy in Impaired Gait",
+      "authors_short": "Choi, Park, Halilaj, Kang",
+      "year": 2026,
+      "venue": "arXiv (cites SMAT)",
+      "arxiv_id_or_doi": "arXiv:2604.09431",
+      "url": "https://arxiv.org/abs/2604.09431",
+      "what_it_did": "Device-agnostic RL imitation framework producing hip and ankle exo policies for able-bodied and deficit models across 0.6-2.2 m/s. Profiles match optimised literature profiles, and simulated metabolic cost falls.",
+      "what_it_left_open": "No matched simple-controller arms and no partner-transfer test.",
+      "verified": true
+    },
+    {
+      "title": "Exoskeleton Control through Learning to Reduce Biological Joint Moments in Simulations",
+      "authors_short": "You, Zhou",
+      "year": 2026,
+      "venue": "arXiv (same senior author as SMAT)",
+      "arxiv_id_or_doi": "arXiv:2603.07629",
+      "url": "https://arxiv.org/abs/2603.07629",
+      "what_it_did": "RL exo policies that reduce biological joint moments, checked open-loop against an open gait dataset (hip cross-correlation up to 0.94-0.98). Delay tuning biases the assistance toward more positive power.",
+      "what_it_left_open": "No simple-controller baselines. It is the SMAT group's open-loop validation style.",
+      "verified": true
+    },
+    {
+      "title": "Embodied Human Simulation for Quantitative Design and Analysis of Interactive Robotics",
+      "authors_short": "Zuo, Xu, Vergnolle, Sui",
+      "year": 2026,
+      "venue": "arXiv",
+      "arxiv_id_or_doi": "arXiv:2603.09218",
+      "url": "https://arxiv.org/abs/2603.09218",
+      "what_it_did": "A pre-trained full-body musculoskeletal RL human acts as a fixed evaluator for co-optimising exoskeleton structure and control parameters (joint alignment, contact forces).",
+      "what_it_left_open": "Sequential (human frozen) rather than co-adaptive. No metabolic or matched-controller study.",
+      "verified": true
+    },
+    {
+      "title": "MyoChallenge 2025: A New Benchmark for Human Athletic Intelligence",
+      "authors_short": "Wang, Tan, Hodossy, Lyu, Guo, Zhao, et al.",
+      "year": 2026,
+      "venue": "arXiv (NeurIPS 2025 competition report)",
+      "arxiv_id_or_doi": "arXiv:2605.15650",
+      "url": "https://arxiv.org/abs/2605.15650",
+      "what_it_did": "MyoSuite athletic tracks: a table-tennis rally (upper limb) and a soccer penalty kick (legs and trunk). About 70 teams took part.",
+      "what_it_left_open": "No sprint track and no devices.",
+      "verified": true
+    },
+    {
+      "title": "MuJoCoUni: Persistent Batched Runtime Primitives for MuJoCo",
+      "authors_short": "Jia, Wu",
+      "year": 2026,
+      "venue": "arXiv",
+      "arxiv_id_or_doi": "arXiv:2605.24922",
+      "url": "https://arxiv.org/abs/2605.24922",
+      "what_it_did": "C++ BatchEnvPool (a thread pool with per-environment mjModel/mjData) for high-throughput batched CPU MuJoCo that keeps upstream semantics (pip install mujoco-uni).",
+      "what_it_left_open": "Generic infrastructure. Possibly useful for running CPU MyoAssist on the 64-core machine.",
+      "verified": true
+    },
+    {
+      "title": "Ensuring Interaction Safety in Multitask Exoskeleton Control: A Simulation-Trained Variable Impedance Framework",
+      "authors_short": "Ma, Li, Zhai, Han, Meng, Xia, et al.",
+      "year": 2026,
+      "venue": "arXiv",
+      "arxiv_id_or_doi": "arXiv:2606.06370",
+      "url": "https://arxiv.org/abs/2606.06370",
+      "what_it_did": "PPO-generated human-exo data trains a policy that outputs reference trajectories and Lyapunov-bounded variable impedance gains for 9 tasks. Reports lower metabolic cost than 'standard baseline methods' on hardware.",
+      "what_it_left_open": "Not co-adaptive, and the baselines are hardware-only.",
+      "verified": true
+    },
+    {
+      "title": "Versatile Exoskeleton Control Supports Elderly Joint Energetics During Hip-Intensive Tasks",
+      "authors_short": "Zhang, Divekar, Krishnan, Gregg",
+      "year": 2026,
+      "venue": "arXiv",
+      "arxiv_id_or_doi": "arXiv:2603.22580",
+      "url": "https://arxiv.org/abs/2603.22580",
+      "what_it_did": "Task-agnostic, power-sensitive hip controller (energy-shaping family) in 8 older adults. Hip biological positive work fell by 24.7%.",
+      "what_it_left_open": "No simulation and no learned comparison. It is another strong simple-controller class for the O1 comparison set.",
+      "verified": true
+    },
+    {
+      "title": "A simulation-based lower-limb exoskeleton control method",
+      "authors_short": "Zhou, Chen, Zhang, Liu, Zhang, Zhang, Wu",
+      "year": 2025,
+      "venue": "IEEE ROBIO 2025, pp. 1453-1458 (as cited in the Luo et al. 2026 reply)",
+      "arxiv_id_or_doi": "",
+      "url": "",
+      "what_it_did": "Cited by Luo et al. 2026 as an independent learning-in-simulation result with about 20% metabolic reduction during running.",
+      "what_it_left_open": "Not found in OpenAlex; only its citation in the Luo reply was seen, and its abstract was not read.",
+      "verified": false
+    }
+  ],
+  "method_notes": [
+    "The arXiv export API returned HTTP 406 to a python-urllib User-Agent (and 406/429 intermittently); curl with 'Mozilla/5.0' over https worked. Semantic Scholar search and bioRxiv returned HTTP 429 intermittently, and OpenAlex worked with retries. Results may miss items indexed only by Google Scholar.",
+    "8 of 10 allowed WebSearch calls were used. Every paper marked verified=true was matched to an arXiv/bioRxiv/OpenAlex/Crossref/Semantic Scholar/PubMed record or a GitHub API record, and its abstract (or README) was read. Details for the SMAT family, UniExo, Exo-Plore, Park/Song/Kang, Choi et al., Assistax, Lambda-Hold and Collins et al. were checked in the full text.",
+    "The velocity-proportional optimum of SMAT's exo power reward is the scoop-checker's own derivation from the published reward (arXiv 2608.00715 Eq. 6 and Table S2), not a claim made by any paper."
+  ]
+}

@@ -1,0 +1,9 @@
+/cache/
+/.venv/
+/docs/papers_pdf/
+/__pycache__/
+*.pyc
+/.pytest_cache/
+/.playwright/
+/state/
+*.log

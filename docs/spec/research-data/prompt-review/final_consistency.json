@@ -1,0 +1,536 @@
+{
+  "findings": [
+    {
+      "id": "FC-01",
+      "severity": "blocker",
+      "where": "N.8 launcher and build spool (parts/N), H.4 layer 9 and H.5 (parts/H) vs E.4 M1a campaign-start gate and E.2 migration rehearsal (parts/E), R.9 and R.4 (parts/R), D.2 drain and D.8 (parts/D)",
+      "quotes": [
+        "N.8 (L1880-1881): \"`sprintctl drain` and `sprintctl release <tag>` (Part R.9), the only way a session stops, restarts or releases the runner, controller, worker or watcher\"",
+        "N.8 (L1887-1888): \"The session's `sprintctl` spool accepts need and build commands only; steering from a build session is refused.\"",
+        "H.5 (L2385): \"| Pause, Resume, moves, Drive actions | `sprintctl pause`, `resume`, `move vast`, `move lab`, `backup drive`, … | Part D.2 transitions |\"",
+        "E.4 M1a (L4504-4505): \"**Campaign-start gate:** the Unit, Gate and Trainer groups green; L0 recorded; one real pause/resume cycle with the GPU and CPU verified free\"",
+        "R.9 (L3457-3458): \"`sprintctl release <tag>` (moves `state/trees/service/` to the tag and restarts the units, the wrapper only when no session is running) → `sprintctl resume`\"",
+        "D.2 drain (L3727): \"then PAUSED(by: user). Resume undoes it (Part R.9).\"",
+        "R.4 (L3375-3376): \"Pauses that wait for a person are the PAUSED(by: user | lease | safe) phases of Part D.2\"",
+        "E.2 Migration rehearsal (L4356-4357): \"pausing the live runner only for hops that use the lab machine\"",
+        "D.8 (L4189-4190): \"unit restarts caused by a release, and L1–L2 crossings go into the daily digest or the next milestone message\""
+      ],
+      "problem": "Every unattended session after M0 is a jailed build session that may not pause or resume: its steering is refused and the launcher offers only drain and release. Yet the M1a campaign-start gate needs a real pause/resume cycle, R.9 ends every harness release with `sprintctl resume`, and the M5 rehearsal pauses the live runner. Drain ends in PAUSED(by: user), a phase that waits for a person. So after the first harness release in M1b the campaign sits paused until the user presses Resume, which contradicts 'never wait for the user' and D.8's treatment of release restarts as digest items. No part states the controller's phase at first install either, so it is undefined how Q0–Q2 reach RUNNING at all.",
+      "fix": "Change N.8 and R.9/D.2 (the prompt side). N.8 launcher: add a named operation `pause_resume_drill` (one Pause, the GPU/CPU-free check, one Resume), and let `sprintctl release <tag>` resume when, and only when, the current pause was created by the same session's drain; log each as a steering row with `source: codex-build` and the session number. D.2: add the phase PAUSED(by: release): 'drain … then PAUSED(by: user), or PAUSED(by: release) when a build session drained; the release ends it by itself.' R.9: replace '→ `sprintctl resume`' with '(the release resumes what its own drain paused)'. D.2: 'At first install the controller starts in LAB, PAUSED(by: release); the first release after a green campaign-start gate resumes it.' E.2 rehearsal: 'pausing the live runner through `pause_resume_drill`'."
+    },
+    {
+      "id": "FC-02",
+      "severity": "blocker",
+      "where": "G.8 and E.4 M1b / E.3 (parts/G, parts/E) vs G.8 change paths, D.3 (parts/D), C.1 runner (parts/C), N.8 build spool (parts/N), 00_README.md PC-only list",
+      "quotes": [
+        "G.8 (L779-780): \"the walking families in M1a (L0–L3) and M1b (L4 and the paper paths, a gate epoch that adds keys and changes no existing band)\"",
+        "E.4 M1b (L4513-4514): \"gate L4 and the walking paper paths, added by a gate epoch that changes no existing band (Part G.8)\"",
+        "G.8 (L797): \"The only change paths are over SSH: `sprintctl gate-change <key> <value> --reason \"…\"`\"",
+        "D.3 (L3938): \"Gate and tolerance changes never travel through the mailbox. They exist only over SSH\"",
+        "C.1 runner (L2682-2683): \"Refuses to start on a mismatch of any frozen `GATE_HASH` or `EVAL_HASH` family (C.9).\"",
+        "00_README.md (L98-99): \"(5) raising a hard ceiling (…) or opening a gate epoch: one `sprintctl` line over SSH\"",
+        "G.8 (L776-778): \"**Hashes are kept per family:** `GATE_HASH[walk]` (L0–L4 and the walking paper paths) and `GATE_HASH[sprint]` (L5)\""
+      ],
+      "problem": "M1b must open a gate epoch to add L4 and the walking paper paths. But epochs open only through `sprintctl gate-change`/`gate-release` typed by the user over SSH, and a build session cannot steer. If the M1b session releases the new `gate/` anyway, the restarted runner sees a GATE_HASH[walk] mismatch and refuses to start, so harvesting stops. The README's 'What you will be asked' table never asks the user for this PC step. The same happens in M8: no part says how a per-family hash is computed over shared files (`criteria.yaml`, `check_gate.py`), so adding L5 would also change GATE_HASH[walk] and open a walking epoch.",
+      "fix": "Change the prompt (N.8, G.8, E.4). N.8 launcher: add `gate-release --additive <commit>` and `eval-release --additive <commit>`, allowed from a build session only for the pre-declared additions (M1b: L4 and the walking paper paths; M8: the sprint family and protocol). It refuses unless every existing key, band, margin, statistical rule and current verdict on the ledger is byte-identical, and it opens, alerts and publicly registers the epoch like any other. G.8: 'GATE_HASH[f] covers `gate/<f>/` (that family's criteria and checks) plus the shared `gate/rules/`.' Simpler alternative: write and freeze L4 and the walking paper paths with L0–L3 in M1a (E.4, G.8, E.2 Gate group, sheet)."
+    },
+    {
+      "id": "FC-03",
+      "severity": "blocker",
+      "where": "G.2 L1, G.3, G.4 (parts/G) vs C.7 and C.9 (parts/C), B.4 and B.7 Q2 (parts/B)",
+      "quotes": [
+        "G.2 L1 (L473): \"the fall rate of G.4 (at least 100 episodes; point estimate ≤ 10 % and exact one-sided 95 % upper bound ≤ 15 %)\"",
+        "G.3 (L586-587): \"E from the precision rule of G.4, at least 20; at least 100 wherever a fall rate is judged\"",
+        "G.4 (L660): \"E is the largest value over the gated metrics of the claim, and 20 before any noise-floor row exists\"",
+        "G.4 (L662) and C.9 (L3041): \"a claim's E is fixed when the claim is created\"",
+        "C.7 (L2979-2981): \"It runs on the first checkpoint that meets L1, and again on the first S2 and S4 checkpoints before any S4 claim; the job schema refuses a noise-floor job whose checkpoint has not met L1.\"",
+        "B.4 (L1013-1014): \"deterministic actions, 20 episodes of 12 s, first 2 s discarded\"",
+        "B.7 Q2 (L1222): \"its L1 claim is registered, then confirmed on 3 fresh training seeds never used before\""
+      ],
+      "problem": "L1 always judges a fall rate, and a fall rate needs at least 100 episodes. The frozen E function returns 20 until a noise-floor row exists, and the first noise-floor job is refused until a checkpoint has met L1. The Q2 L1 claim is registered before any noise floor exists, and its E is fixed at creation, so it stays at 20 for good. As written, L1 can never be met, the calibration never runs, and every criterion that judges a fall rate stays pending (L1, L2, L3's gait-preservation and catastrophe floors). B.4 adds a third, flat number (20 episodes).",
+      "fix": "Change G.4, C.9, C.7 and B.4. G.4 and C.9: 'E = max(100, min(200, max(20, ⌈20·(4σ̂/h)²⌉))) for every claim that judges a fall rate (every walking claim).' G.4 and C.7: 'the first noise-floor job runs on the Q2-selected configuration's P3 checkpoint once it meets the L1 criteria at 100 episodes, before its L1 claim is registered.' B.4: replace '20 episodes of 12 s' with '`E` episodes of 12 s (G.4)'."
+    },
+    {
+      "id": "FC-04",
+      "severity": "blocker",
+      "where": "E.4 M1a, E.2 Integration/Lanes/Migration (parts/E), R.2 cold-start drill (parts/R), H.11 acceptance rehearsal and H.8 (parts/H) vs N.8 build jail and launcher (parts/N)",
+      "quotes": [
+        "E.4 M1a (L4506-4507): \"The full Integration and Crash groups and the cold-start drill then run detached in `smatsprint-exp-build.slice` while the campaign runs\"",
+        "R.2 (L3334-3336): \"stop the services of `smatsprint-ctl.slice` and the worker unit (not the slices: from M1b the drill runs detached in `smatsprint-exp-build.slice` while the campaign runs, Part E.4), start them again with the network faked down\"",
+        "N.8 (L1862): \"`/run/user/<uid>` (no user bus, so `systemctl --user` and `systemd-run --user` cannot escape)\"",
+        "N.8 (L1882-1883): \"run a registered detached job (`ops/jobs/<name>.toml`) as a transient unit inside the same jail profile\"",
+        "E.2 Integration (L4298-4300): \"after an acknowledged Pause and after an emergency stop the worker unit stays inactive for 10 minutes with no new restart, and no process of the experiment slice, a detached `--gpu-work` build job included, is on the GPU or burning CPU\"",
+        "H.11 (L2634-2636): \"The acceptance rehearsal (end of M3, one detached script, …): with a real experiment job running, a scripted stand-in for the user performs every action the guide documents, once\"",
+        "H.8 (L2505): \"The CLI refuses a confirmation that has no TTY or comes from a sandbox, build or Codex cgroup.\""
+      ],
+      "problem": "Detached build jobs run in the build-jail profile: no user bus, the record root read-only, no steering. From there they are told to:\n- stop and restart the live controller, runner, bridge, launcher and worker (the cold-start drill), although the launcher reserves those for drain/release;\n- Pause and Emergency-stop `smatsprint-exp.slice`, the slice they run inside (the Integration group), which kills the suite itself;\n- start sandbox units (the Lanes group);\n- steer the live experiment and confirm a Promote (the M3 acceptance rehearsal), which the build spool and H.8's cgroup rule both refuse;\n- run the migration rehearsal's lab hops, which need systemd units.\nNo part defines a separate test instance (unit names, slices, state root). As written, these suites cannot run, or they would disrupt the live campaign and pollute its ledger.",
+      "fix": "Change E.4, E.2, H.11 and R.2. Add: 'The Integration, Crash, Lanes and acceptance-rehearsal suites and the migration rehearsal's lab hops run against a test instance: its own `SMATSPRINT_HOME` under `<project>/cache/itest/`, units named `smatsprint-test-*`, and slices under `smatsprint-exp-build.slice` (so a live Pause still covers them). A launcher named operation `test_instance up|down` starts and stops it outside the jail. They never touch the live units or the live ledger.' R.2: 'The live cold-start drill is a launcher named operation (`cold_start_drill`), run from `smatsprint-bulk.slice` while no transition runs and logged as a steering row with `source: codex-build`.'"
+    },
+    {
+      "id": "FC-05",
+      "severity": "blocker",
+      "where": "B.2 (parts/B) vs A.5 rule 9 (parts/A), D.1 (parts/D), N.8 jail and launcher (parts/N), C.3 job kinds (parts/C)",
+      "quotes": [
+        "B.2 (L879): \"Export the composed MJCF and its assets into `work/refdata/models/`, record every file's sha256\"",
+        "B.2 (L925): \"an external 1.25 m/s reference, installed into `work/refdata/` with its hash in M1b\"",
+        "A.5 rule 9 (L380-381): \"the controller of `record/` and of the state machine's files in `state/`; the worker of the live `work/`\"",
+        "D.1 (L3498-3500): \"Only the worker writes inside the live `work/`, except that the controller moves job files into and out of `work/queue/` (…) and ships code into `work/code/`.\"",
+        "N.8 (L1870-1871): \"the sandbox tree and the rest of the record root `SMATSPRINT_HOME` read-only, except the request spools of `sprintctl` and the launcher\"",
+        "C.3 (L2808-2811): \"**Job kinds:** `stage_train` (…), `eval` (…), `ctrl_tune` (…), `render` (clips), `throughput` and `parity` (…), `calibration` (noise floors and proxy-tier calibration, C.7).\""
+      ],
+      "problem": "The composed model, its `.mjb` and the converted reference must be in `work/refdata/` before L0, and the external reference must be added there in M1b. Only the worker may write `work/`. The build jail and the detached-job profile mount the whole record root read-only, the launcher has no refdata operation, and no job kind installs an asset. As written, nothing may populate `work/refdata/`, so L0, and with it the M1a exit, cannot happen.",
+      "fix": "Change C.3 and B.2. C.3: add the job kind `refdata_install` (registered by the runner, run by the worker). It copies one staged asset from `<project>/cache/refdata-staging/` into `work/refdata/` by verify-then-use and records its hash in the ledger. B.2: composition and `tools/convert_reference.py` write to that staging directory. Alternative: add a launcher named operation `install_refdata <staged file>` with the same checks."
+    },
+    {
+      "id": "FC-06",
+      "severity": "major",
+      "where": "E.4 'Waiting, exactly' (parts/E) vs N.8 launcher and option 2 (parts/N), E.2 Needs-and-bridge group (parts/E)",
+      "quotes": [
+        "E.4 (L4445): \"`ops/scripts/detach.sh <name> [--gpu-work] [--heavy] -- <command>`, a transient `systemd-run --user` unit\"",
+        "E.4 (L4447-4448): \"Inside the build jail or Codex's sandbox, where the user bus is out of reach, `detach.sh` hands the job to the launcher (Part N.8).\"",
+        "N.8 (L1886-1887): \"It refuses everything else and logs every request. It never runs a command string.\"",
+        "N.8 option 2 (L1909-1911): \"`launch-detached <job_id>`, which accepts only a job whose spec file (`state/detached/<job_id>/spec.json`) validates against a fixed schema (a pytest node under `tests/`, a registered job kind, a declared slice) and never takes a command string\"",
+        "E.2 (L4254-4255): \"The launcher refuses and logs every request that is not one of its named operations (a unit not named `smatsprint-*`, an unregistered job, a command string).\""
+      ],
+      "problem": "E.4's waiting recipe passes a free-form command after `--` to the launcher. The launcher must refuse command strings and accept only registered jobs (`ops/jobs/<name>.toml`), and option 2 defines a third format (`state/detached/<job_id>/spec.json`). The E.2 test asserts the refusal, so the documented way to wait fails its own test. No part says where `ops/jobs/` is read from; if it is the dev tree, the session writes its own 'registered' jobs.",
+      "fix": "Change E.4 (and align N.8 option 2). Replace '`ops/scripts/detach.sh <name> [--gpu-work] [--heavy] -- <command>`' with '`ops/scripts/detach.sh <job> [--gpu-work] [--heavy]`, where `<job>` names `ops/jobs/<job>.toml` (a pytest node, a registered job kind or a vetted script, with its slice), read from the service tree at its current tag; never a command string'. N.8 option 2: `launch-detached` takes the same job file."
+    },
+    {
+      "id": "FC-07",
+      "severity": "major",
+      "where": "C.3, C.5 (parts/C), H.4 layer 3 (parts/H), D.2 move_to_lab and restore_from_drive, D.7 Restore (parts/D) vs B.2 (parts/B) and E.4 M8 (parts/E)",
+      "quotes": [
+        "C.3 (L2814): \"The model, reference and device hashes must equal those recorded at L0 (C.5).\"",
+        "C.5 (L2923-2924): \"The model, reference and device hashes must equal those recorded at L0 and are part of job identity (C.3).\"",
+        "H.4 layer 3 (L2301-2302): \"all hash to the values recorded at registration (the model, reference and device hashes against those recorded at L0\"",
+        "D.2 move_to_lab (L3669-3670): \"(3) verify, with `work/refdata/` checked against the hashes recorded at L0, never against a manifest from the worker (a mismatch refuses the move)\"",
+        "B.2 (L925): \"an external 1.25 m/s reference, installed into `work/refdata/` with its hash in M1b\"",
+        "E.4 M8 (L4556-4557): \"Build the sprint environment, the human routes of Part B.8\""
+      ],
+      "problem": "Jobs, moves and restores compare model, reference, device and refdata hashes with the ones recorded at L0. But B.2 installs a new reference in M1b, and Phase 2 (M8) brings new human and device models, so none of them can match. As written, every candidate using the external reference or a Phase 2 model is refused at start, and every move or restore after M1b is refused because `work/refdata/` no longer equals the L0 record. H.4 layer 3 contradicts itself within one sentence ('recorded at registration (… against those recorded at L0').",
+      "fix": "Change C.3, C.5, H.4 layer 3, D.2 and D.7. Replace 'recorded at L0' with 'recorded in the refdata registry (`ledger/refdata.jsonl`, one runner-written row per asset before its first use; L0's assets are its first rows)'. Keep B.2's per-row effective-model hash in job identity."
+    },
+    {
+      "id": "FC-08",
+      "severity": "major",
+      "where": "H.8 catalogue freeze (parts/H) vs B.7 and E.4 M1b (parts/B, parts/E)",
+      "quotes": [
+        "H.8 (L2537-2539): \"The catalogue is frozen with a manifest when the campaign starts; entries added later carry `origin: catalogue_post_m1` with the commit and the reason, and are treated like Promote.\"",
+        "B.7 (L1208-1209): \"In M1a the runner registers Q0–Q2 (…) and in M1b, which completes Stages 2–4 and the controls for the campaign, the rest, in this order, in `catalogue/campaign.yaml`\"",
+        "H.8 (L2502): \"It becomes a candidate only when **the user confirms it through the steering API**\"",
+        "H.8 (L2536-2537): \"the Ledger shows it, and the paper package lists the config as sandbox-derived\""
+      ],
+      "problem": "The campaign starts in M1a, and Q3–Q8 are added to `catalogue/campaign.yaml` afterwards, in M1b. H.8 treats every catalogue entry added after the start 'like Promote', which needs the user's confirmation. Read literally, the pre-loaded M1b blocks either wait for user confirmations (the campaign stalls) or carry Promote-style provenance into the paper package. The bare 'm1' in the origin tag also predates the M1a/M1b split.",
+      "fix": "Change H.8: 'The catalogue is frozen with a manifest each time a pre-loaded block set is registered (Q0–Q2 in M1a, Q3–Q8 in M1b, Q9–Q10 in M8). Entries added outside those registrations carry `origin: catalogue_post_freeze` with the commit and the reason. They get Promote's provenance and sandbox-origin checks, not its user confirmation.'"
+    },
+    {
+      "id": "FC-09",
+      "severity": "major",
+      "where": "G.8 public timestamp (parts/G) and C.4 (parts/C) vs D.3 (parts/D), E.2 Dashboard group (parts/E), N.9 step 10 (parts/N)",
+      "quotes": [
+        "G.8 (L784-788): \"**Public timestamp.** Before the first Stage-4 job, a manifest … is committed publicly without revealing the content: it is stamped with OpenTimestamps (…) and published on the public Pages site\"",
+        "D.3 (L3827-3830): \"So `gh-pages` holds only the static shell (`index.html`, `app.js`, `style.css`, vendored chart library, `drop.html`, `drop-key.json`, a generic `privacy.html`, `.nojekyll`, …), with no data, names, ids, lane contents or research text.\"",
+        "D.3 (L3825-3826): \"It pushes `main` and `ledger` (fast-forward only), `+status` (the only ref the lab forces) and `control` (plain, never forced).\"",
+        "E.2 (L4379-4380): \"nothing in `gh-pages` matches a data or secret pattern or any research keyword\"",
+        "C.4 (L2859): \"release no Stage-4 job whose gate or eval epoch lacks its public registration (Part G.8)\"",
+        "E.2 Integration (L4296-4298): \"a tiny full pipeline (S1→S2→S3→S4 plus evaluations, …) … (this is L0, Part G.2)\"",
+        "N.9 step 10 (L2071-2072): \"the wrapper launches M1a anyway: the runner needs neither the bot nor GitHub\""
+      ],
+      "problem": "G.8 publishes each epoch's stamped manifest on the public Pages site before the first Stage-4 job, and C.4 holds every Stage-4 job until it exists. But D.3 restricts `gh-pages` to the static shell, the single publisher never pushes `gh-pages`, E.2 fails on data there, and no component is named to publish it. L0's tiny S1→S4 pipeline (M1a) is itself a Stage-4 job, so the campaign-start gate depends on this undefined step, and N.9 step 10's promise that M1a runs without GitHub is false.",
+      "fix": "Change G.8 (and C.4). Replace 'and published on the public Pages site' with 'and its `.ots` proof kept in `ledger/epochs.jsonl` (the Bitcoin anchor is public; the manifest and the proof are released with the paper)'. Add to G.8 and C.4: 'the rule applies from the first Stage-4 job of a registered claim; the P0 L0 pipeline is exempt.' R.4: add the OpenTimestamps adapter's offline behaviour. If Pages publication is kept instead, add `registrations/` to D.3's `gh-pages` list, to `control/publish.py`'s refs and to E.2's exceptions."
+    },
+    {
+      "id": "FC-10",
+      "severity": "major",
+      "where": "H.4 layer 4 and LI10 (parts/H) vs D.1 record-state definition (parts/D), A.5 rule 9 (parts/A), N.2 (parts/N), R.2 failsafe (parts/R)",
+      "quotes": [
+        "H.4 layer 4 (L2312-2315): \"accepts the intent only if `/proc/<pid>/cgroup` is exactly the cgroup of `smatsprint-runner.service` or `smatsprint-controller.service`, or a job scope the worker registered with the watcher when it created it. The library refuses to write record state from any other cgroup\"",
+        "H.11 LI10 (L2619-2620): \"Any change to the record root that no accepted intent explains raises the \"modified outside the steering API\" flag within 60 s\"",
+        "D.1 (L3492-3493): \"*Record state* is small, lab only, never moved or evacuated: `ledger/`, `configs/registered/`, `state/`, `queue/outbox/`, …\"",
+        "N.2 (L1426): \"`state/needs/<need_id>.json`, written atomically (tmp, fsync, rename) **by the bridge only**\"",
+        "R.2 (L3265-3266): \"they write `state/failsafe_pause.json` `{at, by, reason}` (written only by this path)\""
+      ],
+      "problem": "Only the runner, the controller and job scopes may write record state, and the watcher flags every other change under the record root. But D.1 counts `state/` as record state, and several other components write there by design: the bridge (needs, outbox), the wrapper (`state/codexwrap/`), the launcher and build sessions (`state/detached/`, spools) and `sprintctl`'s failsafe from the user's shell (`state/failsafe_pause.json`). The worker service also writes `work/`. As written, the failsafe pause, need handling and the worker's queue moves would be refused or flagged 'modified outside the steering API', and LI10's test demands the flag for every bridge write.",
+      "fix": "Change H.4 layer 4 and LI10: 'The watcher covers `ledger/`, `configs/registered/`, `baselines/cache/`, `docs/generated/`, `queue/`, `record/` and `work/`. It accepts intents from the runner, the controller, the worker service and the worker's registered job scopes. `state/` is not watched: its writers are those of A.5 rule 9 plus `sprintctl`'s failsafe file and spools, each with atomic writes and snapshots (R.7). The write library covers only the watched subtrees.'"
+    },
+    {
+      "id": "FC-11",
+      "severity": "major",
+      "where": "N.8 jail (parts/N) vs N.9 step 4 and N.8 BOOTSTRAP (parts/N), D.6 and D.3 (parts/D)",
+      "quotes": [
+        "N.8 (L1865-1866): \"`~/.config/smatsprint` hidden except `gh/` (read-write during M0–M2 only)\"",
+        "N.9 step 4 (L2044-2045): \"When `gh_auth` passes: create the private repository … Push credentials: create `~/.config/smatsprint/deploy_key` (ed25519, 0600)\"",
+        "N.8 (L1956-1957): \"`BOOTSTRAP` (installed during M0; may launch exactly one M0 continuation once the first session has exited and the bootstrap needs have resolved\"",
+        "D.6 (L4102): \"**SSH** uses a dedicated key pair for workers only (`~/.config/smatsprint/vast_ssh_ed25519`)\"",
+        "D.3 (L3934): \"`~/.config/smatsprint/limits.toml`, written at install and changed only over SSH\""
+      ],
+      "problem": "The jail hides `~/.config/smatsprint/` except `gh/`, and no launcher operation writes there. Yet jailed sessions must create the deploy key and `known_hosts` (N.9 step 4, whenever the GitHub login resolves after the first session ended, as the BOOTSTRAP continuation and the 24 h fallback expect), the Vast worker key pair (M5), and `limits.toml`, which is 'written at install' in M1a. M0 step 4 and M5 get stuck.",
+      "fix": "Change N.8 (the prompt side). Add launcher named operations that each create one fixed file at 0600 and return only its public part: `create_deploy_key` (N.9 step 4; also writes `known_hosts` and `core.sshCommand`), `create_vast_ssh_key` (D.6), and `write_limits_defaults` (D.3; only when the file is absent). Alternative: require the first session to create all three in M0."
+    },
+    {
+      "id": "FC-12",
+      "severity": "major",
+      "where": "N.8 build jail (parts/N) vs 00_README.md (the jail hides the Vast key) and A.5 rule 11 (parts/A); safety",
+      "quotes": [
+        "N.8 (L1858): \"`~/.config/vastai` (bound read-only only for M5 rehearsal sessions)\"",
+        "00_README.md (L25-26): \"a session wrapper launches each Codex build session **inside a jail that hides your other passwords and tokens** (the forge's, the DGIST agents', the Vast key)\"",
+        "N.8 (L1853): \"Command rules are advice to the model, not a lock\"",
+        "A.5 rule 11 (L387-388): \"touch its Vast instances (`ugrp-forge-*`)\""
+      ],
+      "problem": "The README promises the user that every build session is jailed away from the Vast key. N.8 nonetheless binds the shared team account's key into the M5 Codex sessions. With it the model can list, create and destroy the forge's and teammates' instances, and only advice-level command rules stand in the way. The Codex session does not need the key: the rehearsal is a detached script.",
+      "fix": "Change N.8 and E.2. N.8: delete '(bound read-only only for M5 rehearsal sessions)'. E.2 Migration rehearsal: 'runs as a registered detached job whose own jail profile alone binds `~/.config/vastai` read-only, and which acts only through the rehearsal controller (`smatsprint-reh-` prefix)'. The README sentence then stays true."
+    },
+    {
+      "id": "FC-13",
+      "severity": "major",
+      "where": "N.8 jail binds and M0 check (parts/N) vs R.8 doctor (parts/R); safety (forge)",
+      "quotes": [
+        "N.8 (L1866-1867): \"read-write binds only for the dev tree (which holds no record state, Part C.2), the project caches and `~/.codex`\"",
+        "N.8 (L1930-1932): \"never by editing `~/.codex/config.toml`; no rule is ever written to `~/.codex/rules/` (rules there would bind the forge's sessions too)\"",
+        "N.8 (L1940-1941): \"M0 records the sha256 of `~/.codex/config.toml` and of `~/.codex/rules/` before and after the install; any change fails the M0 exit.\""
+      ],
+      "problem": "Every build session gets `~/.codex` read-write. `config.toml` and `rules/` there also govern the forge's Codex sessions, and their hashes are checked only at the M0 exit (R.8's doctor list omits them). From M1a on, any session running in bypass mode can change the forge's Codex behaviour unnoticed.",
+      "fix": "Change N.8 and R.8. N.8: bind `~/.codex` read-only, with read-write binds only for what Codex writes during a session (verify in M0: the `auth.json` refresh, `log/`, the sessions directory or its replacement). R.8: add to the daily doctor the sha256 of `~/.codex/config.toml` and `~/.codex/rules/` against the M0 record, raising `unexpected` on drift."
+    },
+    {
+      "id": "FC-14",
+      "severity": "major",
+      "where": "E.4 M1a vs M1b (parts/E) vs R.2 host-resource fence and C.5 (parts/R, parts/C); safety (forge memory)",
+      "quotes": [
+        "E.4 M1b (L4515): \"the host-resource fence (Part R.2)\"",
+        "R.2 (L3273): \"**Host-resource fence (30 GB RAM shared with the forge and six other accounts).**\"",
+        "R.2 (L3297-3301): \"**Admission, not caps, is the coordination.** … A job is admitted only if `MemAvailable − Σ(…) − forge_reserve − the new job's declared RAM ≥ 6 GB`\"",
+        "E.4 M1a (L4490): \"**The pause path first:** the slices of Part R.2, the worker unit, …\"",
+        "C.5 (L2895): \"host RAM by the admission rule of Part R.2\""
+      ],
+      "problem": "E.4 schedules 'the host-resource fence (Part R.2)' for M1b. That subsection holds the memory admission rule that protects the forge (6 GB free, `forge_reserve`, ramp wait, staggered first admission). Q0–Q2 start in M1a and run 48 threads for about 5.5 days before M1b ends. M1a names only 'the slices of Part R.2', and the campaign-start gate tests no admission. Codex may run Q2 next to the forge without the rule that keeps its memory safe.",
+      "fix": "Change E.4. M1a pause-path bullet: add 'and the admission rules (Part R.2 memory: MemAvailable, `forge_reserve`, ramp wait, random first-admission delay; Part A.5 disk), before Q0 starts'. M1b: replace 'the host-resource fence (Part R.2)' with 'the host-fence tests of the E.2 Integration group'."
+    },
+    {
+      "id": "FC-15",
+      "severity": "major",
+      "where": "R.2 slice list and table, N.8 wrapper (parts/R, parts/N), and the sheet's 'Slices and units' section",
+      "quotes": [
+        "R.2 (L3286): \"`smatsprint-build.slice` is a **top-level sibling** of `smatsprint.slice`, not its child\"",
+        "N.8 (L1950): \"**Sessions run in their own slice**, `smatsprint-build.slice`, a top-level sibling of `smatsprint.slice`\"",
+        "R.2 (L3275): \"`smatsprint.slice` (`MemoryMax=19G`, `MemorySwapMax=0`, `TasksMax=4096`; …)\"",
+        "systemd.slice(5), man7.org (checked 2026-09-23): \"foo-bar.slice is a slice that is located within foo.slice\""
+      ],
+      "problem": "systemd derives a slice's parent from its dash-separated name, so a slice named `smatsprint-build.slice` is always created inside `smatsprint.slice`. It cannot be the top-level sibling the prompt describes. Build sessions (6G, 2048 tasks) would then share the parent's 19G MemoryMax and 4096 TasksMax with exp (12G), sbx (6G), ctl and bulk. That defeats R.2's design and the assumption behind its 'Pause still verifies with a 4 GB build session' test.",
+      "fix": "Change R.2 (table and fence), N.8, E.4 and the sheet: rename the build slice to a dash-free top-level name, e.g. `smatsprintbuild.slice`. Alternatively keep the name, say that it nests, and raise `smatsprint.slice` to `MemoryMax=25G`, `TasksMax=6144`."
+    },
+    {
+      "id": "FC-16",
+      "severity": "major",
+      "where": "H.7 (parts/H) vs C.3 and G.5 (parts/C, parts/G) and the sheet (five pools)",
+      "quotes": [
+        "H.7 (L2457-2458): \"The sandbox API rejects seeds outside the sandbox pools (training 40,000–40,999, evaluation 20,000–20,999).\"",
+        "C.3 (L2822-2827): \"**Seeds.** Five disjoint pools, owned by `eval/core/seeds.py`: … **sandbox** 20,000–20,999; **selection** 30,000–30,999 … A unit test proves the five pools disjoint\"",
+        "G.5 (L699-702): \"training 0–899; partner 900–949 (…); evaluation 10,000–10,999 (…); sandbox 20,000–20,999; **selection 30,000–30,999**\""
+      ],
+      "problem": "H.7 invents a sixth pool (40,000–40,999) and relabels 20,000–20,999 as sandbox evaluation. The sheet, G.5 and C.3 define five disjoint pools with one sandbox pool, 20,000–20,999, which a unit test proves disjoint. Codex would build two different seed validators.",
+      "fix": "Change H.7: 'The sandbox API rejects seeds outside the sandbox pool (20,000–20,999).' If separate sandbox training and evaluation ranges are wanted, split 20,000–20,999 and state it in C.3 and G.5, keeping five pools."
+    },
+    {
+      "id": "FC-17",
+      "severity": "major",
+      "where": "C.2 dependency groups (parts/C) vs B.2 (parts/B)",
+      "quotes": [
+        "B.2 (L871-873): \"The runtime depends only on `mujoco`: no `assist_sim`, `myo_sim` or `myosuite` in the science lock (MyoSuite releases have pinned MuJoCo exactly).\"",
+        "C.2 (L2773-2774): \"The science group (torch, numpy, mujoco, myosuite, mujoco-warp, warp-lang, safetensors, scipy, …) is fully pinned in M1a\""
+      ],
+      "problem": "C.2 lists MyoSuite in the science group, which B.2 forbids because MyoSuite pins MuJoCo exactly, clashing with `mujoco==3.14.0`. `code_id`, every run-tree venv and the Warp pins depend on this group.",
+      "fix": "Change C.2: '(torch, numpy, mujoco, mujoco-warp, warp-lang, safetensors, scipy, …)', with `myosuite` removed."
+    },
+    {
+      "id": "FC-18",
+      "severity": "major",
+      "where": "B.5 gates 4 and 4b (parts/B) vs G.4 statistics (parts/G) and the sheet (equivalence ≥ 10)",
+      "quotes": [
+        "B.5 (L1047-1050): \"**Learning parity, Stage 1:** … reaches L1 on 3 seeds and its L1 metrics are equivalent to CPU-trained Stage 1 at the same transitions within the L1 bands (two one-sided tests)\"",
+        "B.5 (L1052): \"**4b. Learning parity, Stages 3–4:** from the same CPU-trained S2 checkpoints (at least 5 blocks)\"",
+        "G.4 (L666-667): \"Equivalence and non-inferiority claims (L4b, the mechanism outcomes of G.7, the learning parity of Part B.5) use two one-sided tests at the stated margin on **at least 10 blocks**\""
+      ],
+      "problem": "G.4 (and the sheet) require B.5's learning parity, an equivalence test, to use at least 10 blocks with the blinded re-estimate. B.5 certifies Stage 1 on 3 seeds and Stages 3–4 on 'at least 5 blocks'. The M4 certificate, which lets GPU-trained policies into claims, would rest on underpowered two one-sided tests.",
+      "fix": "Change B.5. Gate 4: 'reaches L1 on each of at least 10 seeds, and its L1 metrics are equivalent … (two one-sided tests on at least 10 blocks, G.4)'. Gate 4b: '(at least 10 blocks)'."
+    },
+    {
+      "id": "FC-19",
+      "severity": "major",
+      "where": "G.7 and B.6 (parts/G, parts/B) vs the sheet ('Seeds, claims, hashes, identity')",
+      "quotes": [
+        "G.7 (L755-756): \"a Stage-4 non-reproduction needs K-exo3, K-exo4, K-effort, K-metric and L0–L2\"",
+        "B.6 (L1203-1204): \"a Stage-4 non-reproduction needs K-exo3, K-exo4, K-effort, K-metric and L0–L2 (Part G.7)\"",
+        "DECISIONS_FOR_APPLYING.md (L117-118): \"a Stage-1 non-reproduction needs K-env and K-metric, a Stage-4 non-reproduction needs all five plus L0–L2\""
+      ],
+      "problem": "The sheet requires all five known-answer controls before a Stage-4 'not reproduced'. G.7 and B.6 list four and omit K-env, and Part G governs and is frozen in M1b.",
+      "fix": "Change G.7 and B.6: 'a Stage-4 non-reproduction needs all five known-answer controls (K-exo3, K-exo4, K-effort, K-env, K-metric) and L0–L2'. If the omission is deliberate, update the sheet instead."
+    },
+    {
+      "id": "FC-20",
+      "severity": "major",
+      "where": "B.6 K-env and G.7 (parts/B, parts/G) vs B.2 science lock (parts/B), C.2 module check, C.3 job kinds, C.8 (parts/C), B.7 campaign table",
+      "quotes": [
+        "B.6 (L1200-1201): \"**K-env**: MyoAssist's own trainer and ours, on the same composed model at P2 on 2 seeds, both meet the L1 speed and fall-rate criteria, or both fail\"",
+        "G.7 (L755): \"a Stage-1 non-reproduction needs K-env and K-metric to have passed\"",
+        "B.2 (L871-872): \"no `assist_sim`, `myo_sim` or `myosuite` in the science lock\"",
+        "C.2 (L2790-2791): \"At start the job asserts that the file of every module in `sys.modules` lies under its run tree, its verified venv or the interpreter's standard library.\"",
+        "C.8 (L3021-3022): \"the known-answer control K-env (Part B.6) is registered before any non-reproduction verdict.\""
+      ],
+      "problem": "K-env runs MyoAssist's own Stable-Baselines3 trainer, which exists only in the old sprint `.venv`. No worker job may import it: the science lock excludes MyoAssist's packages, and every job asserts that its modules come from its run tree or verified venv. No campaign block (Q0–Q10) schedules K-env, and the ledger cannot receive a build-side result. As written, a Stage-1 'not reproduced' verdict is unreachable.",
+      "fix": "Change B.7 and C.3. B.7: schedule K-env in Q2 (P2, 2 seeds, both trainers, about 0.5 B). C.3: add the job kind `known_answer_env`, which runs MyoAssist's trainer in a hashed, read-only copy of the sprint project's `.venv` (the B.2 composition venv). It is exempt from C.2's science-venv module assertion, its venv manifest goes into `exec_id`, and its rows feed only K-env."
+    },
+    {
+      "id": "FC-21",
+      "severity": "major",
+      "where": "00_README.md correction 7 and question 9 vs G.2 L3 and G.8 (parts/G)",
+      "quotes": [
+        "00_README.md (L145-147): \"L3: peak normalised torque 0.83 ± 0.08 on every seed; negative-power time ≤ 15 % on every seed (…); four-group activation reduction pooled at 10.1 ± 5 points with its 95 % interval above zero and every group reduced on every seed.\"",
+        "G.2 L3 (L492): \"**magnitudes, judged on the pooled mean** with the three-way rule of G.4\"",
+        "G.2 L3 (L500-501): \"**per-seed catastrophe floors only**, set far outside a faithful seed's spread: peak ≥ 0.5, negative-power fraction ≤ 25 %, fall rate ≤ 30 %\"",
+        "00_README.md (L211-213): \"the reproduction verdict is three-way (…) on pooled means, because the earlier per-seed rule failed faithful reproductions most of the time\"",
+        "00_README.md (L178-179, L182): \"Answer before the experiment's first Stage-4 result; after that the bands are frozen.\" / \"or later on your phone\"",
+        "G.8 (L797): \"The only change paths are over SSH\""
+      ],
+      "problem": "The README asks the user to check the bands 'before sending' but quotes the old per-seed L3 rule. G.2 judges L3 on pooled means with a three-way verdict, and the README's own review bullet says the per-seed rule was replaced. The user would approve bands that are not the ones frozen. Question 9 also invites a phone answer, but after the M1a freeze only a `sprintctl gate-change` typed over SSH can apply it.",
+      "fix": "Change the README. Correction 7: 'L3 is judged on the pooled mean over independent pipelines, three-way (reproduced, not reproduced, inconclusive): peak normalised torque 0.83 ± 0.08; negative-power time ≤ 15 %; four-group reduction 10.1 ± 5 points, each group's pooled reduction with a one-sided 95 % lower bound above zero. Per seed there are only catastrophe floors (peak ≥ 0.5, negative-power ≤ 25 %, falls ≤ 30 %).' Question 9: 'Answer before M1a freezes the gate; after that a change needs one `sprintctl gate-change` line over SSH, and none is possible once a Stage-4 result exists.'"
+    },
+    {
+      "id": "FC-22",
+      "severity": "minor",
+      "where": "B.7 evergreen paragraph (parts/B) and N.10 `queue_empty` (parts/N) vs C.4 and R.6 (parts/C, parts/R)",
+      "quotes": [
+        "B.7 (L1237-1240): \"Evergreen options for `queue_empty` (Part C.4): pre-registered top-up seeds of registered claims; the longer-budget arms …; refreshed arms after a code change …; the noise and throughput refresh; clip renders; and each held block by name.\"",
+        "C.4 (L2861-2862): \"run the pre-planned evergreen generator (below) and raise queue_empty once (Part N.10) with the pre-planned options as buttons\"",
+        "C.4 (L2881-2882): \"Its options for the `queue_empty` need are exactly the catalogue blocks not yet released, listed by name, plus \"Wait\".\"",
+        "N.10 (L2088): \"| `queue_empty` | phone | one button per pre-planned evergreen option (Part C.4), plus \"Wait\" |\""
+      ],
+      "problem": "B.7 and N.10 make the evergreen items the `queue_empty` buttons, which the user must tap. C.4 and R.6 run those items automatically and offer only the unreleased held blocks. The two readings differ on whether the machine idles until a tap.",
+      "fix": "Change B.7 and N.10 to match C.4/R.6. B.7: 'Evergreen work (Part C.4) runs by itself: …; the `queue_empty` need offers the held blocks not yet released, by name, plus Wait.' N.10: 'one button per unreleased held block (Part C.4), plus \"Wait\"'."
+    },
+    {
+      "id": "FC-23",
+      "severity": "minor",
+      "where": "H.7 (parts/H), N.6 and N.5 (parts/N) vs the N.10 registry and its test (parts/N), R.3 (parts/R)",
+      "quotes": [
+        "H.7 (L2484-2485): \"Pruning (Part R.3) offers sandbox clips, runs and copies older than `sandbox_keep_days` first, through a `sandbox_disk` need that shows the sizes.\"",
+        "N.10 (L2109-2110): \"A unit test asserts that every need raised anywhere in `control/`, `runner/`, `bridge/` and `codexwrap/` uses a registered code\"",
+        "N.6 (L1768-1769): \"**Every drop after the bootstrap** takes effect only after the owner taps Confirm on a Telegram message\"",
+        "N.5 (L1637-1638): \"`stop-now` first asks for a Confirm button.\"",
+        "N.5 (L1598-1600): \"the owner check and the server-side lookup of the need and its current nonce decide\""
+      ],
+      "problem": "Buttons exist only on needs, and every raised need must use a registered code. Yet `sandbox_disk`, the post-bootstrap drop Confirm and the `/build stop-now` Confirm have no code in N.10. H.7 also cites R.3 for sandbox pruning, which R.3's Disk row does not describe.",
+      "fix": "Change N.10 and R.3. N.10: add `sandbox_disk` (phone; the prune options with sizes), `drop_confirm` (phone; Confirm · Refuse; the bot username or the client id's last 4 characters) and `build_stop_confirm` (phone; Confirm · Cancel). R.3 Disk row: add 'sandbox clips, runs and copies older than `sandbox_keep_days` go first (Part H.7)'."
+    },
+    {
+      "id": "FC-24",
+      "severity": "minor",
+      "where": "N.5 `/pause` (parts/N) vs R.2 Pause and failsafe (parts/R), C.5 (parts/C)",
+      "quotes": [
+        "N.5 (L1632-1635): \"A `/pause` the controller has not acknowledged within 60 s takes the failsafe path of Part D.3 … If even that cannot be verified by 90 s, the answer says so and raises `pause_not_verified`.\"",
+        "R.2 (L3256-3258): \"If the check has not passed 55 s after the command, the controller writes 1 to the slice's `cgroup.kill`; if the slice is still populated at 75 s, it raises `pause_not_verified`\"",
+        "R.2 (L3264-3266): \"If the controller's heartbeat is older than 60 s, or the command is not received within 30 s, they act directly: … stop `smatsprint-exp.slice` as above\"",
+        "C.5 (L2905): \"SIGTERM: stop collecting, discard the partial rollout, keep the last checkpoint, exit within 45 s.\""
+      ],
+      "problem": "On the Telegram path the failsafe starts at 60 s, and N.5 reports 'not verified' at 90 s, only 30 s in, while jobs may take 45 s to exit. R.2's escalation (cgroup.kill at 55 s, `pause_not_verified` at 75 s) is written for the controller, which is down on this path. Two timers exist for one condition, false `pause_not_verified` needs are likely, and no one applies the 55 s cgroup.kill in the failsafe.",
+      "fix": "Change R.2 and N.5. R.2 failsafe: 'the failsafe applies the same timers from its own start: `cgroup.kill` at 55 s, `pause_not_verified` at 75 s'. N.5: replace 'If even that cannot be verified by 90 s' with 'If the failsafe raises `pause_not_verified` (R.2)'."
+    },
+    {
+      "id": "FC-25",
+      "severity": "minor",
+      "where": "G.5 hardware class (parts/G) vs C.10 (parts/C) and the sheet",
+      "quotes": [
+        "G.5 (L708-710): \"for CPU-physics jobs, the ISA level (avx512 or avx2), the `mujoco`, `numpy` and `torch` wheel versions and, when `learner_device=cuda`, the learner GPU's compute capability\"",
+        "C.10 (L3088-3090): \"**Hardware class** (frozen in `gate/criteria.yaml`, Part G.5): for CPU-physics jobs, the ISA level (avx512 or avx2) and the `mujoco`, `numpy` and `torch` wheel versions\""
+      ],
+      "problem": "Two definitions exist of the class frozen in `criteria.yaml`. G.5 adds the learner GPU's compute capability, which matters because the PPO update defaults to CUDA. C.10 and the sheet omit it.",
+      "fix": "Change C.10 to match G.5, since G governs: add ', and, when `learner_device=cuda`, the learner GPU's compute capability'. Also amend the sheet's hardware-class line."
+    },
+    {
+      "id": "FC-26",
+      "severity": "minor",
+      "where": "E.4 M2 (parts/E) vs D.3 and E.2 Security (parts/D, parts/E)",
+      "quotes": [
+        "E.4 M2 (L4523): \"the two rulesets\"",
+        "D.3 (L3921): \"three repository rulesets created by API in M2\"",
+        "E.2 Security (L4390-4391): \"ruleset C refuses a non-fast-forward push and a deletion of the `ledger` branch even with the deploy key\""
+      ],
+      "problem": "M2 builds two rulesets, but D.3 and E.2 need three, and ruleset C is the one that guards the `ledger` branch.",
+      "fix": "Change E.4 M2: replace 'the two rulesets' with 'the three rulesets (A, B, C) of Part D.3'."
+    },
+    {
+      "id": "FC-27",
+      "severity": "minor",
+      "where": "D.1 code shipment and D.6 onstart (parts/D) vs C.2 run trees (parts/C)",
+      "quotes": [
+        "C.2 (L2767-2770): \"`git archive <sha> smatsprint eval pyproject.toml uv.lock` … built with `uv sync --frozen --only-group science --no-install-project`\"",
+        "D.1 (L3522-3524): \"it builds `git archive <sha> smatsprint eval uv.lock` on the lab, … and runs `uv sync --frozen --no-install-project` there\"",
+        "D.6 (L4108): \"`uv sync --frozen --no-install-project`\""
+      ],
+      "problem": "The code shipped to Vast omits `pyproject.toml`, without which `uv sync` fails, and syncs without `--only-group science`. The Vast venv, and so `exec_id`, would differ from the lab's science-only venv.",
+      "fix": "Change D.1 and D.6 to C.2's recipe: ship `git archive <sha> smatsprint eval pyproject.toml uv.lock` and run `uv sync --frozen --only-group science --no-install-project`."
+    },
+    {
+      "id": "FC-28",
+      "severity": "minor",
+      "where": "N.7 and E.4 M2 (parts/N, parts/E) vs N.8 forbidden rules (parts/N)",
+      "quotes": [
+        "N.8 (L1935): \"`vastai` with `create`, `destroy`, `stop` or `start`; `gh auth logout`; `git clean` with `-x`\"",
+        "N.7 (L1802-1803): \"When the repository, deploy key, rulesets and Pages are set up (M2), run `gh auth logout` with that config directory only.\"",
+        "E.4 M2 (L4525): \"then `gh auth logout` for the build's own `gh` config\""
+      ],
+      "problem": "M2 requires a build session to run `gh auth logout`, the exact command N.8's forbidden prefix rules block for those sessions.",
+      "fix": "Change N.7 and E.4 M2: 'log out `~/.config/smatsprint/gh` through the launcher's registered gh operation `gh_logout_programme`'. Keep the forbidden rule."
+    },
+    {
+      "id": "FC-29",
+      "severity": "minor",
+      "where": "N.9 step 4 (parts/N) vs N.6 page construction (parts/N) and the D.3 CSP (parts/D)",
+      "quotes": [
+        "N.9 step 4 (L2049-2050): \"create `gh-pages` with only `index.html` (\"dashboard not built yet\"), `drop.html`, `drop-key.json`, `privacy.html` and `.nojekyll`\"",
+        "N.6 (L1737-1738): \"vendored `tweetnacl` plus `blakejs` (or `tweetnacl-sealedbox-js`) at pinned versions, listed with their sha256 in `dashboard/vendor/SHA256SUMS`\"",
+        "D.3 (L3905-3908): \"CSP `default-src 'none'; script-src 'self'; …` … no inline scripts or handlers, no `eval`\""
+      ],
+      "problem": "N.9 step 4 publishes 'only' five files. Under the D.3 CSP (no inline scripts, `script-src 'self'`) `drop.html` cannot run without its own script file and the vendored crypto libraries, so the M0 bot-token drop would fail.",
+      "fix": "Change N.9 step 4: '… `drop.html`, its script `drop.js`, the vendored `tweetnacl` and `blakejs` files listed in `dashboard/vendor/SHA256SUMS`, `drop-key.json`, `privacy.html` and `.nojekyll`'."
+    },
+    {
+      "id": "FC-30",
+      "severity": "minor",
+      "where": "B.7 Phase 2 start and N.10 `ladder_crossed` (parts/B, parts/N) vs N.8 wrapper states and E.4 M8 (parts/N, parts/E)",
+      "quotes": [
+        "B.7 (L1244-1245): \"The go launches the M8 build session through the wrapper (Part N.8); Q9 then runs on spare capacity beside Phase 1.\"",
+        "N.8 (L2022-2023): \"After M7 it waits in `ARMED(M8)` for the user's \"Start Phase 2\"\"",
+        "E.4 M8 (L4555-4556): \"After M7 the wrapper stays `ARMED(M8)` instead of going to DONE; the user's \"Start Phase 2\" tap launches it.\"",
+        "B.7 (L1215): \"the first reproduction verdict (Q4) comes after about a week\""
+      ],
+      "problem": "The Phase 2 go can arrive at L3, about a week into the campaign, while M2–M3 are still being built. B.7 launches M8 at once, while N.8 and E.4 launch it only after M7. The wrapper has no rule for an early go.",
+      "fix": "Change B.7 and N.8: 'A go received before M7 ends is recorded. The wrapper launches M8 after the milestone in progress (a pick-one on the go asks whether M8 may jump ahead of M4–M7), never beside another session.'"
+    },
+    {
+      "id": "FC-31",
+      "severity": "minor",
+      "where": "D.2 invariant I2 (parts/D) vs D.2 move_to_vast and restore_from_drive rollbacks (parts/D), R.7 and R.10 (parts/R), E.2 model tests (parts/E)",
+      "quotes": [
+        "D.2 I2 (L3796-3800): \"**I2** a Vast instance is destroyed only when `backup_covers_stop.exp` is set and, … or when the API reports it running yet it has been unreachable over SSH for 15 minutes or more\"",
+        "D.2 move_to_vast (L3651): \"On any failure before step 6: destroy the instance, keep the lab copy, resume on the lab, report why.\"",
+        "D.2 restore_from_drive (L3707-3708): \"On any failure destroy the new instance (it holds nothing that is not on Drive)\"",
+        "R.10 (L3466-3467): \"an instance under this controller's prefix whose own lease shows no worker ever started there holds nothing and may be destroyed at reconciliation\"",
+        "E.2 (L4323-4324): \"asserting I1–I11 and LI1–LI10 after every step\""
+      ],
+      "problem": "I2 omits the 'no worker ever started' exception that D.2's rollbacks and R.7/R.10's reconciliation rely on. The model tests that assert I2 after every step would therefore fail on those legitimate destroys.",
+      "fix": "Change D.2 I2: add 'or when its own lease shows that no worker ever started there (it holds nothing not verified elsewhere: the rollbacks of move_to_vast before step 6 and of restore_from_drive to Vast, and reconciliation, R.10)'."
+    },
+    {
+      "id": "FC-32",
+      "severity": "minor",
+      "where": "N.5 outbound hard classes vs N.11 scrubber golden tests (parts/N)",
+      "quotes": [
+        "N.5 (L1655): \"JWTs; four groups of four lowercase letters (an app password)\"",
+        "N.11 (L2154-2155): \"Golden tests render every template, a realistic E.7 report and a weekly note (…): all are sent with redactions and none is withheld\"",
+        "N.5 (L1650-1652): \"the value of any secret the lab holds, loaded at start (…, the Gmail app password, …)\""
+      ],
+      "problem": "As a generic pattern, 'four groups of four lowercase letters' matches ordinary English (for example 'then open this page'). Templates, E.7 reports and weekly notes would be withheld, contradicting the golden test. The Gmail app password is already matched by its value.",
+      "fix": "Change N.5: delete 'four groups of four lowercase letters (an app password);'. The app password stays covered as a loaded secret value."
+    },
+    {
+      "id": "FC-33",
+      "severity": "minor",
+      "where": "B.7 Q0 (parts/B) vs C.8 and C.2 (parts/C), E.2 Trainer and Unit groups (parts/E)",
+      "quotes": [
+        "B.7 Q0 (L1220): \"| Q0 Plumbing | L0 tiny pipeline; trainer correctness; composed-model hashes; the Stage-1 massless-device equivalence test; K-metric | tiny | minutes |\"",
+        "C.8 (L3019-3020): \"gymnasium sits in the dev dependency group, never in the science group\"",
+        "C.2 (L2769-2770): \"a venv keyed by the science export hash (below) and built with `uv sync --frozen --only-group science --no-install-project`\""
+      ],
+      "problem": "Q0 lists trainer correctness (Gymnasium HalfCheetah) and the massless-device test as campaign content. But gymnasium is dev-only, worker jobs run in science-only venvs, and E.2 already runs both as test groups.",
+      "fix": "Change B.7 Q0: 'L0 tiny pipeline; composed-model hashes; K-metric (trainer correctness and the massless-device equivalence are the E.2 Trainer and Unit groups, run as tests, not campaign jobs)'."
+    },
+    {
+      "id": "FC-34",
+      "severity": "minor",
+      "where": "H.7 and D.1 (parts/H, parts/D) vs H.4 and R.2 'On Vast' (parts/H, parts/R)",
+      "quotes": [
+        "H.7 (L2495-2496): \"the tick box stays disabled, with the reason, until its own rehearsal passes (Part D.1 says how the sandbox is separated on a rented host).\"",
+        "D.1 (L3489-3490): \"The tick-box stays disabled, with the reason, until the lane separation on Vast (Part H.4) and every sandbox path of D.2 pass the M5 rehearsal.\"",
+        "R.2 (L3314): \"**On Vast** (a container, no systemd)\""
+      ],
+      "problem": "H.7 says D.1 explains how the sandbox is separated on a rented host, and D.1 points back to H.4. H.4's layers (bwrap jail, `smatsprint-sbx.slice`, NVML watchdog, cgroup-authenticated watcher) all assume systemd, which Vast lacks. The 'also move the sandbox' path has no specification, only a disabled tick box.",
+      "fix": "Change D.1: 'Sandbox moves are not built: on Vast (no systemd) the H.4 layers do not exist, so the tick box shows \"not built yet\" until a Vast-side separation is specified.' Change H.7 to point to that sentence."
+    },
+    {
+      "id": "FC-35",
+      "severity": "minor",
+      "where": "N.8 and H.4 layer 9 (parts/N, parts/H) vs E.9 and H.10 item 10 (parts/E, parts/H)",
+      "quotes": [
+        "N.8 (L1888-1889): \"Interactive Codex sessions the user opens later run `sprintctl build hold` first and start inside the same jail through `sprintctl build shell`.\"",
+        "E.9 (L4658-4660): \"**A session the user opens themselves** (…) runs `sprintctl build hold --reason interactive` first and `sprintctl build release` last\"",
+        "H.10 item 10 (L2584-2585): \"a Codex session opened on the server with `docs/HANDOFF.md` and the message, which runs `sprintctl build hold` first.\""
+      ],
+      "problem": "N.8 and H.4 put user-opened Codex sessions inside the build jail. E.9, which `AGENTS.md` copies, and the guide (H.10) only hold and release the wrapper, so such sessions would run unjailed, with the forge's secrets readable.",
+      "fix": "Change E.9 and H.10 item 10: '…runs `sprintctl build hold --reason interactive` first, works inside the build jail through `sprintctl build shell`, and runs `sprintctl build release` last'. Alternatively, state in N.8 and H.4 that a user-opened session is unjailed by the user's choice."
+    },
+    {
+      "id": "FC-36",
+      "severity": "minor",
+      "where": "D.3 schema/control parity test and D.4 settings list (parts/D) vs settings defined in H.8, H.7, N.8, N.9, N.6, D.2 and D.6",
+      "quotes": [
+        "D.3 (L3884-3885): \"A unit test fails if a command or setting in the schema has no dashboard control, or the reverse.\"",
+        "D.4 (L4029-4036): \"**Settings** (…): polite mode, resume delay, alert hours and `polite_scope`; … sandbox idle stop; LLM summaries per day (0–3); …\"",
+        "H.8 (L2505-2506): \"At most `promote_per_day` confirmations are accepted (default 5)\"",
+        "N.8 (L1972-1974): \"at most `build_sessions_per_day` launches per rolling 24 h (default 4), … and inside `build_hours` (default: any time)\""
+      ],
+      "problem": "Settings defined elsewhere appear neither in D.4's control list nor as SSH-only keys: `promote_per_day`, `sandbox_keep_days`, `build_sessions_per_day`, `build_hours`, `build_session_cap_h`, `polite_min_mib`, `lab_silence_stop_h`, `phone_on_tailnet` and `bootstrap_*`. D.3's parity test would fail on them.",
+      "fix": "Change D.4 Settings: add them, or declare the build, bootstrap and guard keys `sprintctl`-only (outside the command schema, like `limits.toml`) so the parity test holds."
+    },
+    {
+      "id": "FC-37",
+      "severity": "minor",
+      "where": "N.8 canary list (parts/N) vs N.2 need requests and the N.8 spool exception (parts/N)",
+      "quotes": [
+        "N.8 canaries (L1893-1894): \"writing `state/needs/` fails\"",
+        "N.2 (L1461-1464): \"Every transition, create and cancel included, is a request file `state/needs/requests/<ns-time>-<rand>.json` … `sprintctl need create` allocates the need id itself, writes the request\"",
+        "N.8 (L1870-1871): \"read-only, except the request spools of `sprintctl` and the launcher\""
+      ],
+      "problem": "The canary expects every write under `state/needs/` to fail, but `sprintctl need create` inside the jail must write `state/needs/requests/`. A strict canary breaks need creation from build sessions.",
+      "fix": "Change the N.8 canary: 'writing a need file or `events.jsonl` under `state/needs/` fails, while `sprintctl need create` (the `state/needs/requests/` spool) works'."
+    },
+    {
+      "id": "FC-38",
+      "severity": "minor",
+      "where": "N.3 send-only reissue rule vs N.11 Codes test (parts/N)",
+      "quotes": [
+        "N.3 (L1520-1521): \"**Send-only mode** (bootstrap, no buttons, N.9): no cap; after three consecutive unanswered codes the flow pauses and restarts at the next of `bootstrap_code_times`\"",
+        "N.11 (L2126-2127): \"in send-only mode, need 1 created at 14:40 and never authorised gets exactly four codes by 15:40\"",
+        "N.7 (L1797): \"`expires_at` is the time of the first log line plus 900 s\""
+      ],
+      "problem": "With 15-minute codes, pausing after three unanswered codes yields three codes by 15:40 (14:40, 14:55, 15:10). The test expects four.",
+      "fix": "Change N.11: 'exactly three codes by 15:40 (14:40, 14:55, 15:10)'. Or change N.3: 'after four consecutive unanswered codes'."
+    },
+    {
+      "id": "FC-39",
+      "severity": "minor",
+      "where": "E.4 M1b and E.3 (parts/E) and the sheet's M1b line vs E.2 Integration / G.2 L0 (M1a tiny S1→S4 pipeline)",
+      "quotes": [
+        "E.4 M1b (L4515-4516): \"**Register Q3–Q7 before the first S2 checkpoint exists.**\"",
+        "E.3 (L4414-4415): \"Q3–Q7 registered before the first S2 checkpoint existed\"",
+        "E.2 Integration (L4296-4298): \"a tiny full pipeline (S1→S2→S3→S4 plus evaluations, …) … (this is L0, Part G.2)\"",
+        "E.4 M1a (L4511): \"Exit: L0 recorded and Q0–Q2 started.\""
+      ],
+      "problem": "L0's tiny pipeline already creates an S2 checkpoint in M1a. The M1b rule and its checklist line can never hold literally.",
+      "fix": "Change E.4 M1b, E.3 and the sheet: 'register Q3–Q7 before the first Q3 S2 job starts'."
+    },
+    {
+      "id": "FC-40",
+      "severity": "minor",
+      "where": "G.5 and G.8 held-out assets (parts/G) vs E.4 M8 and B.8 (parts/E, parts/B)",
+      "quotes": [
+        "G.5 (L703-705): \"**Held-out assets, reserved in M1a and listed in `gate/criteria.yaml`:** …; for Phase 2, a held-out set of start states.\"",
+        "G.8 (L802-803): \"Held-out asset definitions (evaluation pools, partner seeds, replay data, Phase-2 start states) are immutable after the M1a freeze\"",
+        "E.4 M8 (L4556): \"Build the sprint environment\""
+      ],
+      "problem": "The held-out Phase 2 start states must be defined, and immutable, at the M1a freeze, but the sprint model and environment only exist from M8. None of the five seed pools holds a range for them.",
+      "fix": "Change G.5: 'for Phase 2, a held-out range of start-state seeds (for example 10,900–10,999 of the evaluation pool), from which the M8 sprint protocol draws its start states'. G.8 keeps it immutable as that seed range."
+    }
+  ],
+  "summary": "40 findings reported (5 blocker, 16 major, 19 minor); 2 more minor ones exist and are omitted: the bare milestone name 'M1' in C.11 ('In M1 measure') and R.5 ('from the M1 measurements'), which should read M1a (Q1); and the README's 'Tap one test button' against N.9 step 7, which needs a tap, a reply and a stale-button press from the user. Scope: the assembled CODEX_MASTER_PROMPT.md is byte-identical to a fresh assembly of parts/, and tools/check_prompt.py finds no unresolved section reference. Line numbers refer to CODEX_MASTER_PROMPT.md unless a quote names 00_README.md or DECISIONS_FOR_APPLYING.md. Main pattern: the five editors made unattended build sessions safe (jail, launcher, no steering), but the milestones still assign those sessions steps that need the forbidden powers:\n- pause and resume (the M1a campaign-start gate; R.9's resume after every release, which leaves the campaign PAUSED(by: user));\n- opening M1b's gate epoch, which is SSH-only, so the runner refuses to start;\n- writing `work/refdata/` and the secrets directory;\n- stopping live units (the cold-start drill; the Integration suite pausing its own slice);\n- a command-string detach.\nA few new launcher named operations plus a separate test instance fix most of them (FC-01, 02, 04, 05, 06, 11, 28). One gate circularity: the 100-episode fall rate versus E = 20 before the first noise floor, which runs only after L1 (FC-03). Sheet deviations: sandbox seed pools (FC-16), learning-parity block count (FC-18), K-env at Stage 4 (FC-19), hardware class (FC-25). Safety: the Vast key bound into M5 Codex sessions (FC-12), `~/.codex` writable by every session (FC-13), and forge-memory admission possibly deferred to M1b (FC-14). Other majors: `smatsprint-build.slice` cannot be top-level under systemd's dash-naming rule, verified against systemd.slice(5) (FC-15); MyoSuite in the science group (FC-17); hashes pinned to L0 (FC-07); the catalogue freeze treating M1b blocks like Promote (FC-08); the public timestamp on gh-pages (FC-09); and the README misquoting L3 as per-seed (FC-21)."
+}

@@ -1,0 +1,211 @@
+{
+  "key": "myoassist_framework",
+  "status": "FINAL (2026-09-23). A code-level digest; the companion fact sheet is research-data/infra/myoassist_facts.json.",
+  "papers": [
+    {
+      "title": "MyoAssist 1.0: An Open-Source Framework for Neuromechanical Simulation of Physical Human-Device Interaction",
+      "arxiv_id": "",
+      "doi": "10.64898/2026.08.25.746839",
+      "authors_short": "Robbins*, Son*, Tan, Wang, van Kanten, Sartori, Durandau, Kumar, Caggiano, Song",
+      "venue_year": "bioRxiv preprint, posted 2026-08-26 (v1, CC-BY). The DOI was verified through Crossref and the bioRxiv API on 2026-09-23. arXiv has no MyoAssist paper: all:MyoAssist returns only SMAT 2603.07618.",
+      "code": "https://github.com/neumovelab/myoassist @ b1baf69",
+      "pages_read": [
+        "rl_train/envs/myoassist_leg_base.py 1-553 (full)",
+        "rl_train/envs/myoassist_leg_imitation.py 1-378 (full)",
+        "rl_train/envs/myoassist_leg_imitation_exo.py 1-9; rl_train/envs/__init__.py 1-53",
+        "rl_train/envs/environment_handler.py 1-369 (full)",
+        "rl_train/train/mirror_ppo.py 1-95; rl_train/train/policies/mirror.py 1-76",
+        "rl_train/train/policies/rl_agent_base.py 1-179; rl_agent_human.py 1-62; rl_agent_exo.py 1-162; network_index_handler.py 1-121",
+        "rl_train/train/train_configs/config.py 1-170; config_imitation.py 1-30; config_imiatation_exo.py 1-54",
+        "rl_train/train/train_configs/imitation_tutorial_22_separated_net_partial_obs.json (full); full_obs/exo_off/speed_control/test.json (diffs vs partial_obs); device_sweep/README.md 1-65; device_sweep/imitation_22_Hippo_L1_h128_e32_sidenet_mirror0p1_actpen10.json (parsed)",
+        "rl_train/run_train.py 1-159; rl_train/run_policy_eval.py 1-230; rl_train/run_sim_minimal.py 1-16",
+        "rl_train/utils/learning_callback.py 1-164; train_log_handler.py and data_types.py (function lists)",
+        "rl_train/analyzer/gait_evaluate.py 18-120, 475-528; train_analyzer.py 29-60; gait_analyze.py, gait_data.py, train_log_analyzer.py (function lists)",
+        "myoassist_utils/compose.py 1-190, 324-390, 443-524; myoassist_utils/env_spec.py 1-154",
+        "tools/make_device_sweep_configs.py 1-350; tools/score_exo_policy.py 1-125, 257-345, 516-569; tools/plot_kinematics_exo.py 1-50; tools/plot_exo_comparison.py (args); tools/benchmarks/README.md; tools/tests/test_device_configs.py 1-45",
+        "README.md 1-173; docs/getting-started/defining-an-environment.md 14-60; docs/reinforcement-learning/02_configuration.md 140-175; index.md 205-252; 04_network-index-handler.md 282-310; docs grep for transfer/freeze/3D/framerate",
+        "myoassist.neumove.org /citations/ and /modeling/msk-models.html (2026-09-23)",
+        "site-packages/assist_sim/models/Hippo/L1config.yaml 1-44 and L1model.xml 1-61; assist_sim/loading.py 81-161; root_frame.py 1-68, 104-171; combine.py 160-260, 880-912; canonical_keyframes.py 1-40",
+        "site-packages/myosuite/envs/env_base.py 60-145, 255-345, 440-530; myosuite/robot/robot.py 596-700, 713-770; myosuite/envs/obs_vec_dict.py 51-89",
+        "site-packages/stable_baselines3 ppo/ppo.py 222-278, common/on_policy_algorithm.py 209-216, common/base_class.py 700-744, common/policies.py 309-316 (grep-located lines)",
+        "Reference data inspected numerically: rl_train/reference_data/short_reference_gait.npz, segmented.npz",
+        "Upstream: GitHub API commits/branches/compare (b1baf69...dev, b1baf69...feat/prosthesis-rl patches for base env, imitation env, config, callback), issues #35, #36, #38, file history of myoassist_leg_base.py (18 commits)",
+        "Preprint: bioRxiv API abstract of 10.64898/2026.08.25.746839 (abstract only, not the full text)",
+        "Prior work on sail-gpu: smat_integration.py 1-178, test_smat_integration.py 1-57, user_controlled_viewer.py 1-390, smat_integration.log, ppo_smoke_config.json, out/smat_integration/results.json",
+        "MJX docs feature-parity table (mujoco.readthedocs.io/en/stable/mjx.html, 2026-09-23)"
+      ]
+    }
+  ],
+  "problem": "Simulation research on physical human-device interaction is fragmented across musculoskeletal models, device models, tasks and controller workflows (preprint abstract). MyoAssist 1.0 composes a human MSK from myo_sim, a device from assist_sim and a terrain from myoassist_terrains into one MuJoCo MJCF through a shared pipeline (myoassist_utils/compose.py:335-389; env_spec.py). It runs two controller frameworks on it: RL built on SB3 PPO with separate human and device actors, and reflex controller optimisation with CMA-ES (README.md:9-50). For SMAT, what matters is that it supplies a muscle-actuated walking environment with an imitation reward, a shipped bidirectional hip exoskeleton (Hippo_L1) compatible with myolegs26, and a multi-actor PPO policy with a shared critic.",
+  "mechanism_exact": "One control step: the SB3 policy computes a mean action (per-actor Tanh MLPs assembled into an nu-wide vector by NetworkIndexHandler) and samples from a diagonal Gaussian with one global log_std vector. Constant slots are overwritten, SB3 clips to [-1,1], and MyoSuite maps linearly to ctrl = mid + a*halfrange (muscle excitation u = 0.5+0.5a; Hippo torque 100*a N*m). The physics holds ctrl for frame_skip = physics_hz // control_hz mj_steps at timestep 1/physics_hz (defaults 1200 // 30 = 40). The imitation env advances the reference index by one resampled sample per control step. The observation is concat(qpos[named joints], qvel[named joints], muscle activations, touch sensors / body weight, target velocity) with no normalisation. The reward is dense = sum_k W_k * r_k, where every r_k is multiplied by the control dt. Terms: forward exp(-5 dv^2); squared-activation penalty; device-effort penalty; smoothness bonus exp(-4 da^2); foot-force above 1.2 BW; max joint-limit force / body weight; heel-strike-based per-step terms; per-joint qpos and qvel imitation exp(-8 d^2) with inner per-joint weights and an outer weight equal to their sum; a constant 'end-effector' term. The episode terminates on pelvis_ty < safe_height or on any imitation joint deviating by more than out_of_trajectory_threshold from the reference. It truncates at custom_max_episode_steps or at the end of the reference. Reset starts at a random reference index in [0, 0.8 N), writes the reference qpos/qvel (velocities scaled by v_target over the reference's instantaneous pelvis speed) into the tracked joints, and keeps all other DOFs from the previous episode. PPO (SB3 2.9.0) optimises one clipped surrogate plus entropy plus value loss with a single Adam optimizer over all actor and critic parameters. MirrorPPO optionally adds a separate optimizer step on a left/right mirror penalty. A 'common_critic' gives one value head for all actors. Citations are in infra/myoassist_facts.json (observation_construction, action_mapping, reward_keys, termination_reset, separated_networks).",
+  "protocol": "The shipped device-sweep protocol (device_sweep/README.md; the Hippo_L1 config) is: env myoAssistLegImitationExo-v0; myolegs22 (planar 22 muscles) plus the device; flat terrain; control 30 Hz; physics 1200 Hz; 32 SubprocVecEnv; 30M timesteps; target velocity min=max=1.25 m/s (the randomiser bug breaks this in training); safe_height 0.7; out_of_trajectory_threshold 0.2 rad; random reference start; episode cap 1000 steps; reference short_reference_gait.npz tracking 8 joints (ankles, hips, knees, pelvis_tilt, pelvis_ty); reward weights forward 1.0, muscle_activation 10, diff 0.1, joint_constraint 1.0, foot_force 0.5, qpos imitation {pelvis_ty .1, pelvis_tilt 1, hips .2, knees 1, ankles .2}, qvel imitation {pelvis .1/.1, hips .2, knees .1, ankles .1}, exo effort 0. PPO: lr 1e-4, n_steps 512 (16,384 transitions per rollout), batch 8192, 30 epochs (target_kl 0.01 stops after about 7.5 per tools/benchmarks/README.md), gamma 0.99, lambda 0.95, clip 0.2, clip_vf 100, ent 0.001, vf 0.5, max_grad_norm 0.5, device cpu, mirror_coef 0.1. Nets: human_actor [128,128], weight-shared exo_actor_r/l [32,32] (inputs: own-side-first hip angle, velocity and 4 contacts), common_critic [64,64], log_std_init 0. Checkpoints are saved every logging_frequency (8) rollouts. Evaluation: python -m rl_train.run_policy_eval <session> --no-show --steps 1000 --regen, then tools/score_exo_policy.py and tools/plot_kinematics_exo.py.",
+  "headline_numbers": [
+    {
+      "quantity": "Composed myolegs26+Hippo_L1 (RL default, freejoint)",
+      "value": "nq 47, nv 46, nu 28 (26 muscles + Exo_R, Exo_L), na 26, nbody 46, njnt 41, ngeom 65, nmesh 45, nsite 784, nkey 5, nsensor 12, neq 28 (joint/polycoef), npair 25, ntendon 26 (all spatial, 96 site wraps)",
+      "source": "probe_compose 2026-09-23"
+    },
+    {
+      "quantity": "Planar-root variant",
+      "value": "nq 46, nv 46; named pelvis_tx/ty/tz/tilt/list/rotation",
+      "source": "probe_compose"
+    },
+    {
+      "quantity": "Mass",
+      "value": "82.9905 kg with Hippo; bare myolegs26 78.0905 kg; device 4.900 kg (AK10-9 housing 1.92, backplate 0.930, hip shell 0.744, waist bands 0.283, thigh links 0.348 x2, cuffs 0.164 x2)",
+      "source": "probe_compose; assist_sim Hippo L1model.xml inertials"
+    },
+    {
+      "quantity": "Hippo actuator",
+      "value": "general, gain 100 fixed, gear 1, ctrlrange [-1,1] on hip_flexion_r/l: +/-100 N*m at full command",
+      "source": "L1config.yaml:20-44; probe_compose"
+    },
+    {
+      "quantity": "Muscle activation dynamics",
+      "value": "dynprm (0.01, 0.04, 0): tau_act 10 ms, tau_deact 40 ms, all 26 muscles; F0 332 N (fdl) to 9501 N (vasti)",
+      "source": "probe_compose"
+    },
+    {
+      "quantity": "Physics options (XML)",
+      "value": "timestep 0.002 (env overrides it to 1/physics_hz), Euler, Newton 100/50 iterations, pyramidal cone, friction (1, 0.005, 0), condim 3",
+      "source": "probe_compose"
+    },
+    {
+      "quantity": "Obs/act dims",
+      "value": "44/24 on myolegs22+device; 48/28 on myolegs26 planar root with the stock key lists",
+      "source": "tools/tests/test_device_configs.py; probe_env"
+    },
+    {
+      "quantity": "mj_step cost (same core, AMD EPYC 9535)",
+      "value": "62.7 us for planar myolegs26+Hippo against 52.1 us for myolegs22+Hippo (best of 3 x 1200 steps, dt 1/1200, zero ctrl), about 1.2x. Physics per 50 Hz step is about 1.25 ms at 1000 Hz or 1.5 ms at 1200 Hz.",
+      "source": "probe_timing; single runs 64.8/68.2 us in probe_compose"
+    },
+    {
+      "quantity": "env.step cost incl. frequent resets",
+      "value": "3.95 ms (30/1200), 2.36 ms (50/1000), 2.66 ms (50/1200), averaged over 200 zero-action steps on myolegs26+Hippo. Zero-action episodes last 1-2 steps, so this includes reset overhead; treat it as an upper bound.",
+      "source": "probe_timing"
+    },
+    {
+      "quantity": "Upstream throughput (myolegs22, Threadripper 7985WX, 64 envs)",
+      "value": "2979 steps/s at 8 threads (819 at the default 64); env-only 6555 steps/s; single-env ceiling about 691 steps/s at frame_skip 40, 36.2 us per mj_step",
+      "source": "tools/benchmarks/README.md (reported by upstream, not re-measured)"
+    },
+    {
+      "quantity": "Compose time",
+      "value": "1.03 s (first) / 0.58 s (warm) for myolegs26+Hippo; upstream reports 0.65-0.83 s per compose for myolegs22, 0.04-0.07 s on a cache hit",
+      "source": "probe_compose; compose.py:374-378"
+    },
+    {
+      "quantity": "Target-velocity bug magnitude",
+      "value": "6 resets at config 1.25 m/s gave 4.995, 3.096, 0.935, 4.867, 4.69, 3.968 m/s. Upstream's fix commit measured mean 2.94 m/s over 400 resets, 47% > 3 m/s, max 6.26.",
+      "source": "probe_env; feat/prosthesis-rl 038f558 comment"
+    },
+    {
+      "quantity": "Reference gait",
+      "value": "89.8 s continuous trial at 500 Hz (44,900 samples), mean 1.2815 m/s, stride about 1.109 s, about 81 strides; resampled to 2694 samples (30 Hz) or 4490 (50 Hz)",
+      "source": "probe_ref; environment_handler.py:192-204"
+    },
+    {
+      "quantity": "SMAT-sized network params (48-dim obs)",
+      "value": "human 256/128 -> 26: 48,794; per-side exo 128/64 (8 inputs -> 1): 9,473; critic 256/128: 45,569",
+      "source": "probe_policy"
+    }
+  ],
+  "ablations_that_matter": [],
+  "limitations_admitted": [
+    "The hip assist window used for scoring is 'provisional', and only the ankle path is checked against composed models (tools/score_exo_policy.py:25-27, 41-45).",
+    "The mirror maps assume a planar model with no DOF whose sign must flip (rl_train/train/policies/mirror.py:5-6).",
+    "The mirror penalty is applied as a separate optimizer step, not inside the PPO loss, a deliberate deviation from Yu et al. 2018 (mirror_ppo.py:14-21).",
+    "MirrorPPO is used only when training from scratch; prev_trained_policy_path uses plain PPO (docs 02_configuration.md:156).",
+    "reset_shared_net_after_load is a no-op (02_configuration.md:171).",
+    "200-step evaluations (about 5 strides) are too few for per-phase statistics; use --steps 1000 (run_policy_eval.py:49-53; device_sweep/README.md:23-24).",
+    "frame_skip 40 bounds throughput, and changing it breaks comparability with existing checkpoints (tools/benchmarks/README.md).",
+    "SubprocVecEnv spawn is slow on Windows (about 132 s for 64 envs) (tools/benchmarks/README.md).",
+    "Auto reward adjustment (ARA) is disabled (rl_train/envs/myoassist_leg_imitation.py:77-97).",
+    "The imitation reset RNG is unseeded (TODO at rl_train/envs/myoassist_leg_imitation.py:362).",
+    "A zero initial pose looks wrong, so 30 settling steps are used (rl_train/envs/myoassist_leg_base.py:214-216).",
+    "The ExoImitation custom policy params 'actually do nothing' (config_imiatation_exo.py:37).",
+    "Reference pelvis height is corrected only for devices that stand higher than the reference (rl_train/envs/myoassist_leg_imitation.py:317-359).",
+    "Relative-path loading of segmented.npz: run from the repo root (docs/reinforcement-learning/06_troubleshooting.md:29).",
+    "The motion library is 'planned' (README.md:27-28).",
+    "The Hippo gain and range are 'starting values -- tune per controller' (assist_sim Hippo L1config.yaml:17-19)."
+  ],
+  "limitations_not_admitted": [
+    "The target-velocity randomiser passes positional args in the wrong slots (rl_train/envs/myoassist_leg_base.py:407-414), so the training target drifts over roughly [0, 2*pi] m/s whatever min/max say. It has been on main since 4a4cbe3 (2025-08-05). Every shipped 1.25 m/s config trains against random speeds; the fix is only on the unmerged feat/prosthesis-rl branch.",
+    "The RL path cannot run the 3D myolegs26 as shipped. EnvSpec keeps the freejoint and the env reads named pelvis_tx/ty/tilt joints: KeyError pelvis_ty at rl_train/envs/myoassist_leg_imitation.py:341 (probe_env). The docs claim the RL path keeps the freejoint 'because a 3D policy controls all six root DOFs' (myoassist.neumove.org/modeling/msk-models.html). No 3D RL config ships.",
+    "The comment that composed myolegs26 has nkey=0 is stale (rl_train/envs/myoassist_leg_base.py:193-197); assist_sim now injects 5 canonical keyframes.",
+    "reset_policy/value_net_after_load re-create modules outside the optimizer. probe_policy found 18 orphaned tensors, so the reinitialised networks never train. The new modules also get default rather than orthogonal init.",
+    "prev_trained_policy_path ignores the new config's policy_kwargs (commented out at rl_train/envs/environment_handler.py:283) and requires identical spaces, so it cannot carry a policy across stages that change the action dimension, observation layout or architecture.",
+    "Dict-valued reward weights (qpos/qvel imitation) are applied twice: once per joint inside the term and again as their sum outside (rl_train/envs/myoassist_leg_base.py:158-163; rl_train/envs/myoassist_leg_imitation.py:210-215).",
+    "end_effector_imitation_reward is a constant dt per step because the anchor diff is a stub returning [0] (rl_train/envs/myoassist_leg_imitation.py:179-188, 207).",
+    "'muscle_activation_diff_penalty' is a positive smoothness bonus, and its previous-activation memory is never reset between episodes (rl_train/envs/myoassist_leg_base.py:75, 318-324).",
+    "Reset writes only the reference-tracked joints. Every other DOF (3D pelvis/hip DOFs, mtp) carries over from the previous episode's terminal state (rl_train/envs/myoassist_leg_imitation.py:371-373 with myosuite robot.py:713-761).",
+    "qvel imitation targets are scaled by v_target divided by the reference's instantaneous pelvis speed, which reshapes all joint-velocity targets within each stride (rl_train/envs/myoassist_leg_imitation.py:159-167).",
+    "The reference metadata data_length (449000) is 10x the actual 44,900 samples (probe_ref).",
+    "The scoring and plot tools default to 90.96 kg body mass. That equals the myolegs22 mass under myo-sim 0.2.1's 12.87 kg phantom chest mass (issue #38); with myo_sim 0.2.2 it is 78.09 kg bare and 82.99 kg with Hippo.",
+    "The exo_off config pins the exo to 1.0. That is zero torque only on [-1,0] devices; on Hippo it is +100 N*m.",
+    "The JSON comments label the first activation block 'left'; activations follow actuator order, right side first.",
+    "torch.autograd.set_detect_anomaly(True) is enabled at import in rl_agent_base.py:17 and rl_agent_exo.py:15, which slows every backward pass.",
+    "'index_mapping' uses the same indices for the network output and the action vector (network_index_handler.py:116-117).",
+    "frame_skip uses integer division, so non-divisible rate pairs silently change the control rate while the reference is resampled for the nominal rate.",
+    "The in-training analysis runs in a blocking fork Pool every evaluate_frequency rollouts (learning_callback.py:148-160) and crashes CUDA runs (issue #36).",
+    "Hippo thigh meshes collide with each other (cuff_r vs cuff_l, thigh_r vs cuff_l in a 1 s passive fall; probe_env). Device collision geometry is unfiltered.",
+    "The freejoint 'stand' keyframe starts the pelvis at 1.0 m, about 9 cm above standing (probe_env)."
+  ],
+  "unspecified_details": [
+    "Provenance of short_reference_gait.npz and segmented.npz (subject, lab, capture and processing): the files carry only sample_rate/data_length or segments_list, and no doc names a source.",
+    "Hippo_L1 physical calibration: the gain of 100 and the ideal torque source are labelled starting values. The masses come from STL-derived inertials with no documented comparison to the real device.",
+    "Contact model parameters (solref/solimp are defaults; friction (1, 0.005, 0) on all colliding geoms) are undocumented, and device-contact behaviour is not specified.",
+    "No 3D (myolegs26) RL configuration, observation set or reward weights are shipped or documented.",
+    "No seeds, variance or trained checkpoints are published for the shipped RL configs (the KB found no .zip policies in the repo).",
+    "How to hold a device at zero torque is device-specific (constant 1.0 vs 0.0) and not documented as such.",
+    "Muscle parameter provenance sits in myo_sim, outside this repo."
+  ],
+  "reproduction_relevance": "MyoAssist is the paper-faithful substrate: SMAT reports building on MyoAssist (0.1 per infra/smat_spec.json). At b1baf69 it supplies the myolegs26 3D human with exactly SMAT's 13 muscles per side, the bilateral hip exoskeleton Hippo_L1 (4.9 kg, bidirectional hip-flexion torque, gain 100 so it needs rescaling to 6 and 25 N*m), the reference walking data (about 1.28 m/s), an imitation reward framework, multi-actor PPO with a shared critic, 50 Hz control with 1000 or 1200 Hz physics through config alone, and evaluation tooling. It does not supply a working 3D RL path (stock env fails on myolegs26; planar_root plus model_path is the workaround), a correct target-velocity randomiser, observation history or previous-action inputs, per-stage device gain, actor freezing, log-prob masking, per-actor std, partial transfer, a stage driver or freeze verification. Two things threaten fidelity whichever way SMAT's original code went: (1) if the SMAT authors used MyoAssist code from after 2025-08-05, their training may have seen random target speeds; (2) the double-weighted imitation terms and the reward dt scaling set the effective reward scale, so reusing MyoAssist's reward code changes the reward the paper describes unless the terms are matched deliberately.",
+  "reimplementation_recipe": [
+    "1. Pin the stack: myoassist b1baf69 (v1.0.0+), assist_sim 1.0.0, myo_sim 0.2.2 (no phantom mass), mujoco 3.4.0, MyoSuite 2.8.4, SB3 2.9.0. Patch the target-velocity randomiser (keyword args as in feat/prosthesis-rl 038f558) and add a test that every reset gives v_target 1.25 when min=max=1.25. Remove torch.autograd.set_detect_anomaly(True).",
+    "2. Model: xml = compose_env_model('myolegs26', 'Hippo_L1', terrain=None, planar_root=True). Pass it as env_params.model_path with msk_key and device_key None, or patch EnvSpec.compose to forward planar_root. Check nq 46, nv 46, nu 28, mass 82.99 kg, actuator order muscles 0-25 then Exo_R 26 and Exo_L 27.",
+    "3. Stage-1 human-only model: compose the same XML, then set the 8 Hippo_L1_* body masses to 0 (or a negligible value) and their geom contype/conaffinity to 0 so all layouts match across stages. Alternatively use assist_sim.load_msk plus to_planar_root plus a floor plus keyframes as in the prior smat_integration.create_model. Record the model XML sha256 and total mass per stage (78.09 vs 82.99 kg).",
+    "4. Rates and episode: control_framerate 50, physics_sim_framerate 1000 or 1200 (frame_skip 20 or 24; both exact), custom_max_episode_steps chosen in 50 Hz steps, safe_height and out_of_trajectory_threshold per SMAT, and flag_random_ref_index true. The reference resamples to 4490 samples.",
+    "5. Observation: keep qpos, qvel, act (26), sensors (4) and target velocity. Add the 3D DOFs SMAT's human observes (pelvis_list, pelvis_rotation, pelvis_tz, hip_adduction/rotation) and add them to reference_data_keys or an explicit keyframe reset, after checking reference sign conventions by kinematic playback. Add an 'exo_hist' obs block: a ring buffer of 3 x [q_hip_r, q_hip_l, dq_hip_r, dq_hip_l] plus 3 x [a_exo_R, a_exo_L] (actions after clipping), reset on episode start, 18 dims. Extend DEFAULT_OBS_KEYS and get_obs_dict and index it for the exo actor.",
+    "6. Device torque per stage: add EnvParams.exo_gain_nm and set model.actuator_gainprm[Exo_R/L, 0] = gain at setup. Stages 1-2: exo action pinned to 0.0 (a constant mapping with default_value 0.0, or deterministic 0 in the policy) and gain 0. Stage 3: gain 6.0. Stage 4: gain 25.0. Keep ctrlrange [-1,1] so exo_activation_penalty stays normalised. Wrap the env in a physics audit that asserts |actuator_force[Exo]| <= gain and is 0 in stages 1-2.",
+    "7. Rewards: implement SMAT's reward terms (infra/smat_spec.json) as explicit rwd_dict keys with one weight each (no dict double weighting). Decide the dt scaling explicitly. Use one reward config per stage.",
+    "8. Policy: a StagedHumanExoPolicy (port smat_integration.StagedPolicy). Human MLP 256/128 (Tanh) -> 26 Tanh on the human obs indices; exo MLP 128/64 -> 2 Tanh on the 18 exo_hist indices; shared critic 256/128 on the full obs; separate human_log_std (26) and exo_log_std (2). set_stage(k) sets requires_grad (human frozen in stage 3; exo trainable only in stages 3-4; critic always) and rebuilds Adam over trainable params. evaluate_actions sums log-prob and entropy only over the active actors (1-2 human; 3 exo; 4 both).",
+    "9. Stage driver: for k in 1..4, build a 32-env SubprocVecEnv (start_method='spawn') from the stage config, create PPO(StagedHumanExoPolicy, ...), load_state_dict(previous, strict=True), set_stage(k), hash parameter groups (sha256 over human_*, exo_*, critic, log_std), learn(stage_steps), hash again, and assert the frozen groups are unchanged and the fixed-obs outputs are bitwise equal. Save the checkpoint and a manifest (hashes, gains, masses, XML sha, seeds, steps), then reload and re-hash. Do not use prev_trained_policy_path.",
+    "10. Training hygiene: set logger_params.evaluate_frequency very large (or patch the Pool to spawn) to avoid issue #36; set MYOASSIST_NUM_THREADS; mirror_coef 0; target speed fixed at 1.25 with the patched randomiser.",
+    "11. Tests before any long run: obs/act layout (48 + added 3D + 18 obs; 28 actions), zero exo force in stages 1-2, gain scaling (+/-6 and +/-25 N*m at a = +/-1), a stage-3 freeze hash test, a target-velocity test, and a reset-state test (no carry-over of untracked DOFs).",
+    "12. Evaluation: reuse run_policy_eval/GaitEvaluator with deterministic actions and --steps 1000, and pass --mass 82.99 (or the stage's mass) and --joint hip to tools/score_exo_policy.py. Add abd/add to _MUSCLE_STEMS if muscle RMS matters. Compare against segmented.npz (roll the left reference by 50%)."
+  ],
+  "throughput_notes": "Per-env cost is dominated by physics. On one AMD EPYC 9535 core a mj_step costs 62.7 us for planar myolegs26+Hippo against 52.1 us for myolegs22+Hippo, about 1.2x (probe_timing, best of 3). A 50 Hz control step therefore costs about 1.25 ms of physics at 1000 Hz (20 substeps) or 1.5 ms at 1200 Hz (24), against about 2.5 ms for the shipped 30 Hz / 1200 Hz (40 substeps). Measured env.step wall time including frequent resets: 2.36 ms (50/1000), 2.66 ms (50/1200), 3.95 ms (30/1200). That puts the single-core ceiling at roughly 380-420 control steps/s at 50 Hz, before PPO. Upstream benchmark (myolegs22, Threadripper 7985WX, different CPU; not re-measured): 36.2 us per mj_step, env-only 6555 steps/s at 64 envs, end-to-end 2979 steps/s with 8 torch threads. The PPO update, not the env, is their bottleneck, and the thread count changes throughput 3.6x (tools/benchmarks/README.md). torch anomaly detection is enabled at import, slows backward passes and should be disabled. The blocking analysis Pool every 64 rollouts adds wall time. For GPU batching, MJX-Warp's feature table covers every feature in this model; MJX-JAX would need JOINTLIMITFRC sensors removed and ellipsoid-mesh pairs excluded. Neither jax nor warp is installed in the sail-gpu venv, and no parity or throughput was measured.",
+  "rival_explanations": [],
+  "ideas_sparked": [
+    "Treat 'which MyoAssist code SMAT used' as a reproducibility variable. A pre-registered check could train stage 1 twice, with the buggy randomiser and with the fixed one. If the buggy version reproduces SMAT's reported gait metrics better, that is evidence the original was affected.",
+    "Keep one XML topology for all four stages by zero-massing the device in stage 1. Every stage then shares nq, nv, nu and the observation layout, and the freeze and hash proof covers only parameters. The mass change is the only physical difference and is itself hash-recorded.",
+    "Use gainprm scaling (6 then 25 N*m) rather than force clipping or ctrlrange narrowing, so the exo action-to-torque map stays linear and the device-effort penalty stays in normalised units across stages.",
+    "Upstream's unmerged reward-curriculum hook (set_reward_weight_scales through env_method at rollout boundaries) could smooth the stage-4 transition in a single run. That would be an ablation arm against SMAT's hard stage boundaries.",
+    "The prior viewer's security and hash-verification pattern can serve directly as the SMAT sandbox viewer backend once generalised to 26+2 actuators and Hippo stages.",
+    "MJX-Warp looks like the right GPU target (all features listed). A put_model plus 1 s trajectory-parity test on this exact XML is a cheap first gate before any GPU port work."
+  ],
+  "kb_digest_reused": [
+    {
+      "source": "C:/Users/Mushfique/Desktop/projects/sail-lab-application-kb/research-rebuild-2026-09-05/research/05-simulation-and-rl-transfer.md:7, 17, 31-49",
+      "use": "Cross-checked. It already chose MyoAssist on native MuJoCo as the first implementation, pinned b1baf69, and recorded the uv overrides (mujoco>=3.4,<3.5; dm-control==1.0.36), the absence of shipped RL policies and the 30/1200 Hz tutorial settings. This digest confirms these from code and adds the 3D failure, the velocity bug and the staging gaps."
+    },
+    {
+      "source": "same file :27",
+      "use": "Reused the pointer that SMAT's reward includes speed-specific terms (foot force above 1.2 BW, angular velocity normalised by 2 rad/s and clipped, walking-reference tracking). MyoAssist's foot_force_penalty threshold of 1.2 BW (rl_train/envs/myoassist_leg_base.py:330) matches the first."
+    },
+    {
+      "source": "same file :59, :105-128",
+      "use": "Reused the prior sprint results: the PPO smoke at about 670 transitions/s and the four-stage integration (masses 78.0905 and 80.4205 kg, 512 transitions per stage, 95/105/97/115 terminations, runner sha256 897868d0..., which still matches the file on disk)."
+    },
+    {
+      "source": "same file :84-87",
+      "use": "Its MJX claim (muscle and tendon-wrapping support listed) was re-verified against the current MJX feature table on 2026-09-23. Added the MJX-JAX gaps it did not note: JOINTLIMITFRC sensors and ellipsoid-mesh collisions."
+    },
+    {
+      "source": "same file :113, :131",
+      "use": "Reused the physical probe that exo_off's 1.0 maps to zero torque on Tutorial_L1's [-1,0] range, and extended it: on Hippo_L1's [-1,1] range the same 1.0 is +100 N*m."
+    }
+  ]
+}

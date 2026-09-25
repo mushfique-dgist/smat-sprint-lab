@@ -1,0 +1,808 @@
+{
+  "facts": [
+    {
+      "id": "codex-01-version",
+      "topic": "codex",
+      "claim": "codex-cli 0.153.4 is installed at /usr/local/bin/codex on sail-gpu",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'which codex; codex --version' (2026-09-23T08:52:55Z)",
+      "quote": "/usr/local/bin/codex\ncodex-cli 0.153.4",
+      "checked_on": "2026-09-23",
+      "notes": "Source-code facts below were read at git tag rust-v0.153.4 of openai/codex (tag exists, sha 042fb41b7c813ac7999105e886b2b7aa715b5081), so they match the installed binary. A newer CLI exists (issue #46804 was filed against codex-cli 0.155.1); re-check flags after any upgrade."
+    },
+    {
+      "id": "codex-02-exec-sandbox-values",
+      "topic": "codex exec -s/--sandbox",
+      "claim": "codex exec -s/--sandbox accepts read-only, workspace-write, danger-full-access",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec --help'",
+      "quote": "-s, --sandbox <SANDBOX_MODE>  Select the sandbox policy to use when executing model-generated shell commands  [possible values: read-only, workspace-write, danger-full-access]",
+      "checked_on": "2026-09-23",
+      "notes": "Not accepted by 'codex exec resume' (its --help has no -s, -C, --add-dir, --approve-for-me or -p)."
+    },
+    {
+      "id": "codex-03-exec-default-sandbox",
+      "topic": "codex exec defaults",
+      "claim": "codex exec defaults to a read-only sandbox",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/non-interactive-mode (308 redirect from https://developers.openai.com/codex/noninteractive)",
+      "quote": "By default, `codex exec` runs in a read-only sandbox.",
+      "checked_on": "2026-09-23",
+      "notes": "All developers.openai.com/codex/* doc URLs now 308-redirect to learn.chatgpt.com/docs/*. The same page gives: 'Allow edits: codex exec --sandbox workspace-write' and 'Allow broader access: codex exec --sandbox danger-full-access'."
+    },
+    {
+      "id": "codex-04-exec-default-approval",
+      "topic": "codex exec defaults",
+      "claim": "In exec (headless) mode the approval policy defaults to 'never'. It switches to the config's policy only when the resolved reviewer is auto_review",
+      "verdict": "confirmed",
+      "source": "https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/exec/src/lib.rs (ConfigOverrides + build_exec_config)",
+      "quote": "// Default to never ask for approvals in headless mode. Rebuild below if\n        // the fully resolved reviewer is AutoReview.\n        approval_policy: Some(AskForApproval::Never),",
+      "checked_on": "2026-09-23",
+      "notes": "The docs do not state this: the non-interactive page 'doesn't explicitly specify a default approval policy'. The evidence is the source code only; the exec tests (codex-rs/exec/tests/suite/approval_policy.rs) assert 'approval: on-request' when approvals_reviewer=auto_review."
+    },
+    {
+      "id": "codex-05-approval-never-semantics",
+      "topic": "codex exec escalation behaviour",
+      "claim": "Under exec's default 'never' approvals, a command that needs network or writes outside the writable roots is not escalated and does not wait. It fails inside the sandbox and the failure goes back to the model. Execpolicy 'prompt' rules become hard rejections",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex --help' (the -a option); https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/core/src/exec_policy.rs (prompt_is_rejected_by_policy)",
+      "quote": "never:      Never ask for user approval Execution failures are immediately returned to the model  |  AskForApproval::Never => Some(PROMPT_CONFLICT_REASON),",
+      "checked_on": "2026-09-23",
+      "notes": "Not tested at runtime on sail-gpu (running codex exec was outside the allowed command list)."
+    },
+    {
+      "id": "codex-06-approval-policy-values",
+      "topic": "codex approval policies",
+      "claim": "approval_policy values are on-request, never and granular. 'untrusted' is retired",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/config-file/config-reference ; https://learn.chatgpt.com/docs/agent-approvals-security",
+      "quote": "Controls when Codex pauses for approval before executing commands. You can also use `approval_policy = { granular = { ... } }` to allow or auto-reject specific prompt categories while keeping other prompts interactive.  |  Codex and ChatGPT Work no longer support `approval_policy = \"untrusted\"`",
+      "checked_on": "2026-09-23",
+      "notes": "The top-level 'codex --help' -a lists only on-request and never. Granular keys per the config reference: sandbox_approval, rules, mcp_elicitations, request_permissions, skill_approval."
+    },
+    {
+      "id": "codex-07-exec-no-ask-flag",
+      "topic": "codex exec flags",
+      "claim": "codex exec has no -a/--ask-for-approval flag, so its approval policy must be set with -c approval_policy=... (or --approve-for-me)",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec --help' vs 'codex --help'",
+      "quote": "(codex --help only) -a, --ask-for-approval <APPROVAL_POLICY>  Configure when the model requires human approval before executing a command",
+      "checked_on": "2026-09-23",
+      "notes": "The exec help also has no --search flag (the top-level one does) and no --full-auto."
+    },
+    {
+      "id": "codex-08-profile-flag",
+      "topic": "codex exec --profile",
+      "claim": "--profile selects a named, deny-by-default permission profile",
+      "verdict": "contradicted",
+      "source": "command: ssh sail-gpu 'codex exec --help'; https://learn.chatgpt.com/docs/developer-commands?surface=cli",
+      "quote": "-p, --profile <CONFIG_PROFILE_V2>  Layer $CODEX_HOME/<name>.config.toml on top of the base user config",
+      "checked_on": "2026-09-23",
+      "notes": "In 0.153.4, -p/--profile layers a config file ($CODEX_HOME/<name>.config.toml). It is not a permission profile. It is still useful for a per-role file such as builder.config.toml. Permission profiles are a separate mechanism (codex-09..11)."
+    },
+    {
+      "id": "codex-09-permission-profiles",
+      "topic": "codex permission profiles",
+      "claim": "Named permission profiles exist: [permissions.<name>] tables selected with default_permissions. Built-ins are :read-only, :workspace, :danger-full-access. A custom profile with no filesystem entries stays restricted (deny-by-default). 'extends' inherits a built-in",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/permissions (308 from https://developers.openai.com/codex/permissions)",
+      "quote": "Create a named profile under `[permissions.<name>]`, then set the top-level `default_permissions` key to that profile name or to one of the built-ins above.  |  Missing or empty filesystem tables keep filesystem access restricted and emit a startup warning.  |  extends = \":workspace\"",
+      "checked_on": "2026-09-23",
+      "notes": "Filesystem entries map paths/special tokens (:minimal, :workspace_roots, :tmpdir, :slash_tmp) to read/write/deny. The docs say 'deny' beats 'write' beats 'read' on the same path. Network is set per profile: [permissions.<name>.network] enabled = true."
+    },
+    {
+      "id": "codex-10-profiles-vs-sandbox-mode",
+      "topic": "codex permission profiles",
+      "claim": "Permission profiles compose with -s/--sandbox",
+      "verdict": "contradicted",
+      "source": "https://learn.chatgpt.com/docs/permissions",
+      "quote": "Permission profiles do not compose with the older sandbox settings. Configure either `default_permissions` and `[permissions]`, or `sandbox_mode` / `sandbox_workspace_write`, but not both.",
+      "checked_on": "2026-09-23",
+      "notes": "-s sets sandbox_mode, so do not combine -s or --approve-for-me (which sets sandbox_mode=workspace-write) with default_permissions. Which one wins if both are set is not documented."
+    },
+    {
+      "id": "codex-11-permission-profile-cli",
+      "topic": "codex permission profiles",
+      "claim": "codex exec has a CLI flag that selects a permission profile",
+      "verdict": "contradicted",
+      "source": "command: ssh sail-gpu 'codex sandbox --help' and 'codex exec --help'",
+      "quote": "(codex sandbox only) -P, --permission-profile <NAME>  Named permissions profile to apply from the active configuration stack",
+      "checked_on": "2026-09-23",
+      "notes": "For exec, use -c default_permissions=\"<name>\" or put it in a -p config layer. 'codex sandbox -P <name> -- <cmd>' can test a profile outside an agent run."
+    },
+    {
+      "id": "codex-12-network-domains-proxy",
+      "topic": "codex network policy",
+      "claim": "Per-domain network allowlists apply only when the managed network proxy is on",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/config-file/config-reference ; https://learn.chatgpt.com/docs/agent-approvals-security",
+      "quote": "Domain rules for sandboxed commands. Enforced only when `features.network_proxy` or enabled administrator-managed networking requirements activate the proxy.  |  `unix_sockets` unset: No Unix socket destinations are allowed until you add explicit `allow` rules.",
+      "checked_on": "2026-09-23",
+      "notes": "In proxy mode the Linux seccomp filter also denies socket(AF_UNIX) (codex-35), so proxy mode additionally blocks systemctl --user unless unix sockets are explicitly allowed."
+    },
+    {
+      "id": "codex-13-approve-for-me",
+      "topic": "codex exec --approve-for-me",
+      "claim": "--approve-for-me expands to approvals_reviewer=auto_review + approval_policy=on-request + sandbox_mode=workspace-write",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec --help'; https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/cli/src/main.rs (tests approve_for_me_defaults_propagate_from_root_to_exec etc.)",
+      "quote": "--approve-for-me  Route approval requests through automatic review using the workspace-write sandbox  |  raw_overrides == [approvals_reviewer=\"auto_review\", approval_policy=\"on-request\", sandbox_mode=\"workspace-write\"]",
+      "checked_on": "2026-09-23",
+      "notes": "It has a hidden alias, --not-so-yolo. At the same level it conflicts with --sandbox, --ask-for-approval and --dangerously-bypass-approvals-and-sandbox. A later 'exec --sandbox X' partially overrides it. The exec test asserts stderr contains 'approval: on-request' and 'sandbox: workspace-write'."
+    },
+    {
+      "id": "codex-14-auto-review-reviewer",
+      "topic": "codex auto-review",
+      "claim": "Auto-review requests are judged by a separate Codex reviewer agent. The default model is codex-auto-review (with ChatGPT auth; API-key auth uses gpt-5.6-luna)",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/sandboxing/auto-review ; https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/model-provider/src/provider.rs",
+      "quote": "itself a Codex agent with a narrower job than the main agent: decide whether a specific boundary-crossing action should run.  |  pub const DEFAULT_APPROVAL_REVIEW_PREFERRED_MODEL: &str = \"codex-auto-review\";  |  const API_KEY_APPROVAL_REVIEW_PREFERRED_MODEL: &str = \"gpt-5.6-luna\";",
+      "checked_on": "2026-09-23",
+      "notes": "The docs page does not name the model. codex-auto-review appears in the server's models_cache.json. The source calls the reviewer 'guardian' (codex-rs/core/src/guardian)."
+    },
+    {
+      "id": "codex-15-auto-review-scope",
+      "topic": "codex auto-review",
+      "claim": "Auto-review can approve sandbox escalations, blocked network requests, writes outside writable roots and MCP tool calls. It is told to deny exfiltration, credential probing, broad or persistent security weakening, and irreversible destructive actions",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/sandboxing/auto-review",
+      "quote": "Shell or exec tool calls that request escalated sandbox permissions / Network requests blocked by the current sandbox or policy / File edits outside the allowed writable roots  |  sending private data, secrets, or credentials to untrusted destinations / probing for credentials, tokens, cookies, or session material / broad or persistent security weakening / destructive actions with significant risk of irreversible damage",
+      "checked_on": "2026-09-23",
+      "notes": "Each decision is made per request by a model, so it is non-deterministic. Whether 'git push to GitHub' or 'install a systemd --user unit' gets approved is not documented. A local policy file can be supplied via auto_review.policy (a managed guardian_policy_config takes precedence)."
+    },
+    {
+      "id": "codex-16-auto-review-failure-modes",
+      "topic": "codex auto-review",
+      "claim": "Auto-review fails closed, times out after 90 s, and has a circuit breaker that interrupts the turn",
+      "verdict": "confirmed",
+      "source": "https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/core/src/guardian/mod.rs ; https://learn.chatgpt.com/docs/sandboxing/auto-review",
+      "quote": "3. Fail closed on timeout, execution failure, or malformed output.  |  GUARDIAN_REVIEW_TIMEOUT: Duration = Duration::from_secs(90)  |  3 consecutive denials or 10 denials within a rolling window of the last 50 reviews in the same turn",
+      "checked_on": "2026-09-23",
+      "notes": "When the breaker trips, the source returns GuardianRejectionCircuitBreakerAction::InterruptTurn, so the exec run ends mid-task. On a denial, the docs say: 'Codex returns the review rationale to the main agent and adds a stronger instruction: Do not pursue the same outcome via workaround, indirect execution, or policy circumvention.'"
+    },
+    {
+      "id": "codex-17-auto-review-needs-on-request",
+      "topic": "codex auto-review",
+      "claim": "Auto-review does nothing with approval 'never' or with full access / yolo",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/sandboxing/auto-review ; https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/core/src/guardian/mod.rs",
+      "quote": "Auto-review only applies when approvals are interactive  |  Full Access (`never` approvals with a disabled sandbox) approves without review.",
+      "checked_on": "2026-09-23",
+      "notes": "The exec test exec_bypass_preserves_never_for_auto_review_config shows that --dangerously-bypass-approvals-and-sandbox keeps 'approval: never' even when the config sets auto_review."
+    },
+    {
+      "id": "codex-18-dangerously-bypass",
+      "topic": "codex exec --dangerously-bypass-approvals-and-sandbox",
+      "claim": "--dangerously-bypass-approvals-and-sandbox (alias --yolo) removes both the sandbox and approvals, and also skips the git-repo check",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec --help'; https://learn.chatgpt.com/docs/developer-commands?surface=cli ; https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/exec/src/lib.rs",
+      "quote": "Skip all confirmation prompts and execute commands without sandboxing. EXTREMELY DANGEROUS. Intended solely for running in environments that are externally sandboxed  |  Run every command without approvals or sandboxing. Only use inside an externally hardened environment.  |  // When --yolo (dangerously_bypass_approvals_and_sandbox) is set, also skip the git repo check",
+      "checked_on": "2026-09-23",
+      "notes": "In source it sets SandboxMode::DangerFullAccess. It is the only built-in mode in which the GPU, the systemd user bus, .git writes and the network all work with no extra configuration."
+    },
+    {
+      "id": "codex-19-output-last-message",
+      "topic": "codex exec -o",
+      "claim": "-o/--output-last-message writes the agent's final message to a file",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec --help'; https://learn.chatgpt.com/docs/developer-commands?surface=cli",
+      "quote": "-o, --output-last-message <FILE>  Specifies file where the last message from the agent should be written",
+      "checked_on": "2026-09-23",
+      "notes": "It is a global exec flag: it also works on 'exec resume' and 'exec fork'."
+    },
+    {
+      "id": "codex-20-json-events",
+      "topic": "codex exec --json",
+      "claim": "--json prints a JSONL event stream",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec --help'; https://learn.chatgpt.com/docs/non-interactive-mode",
+      "quote": "--json  Print events to stdout as JSONL  |  event types include `thread.started`, `turn.started`, `turn.completed`, `turn.failed`, `item.*`, and `error`",
+      "checked_on": "2026-09-23",
+      "notes": "It has an alias, --experimental-json. Capture the thread id from the thread.started event; it is the handle for 'codex exec resume <id>'."
+    },
+    {
+      "id": "codex-21-output-schema",
+      "topic": "codex exec --output-schema",
+      "claim": "--output-schema constrains the final response to a JSON Schema",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec --help'",
+      "quote": "--output-schema <FILE>  Path to a JSON Schema file describing the model's final response shape",
+      "checked_on": "2026-09-23",
+      "notes": "Also available on 'exec resume' and 'exec fork'."
+    },
+    {
+      "id": "codex-22-ephemeral",
+      "topic": "codex exec --ephemeral",
+      "claim": "--ephemeral exists in 0.153.4 and disables session persistence",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec --help'; https://learn.chatgpt.com/docs/developer-commands?surface=cli",
+      "quote": "--ephemeral  Run without persisting session files to disk",
+      "checked_on": "2026-09-23",
+      "notes": "An ephemeral run cannot be resumed later, and the source bails with 'Ephemeral forks require a prompt'. Do not use it for builder/worker runs that may need resume or audit."
+    },
+    {
+      "id": "codex-23-cd-add-dir",
+      "topic": "codex exec -C / --add-dir",
+      "claim": "-C sets the working root. --add-dir adds more writable roots",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec --help'",
+      "quote": "-C, --cd <DIR>  Tell the agent to use the specified directory as its working root  |  --add-dir <DIR>  Additional directories that should be writable alongside the primary workspace",
+      "checked_on": "2026-09-23",
+      "notes": "The .git/.codex/.agents protection also applies inside every added writable root (codex-31)."
+    },
+    {
+      "id": "codex-24-git-repo-check",
+      "topic": "codex exec --skip-git-repo-check",
+      "claim": "exec refuses to run outside a Git repo unless --skip-git-repo-check (or yolo) is given",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/non-interactive-mode ; https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/exec/src/lib.rs",
+      "quote": "Codex requires commands to run inside a Git repository to prevent destructive changes.  |  Not inside a trusted directory and --skip-git-repo-check was not specified.",
+      "checked_on": "2026-09-23",
+      "notes": ""
+    },
+    {
+      "id": "codex-25-exec-resume",
+      "topic": "codex exec resume",
+      "claim": "codex exec resume <id|name> [PROMPT] and --last exist. --last is filtered to the cwd unless --all is given",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec resume --help'; https://learn.chatgpt.com/docs/developer-commands?surface=cli",
+      "quote": "[SESSION_ID]  Conversation/session id (UUID) or thread name. UUIDs take precedence if it parses. If omitted, use --last to pick the most recent recorded session  |  --all  Show all sessions (disables cwd filtering)  |  Resume the most recent chat from the current working directory.",
+      "checked_on": "2026-09-23",
+      "notes": "The resume options are: -c, --last, --all, --enable/--disable, -i, --strict-config, -m, --dangerously-bypass-approvals-and-sandbox, --dangerously-bypass-hook-trust, --thread-source, --skip-git-repo-check, --ephemeral, --ignore-user-config, --ignore-rules, --output-schema, --json, -o. There is no -s, -C, --add-dir, --approve-for-me or -p."
+    },
+    {
+      "id": "codex-26-resume-permissions-not-persisted",
+      "topic": "codex exec resume",
+      "claim": "A resumed exec run uses the approval and sandbox settings of the resume invocation, not the original session's",
+      "verdict": "confirmed",
+      "source": "https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/exec/src/lib.rs (thread_resume_params_from_config)",
+      "quote": "approval_policy: Some(config.permissions.approval_policy.value().into()),\n        approvals_reviewer: approvals_reviewer_override,\n        sandbox: sandbox.flatten(),",
+      "checked_on": "2026-09-23",
+      "notes": "Established by reading the source; not tested at runtime. Each resume must restate permissions with -c sandbox_mode=..., -c approval_policy=..., -c approvals_reviewer=..., or the bypass flag. Otherwise it falls back to config defaults (read-only sandbox + never)."
+    },
+    {
+      "id": "codex-27-exec-fork",
+      "topic": "codex exec fork",
+      "claim": "codex exec fork <SESSION_ID> [PROMPT] exists",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec fork --help'",
+      "quote": "Fork a previous session by id into a new session  |  Usage: codex exec fork [OPTIONS] <SESSION_ID> [PROMPT]",
+      "checked_on": "2026-09-23",
+      "notes": ""
+    },
+    {
+      "id": "codex-28-thread-source",
+      "topic": "codex exec --thread-source",
+      "claim": "--thread-source labels new or forked threads. The values are user, subagent, guardian_review, memory_consolidation, or any custom feature string. exec defaults to user",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex exec --help'; https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/protocol/src/protocol.rs (enum ThreadSource); codex-rs/exec/src/lib.rs",
+      "quote": "--thread-source <SOURCE>  Source classification for newly created or forked threads  |  ThreadSource::User => \"user\", ThreadSource::Subagent => \"subagent\", ThreadSource::GuardianReview => \"guardian_review\"  |  thread_source.map(Into::into).unwrap_or(ThreadSource::User)",
+      "checked_on": "2026-09-23",
+      "notes": "This is separate from the session 'source' (exec), which is what Desktop and the TUI filter on. Issue #42083 shows threads with source=exec and thread_source=user staying hidden. Setting --thread-source does not make exec threads visible in the app."
+    },
+    {
+      "id": "codex-29-full-auto-deprecated",
+      "topic": "codex exec --full-auto",
+      "claim": "--full-auto is deprecated",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/developer-commands?surface=cli",
+      "quote": "Deprecated compatibility flag. Prefer `--sandbox workspace-write`; Codex prints a warning when this flag is used.",
+      "checked_on": "2026-09-23",
+      "notes": "The 0.153.4 exec --help does not list it."
+    },
+    {
+      "id": "codex-30-network-workspace-write",
+      "topic": "codex sandbox network",
+      "claim": "Network is off by default in workspace-write. It is enabled with sandbox_workspace_write.network_access = true (CLI: -c sandbox_workspace_write.network_access=true)",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/config-file/config-reference ; https://learn.chatgpt.com/docs/agent-approvals-security",
+      "quote": "Allow outbound network access inside the workspace-write sandbox.  |  By default, the agent runs with network access turned off.  |  [sandbox_workspace_write] / network_access = true",
+      "checked_on": "2026-09-23",
+      "notes": "The permission-profile equivalent is [permissions.<name>.network] enabled = true. Do not mix the two forms (codex-10)."
+    },
+    {
+      "id": "codex-31-git-dir-protected",
+      "topic": "codex sandbox protected paths",
+      "claim": "In workspace-write, <root>/.git (and .codex, .agents) stay read-only, so git add/commit/fetch/push cannot write .git from inside the sandbox",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/agent-approvals-security ; https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/linux-sandbox/src/bwrap.rs",
+      "quote": "In the default `workspace-write` sandbox policy, writable roots still include protected paths: `<writable_root>/.git` is protected as read-only whether it appears as a directory or file.",
+      "checked_on": "2026-09-23",
+      "notes": "Consequence for a builder: git commit and push must run outside the sandbox, via an escalation (auto-review), an execpolicy allow rule (codex-36), or no sandbox. That git commit fails in-sandbox is inferred; it was not run."
+    },
+    {
+      "id": "codex-32-linux-sandbox-dev",
+      "topic": "codex sandbox GPU",
+      "claim": "The Linux sandbox (bwrap + seccomp) mounts a minimal /dev, which hides /dev/nvidia*",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/agent-approvals-security ; https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/linux-sandbox/src/bwrap.rs",
+      "quote": "Linux uses `bwrap` plus `seccomp` by default.  |  In bubblewrap (`bubblewrap.c`, `SETUP_MOUNT_DEV`), `--dev /dev` creates the standard minimal nodes: null, zero, full, random, urandom, and tty.",
+      "checked_on": "2026-09-23",
+      "notes": "Even the full-filesystem bwrap path says 'Preserve nodev on the root bind while exposing only standard devices.' The GPU is reliably visible only when the sandbox is disabled (danger-full-access or yolo). The docs mention no GPU or device option."
+    },
+    {
+      "id": "codex-33-gh-19676",
+      "topic": "codex sandbox GPU",
+      "claim": "openai/codex#19676 (workspace-write sandbox blocks GPU access, no /dev/nvidia* in the bwrap namespace) is still open",
+      "verdict": "confirmed",
+      "source": "command: gh issue view 19676 -R openai/codex --json state,title,updatedAt (https://github.com/openai/codex/issues/19676)",
+      "quote": "\"state\":\"OPEN\",\"title\":\"[bug] workspace-write sandbox blocks GPU access (no /dev/nvidia* in bwrap namespace)\",\"updatedAt\":\"2026-07-21T15:14:33Z\"",
+      "checked_on": "2026-09-23",
+      "notes": "The reporter later commented: 'no, this hasn't been fixed - the issue is still open, there's no PR referencing it, and the sandbox code on main ... still has no GPU/device-passthrough handling.'"
+    },
+    {
+      "id": "codex-34-gh-3141",
+      "topic": "codex sandbox GPU",
+      "claim": "openai/codex#3141 (Allow GPU access inside sandbox) is still open. The community workarounds are fragile",
+      "verdict": "confirmed",
+      "source": "command: gh issue view 3141 -R openai/codex --comments (https://github.com/openai/codex/issues/3141)",
+      "quote": "\"state\":\"OPEN\",\"title\":\"Allow GPU access inside sandbox\",\"updatedAt\":\"2026-06-10T19:46:57Z\"  |  (maintainer) There are security concerns about giving access to the GPU from within the sandbox.  |  (user) After the latest update it causes a sandbox error to have the config I proposed earlier: [sandbox_workspace_write] writable_roots = [ \"/dev/nvidia\", \"/dev/dri\" ]",
+      "checked_on": "2026-09-23",
+      "notes": "The writable_roots=[\"/dev\"] workaround gives mixed results: others report CUDA error 304 even with /dev visible. Do not design on it."
+    },
+    {
+      "id": "codex-35-seccomp-unix-connect",
+      "topic": "codex sandbox systemd --user",
+      "claim": "With network disabled, the seccomp filter denies connect() for every socket family including AF_UNIX, so systemctl --user (the D-Bus/systemd user bus) cannot work from inside the sandbox. With network_access=true and no proxy, no network seccomp filter is installed",
+      "verdict": "confirmed",
+      "source": "https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/linux-sandbox/src/landlock.rs (install_network_seccomp_filter_on_current_thread)",
+      "quote": "NetworkSeccompMode::Restricted => { deny_syscall(&mut rules, libc::SYS_connect); ... // For `socket` we allow AF_UNIX (arg0 == AF_UNIX) and deny everything else.  |  !network_sandbox_policy.is_enabled() || allow_network_for_proxy",
+      "checked_on": "2026-09-23",
+      "notes": "Established by reading the source; not tested at runtime. Recommended probe (not run, since it is outside the allowed command list): 'codex sandbox -c sandbox_mode=\"workspace-write\" -c sandbox_workspace_write.network_access=true -- systemctl --user status'. If systemctl --user works from the sandbox, then 'systemd-run --user' is a full sandbox escape: treat it as privileged."
+    },
+    {
+      "id": "codex-36-execpolicy-rules",
+      "topic": "codex execpolicy rules",
+      "claim": "Execpolicy .rules can allow specific command prefixes to run outside the sandbox without a prompt, or forbid them",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/agent-configuration/rules (308 from https://developers.openai.com/codex/rules); https://github.com/openai/codex/blob/rust-v0.153.4/codex-rs/core/src/exec_policy.rs",
+      "quote": "\"allow\": Run the command outside the sandbox without prompting.  |  \"forbidden\": Block the request without prompting.  |  Codex scans `rules/` under every active config layer at startup, including Team Config locations and the user layer at `~/.codex/rules/`. Project-local rules under `<repo>/.codex/rules/` load only when the project `.codex/` layer is trusted.  |  // Bypass sandbox only when every parsed command segment is explicitly allowed by execpolicy.",
+      "checked_on": "2026-09-23",
+      "notes": "Syntax: prefix_rule(pattern=[...], decision=..., justification=...). Whether forbidden rules are enforced under --dangerously-bypass-approvals-and-sandbox is not documented; the source computes Forbidden regardless of sandbox mode, but this was not tested. 'exec --ignore-rules' disables all rules. Prefix matching can be evaded by reordering arguments (e.g. 'git push origin main --force'), so it is a guardrail, not a security boundary."
+    },
+    {
+      "id": "codex-37-session-storage",
+      "topic": "codex session persistence",
+      "claim": "Rollouts are stored as JSONL under ~/.codex/sessions/YYYY/MM/DD/, with thread state in SQLite (state_5.sqlite, thread_history_1.sqlite) plus session_index.jsonl",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'ls -1 ~/.codex' (file names only) + 'ls ~/.codex/sessions/2026/09/15'; https://learn.chatgpt.com/docs/config-file/config-reference",
+      "quote": "rollout-2026-09-15T14-01-16-<uuid>.jsonl ; state_5.sqlite ; thread_history_1.sqlite ; session_index.jsonl ; archived_sessions  |  sqlite_home: Directory where Codex stores the SQLite-backed state DB used by agent jobs and other resumable runtime state.",
+      "checked_on": "2026-09-23",
+      "notes": "Non-ephemeral exec threads use paginated history (source: history_mode: (!config.ephemeral).then_some(ThreadHistoryMode::Paginated)). 'codex migrate-rollouts' migrates legacy sessions. No file contents were read."
+    },
+    {
+      "id": "codex-38-exec-sessions-tui",
+      "topic": "codex session visibility",
+      "claim": "exec sessions are resumable in the TUI but hidden from the picker unless --include-non-interactive is given",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'codex resume --help'; https://github.com/openai/codex/pull/24503 (merged 2026-05-26)",
+      "quote": "--include-non-interactive  Include non-interactive sessions in the resume picker and --last selection  |  Made `--include-non-interactive` include `exec` and `appServer` sessions, while continuing to exclude subagent and unknown sources.",
+      "checked_on": "2026-09-23",
+      "notes": "By default the picker shows only cli and vscode sources ('thread/list treats omitted or empty sourceKinds as interactive-only (cli, vscode)')."
+    },
+    {
+      "id": "codex-39-exec-sessions-desktop",
+      "topic": "codex session visibility",
+      "claim": "Threads started with codex exec appear in the Codex Desktop app thread list",
+      "verdict": "not documented",
+      "source": "https://github.com/openai/codex/issues/42083 (OPEN, updated 2026-09-04)",
+      "quote": "This is more than the known behavior where untouched `exec` sessions are intentionally not enumerated.  |  A persisted thread originally created by `codex exec` can be opened/resumed in Codex Desktop and used as an ordinary interactive chat, but it disappears from Desktop sidebar/search after navigating away.",
+      "checked_on": "2026-09-23",
+      "notes": "Official docs say nothing either way. Issue evidence: exec threads are hidden in the Desktop sidebar by default and can only be opened by ID. Do not build a 'watch in the Codex app' feature on exec threads."
+    },
+    {
+      "id": "codex-40-exec-sessions-unnamed",
+      "topic": "codex session visibility",
+      "claim": "exec threads cannot be named from the CLI",
+      "verdict": "not documented",
+      "source": "https://github.com/openai/codex/issues/46804 (OPEN, updated 2026-09-20)",
+      "quote": "`codex exec` creates a thread whose `name` is always NULL, and there is no supported way to set it from outside the interactive app.  |  Sessions created this way are also not written to `session_index.jsonl`, so `codex resume` does not list them.",
+      "checked_on": "2026-09-23",
+      "notes": "Reported on codex-cli 0.155.1. Keep your own registry (thread id -> role/task) from the thread.started JSON event."
+    },
+    {
+      "id": "codex-41-env-secrets-passed",
+      "topic": "codex shell environment",
+      "claim": "By default, environment variables whose names contain KEY/SECRET/TOKEN are passed through to the agent's commands",
+      "verdict": "confirmed",
+      "source": "https://learn.chatgpt.com/docs/config-file/config-reference (shell_environment_policy.ignore_default_excludes)",
+      "quote": "Keep variables containing KEY, SECRET, or TOKEN before other filters run (default: true). Set to false to apply automatic secret-name exclusions.",
+      "checked_on": "2026-09-23",
+      "notes": "On a shared account this matters: VAST_API_KEY, GH_TOKEN, bot tokens etc. in the launcher environment reach the agent unless you set shell_environment_policy.ignore_default_excludes=false or filters. The Vast CLI key also sits in a file (~/.config/vastai/vast_api_key) that any unsandboxed agent can read."
+    },
+    {
+      "id": "codex-42-models",
+      "topic": "codex models",
+      "claim": "Model slugs available to this account per ~/.codex/models_cache.json",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu python3 one-liner printing only the 'slug' field of each entry in ~/.codex/models_cache.json['models']",
+      "quote": "gpt-6-astra\ngpt-reserve\ngpt-5.6-sol\ngpt-5.6-terra\ngpt-5.6-luna\ngpt-5.5\ncodex-auto-review",
+      "checked_on": "2026-09-23",
+      "notes": "codex-auto-review is the approval-reviewer model (codex-14), not a main-agent model. The configured default model was not read (config.toml was not opened)."
+    },
+    {
+      "id": "vast-01-version",
+      "topic": "vastai",
+      "claim": "vastai CLI 1.8.0 at ~/.local/bin/vastai on sail-gpu",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu '~/.local/bin/vastai --version'",
+      "quote": "1.8.0",
+      "checked_on": "2026-09-23",
+      "notes": "Its help says: '--api-key API_KEY  API Key to use. defaults to using the one stored in /home/aurnab/.config/vastai/vast_api_key' (a shared-account key)."
+    },
+    {
+      "id": "vast-02-cpu-fields",
+      "topic": "vastai search offers fields",
+      "claim": "CPU fields are cpu_cores, cpu_cores_effective, cpu_ram, cpu_ghz and cpu_arch. There is no cpu_name query field, but cpu_name appears in --raw output",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'vastai search offers --help' + --raw key list",
+      "quote": "cpu_cores:              int       # virtual cpus  |  cpu_cores_effective:    float     # virtual cpus you get  |  cpu_ram:                float     system RAM in gigabytes  |  cpu_ghz:                Float     # cpu clock speed GHZ",
+      "checked_on": "2026-09-23",
+      "notes": "Raw JSON keys include cpu_name, cpu_ram (observed in MB, e.g. 32.2 GB -> ~32200), dph_base, dph_total, storage_total_cost, discounted_dph_total, end_date, duration, reliability2 and verification. cpu_cores_effective is your share of a big host: e.g. a 256-core host sells 32 effective cores."
+    },
+    {
+      "id": "vast-03-cost-fields",
+      "topic": "vastai search offers fields",
+      "claim": "Cost fields are dph ($/h), inet_up_cost and inet_down_cost ($/GB), and storage_cost ($/GB/month). dph_total works for sorting and appears in raw output",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'vastai search offers --help' + query with -o 'dph_total'",
+      "quote": "dph:                    float     $/hour rental cost  |  inet_down_cost:         float     internet download bandwidth cost in $/GB  |  inet_up_cost:           float     internet upload bandwidth cost in $/GB  |  storage_cost:           float     storage cost in $/GB/month",
+      "checked_on": "2026-09-23",
+      "notes": "dph_total is not in the documented query-field list, but -o 'dph_total' returned offers in ascending dph_total order. dph_total includes storage priced at --storage (default 5 GiB)."
+    },
+    {
+      "id": "vast-04-reliability-verified-rentable-disk",
+      "topic": "vastai search offers fields",
+      "claim": "reliability, verified, rentable, disk_space and disk_bw are query fields",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'vastai search offers --help'",
+      "quote": "reliability:            float     machine reliability score (see FAQ for explanation)  |  verified:               bool      is the machine verified  |  rentable:               bool      is the instance currently rentable  |  disk_space:             float     disk storage space, in GB",
+      "checked_on": "2026-09-23",
+      "notes": "The raw output has no 'verified' key; it has 'verification' (e.g. 'verified')."
+    },
+    {
+      "id": "vast-05-duration-end-date",
+      "topic": "vastai search offers fields",
+      "claim": "duration (max rental days) is a query field. end_date is only in raw output",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'vastai search offers --help' + --raw output",
+      "quote": "duration:               float     max rental duration in days",
+      "checked_on": "2026-09-23",
+      "notes": "In raw output, duration is in seconds and end_date is epoch seconds; both were consistent in the snapshot. Some cheap offers expire within days (one 5090 had max_days 0.2), so filter e.g. 'duration>7' for long jobs."
+    },
+    {
+      "id": "vast-06-ondemand-vs-interruptible",
+      "topic": "vastai pricing type",
+      "claim": "Search supports on-demand, reserved and interruptible (bid) pricing, default on-demand. Interruptible instances are created with --bid_price",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'vastai search offers --help' and 'vastai create instance --help'",
+      "quote": "-t TYPE, --type TYPE     Show 'on-demand', 'reserved', or 'bid'(interruptible) pricing. default: on-demand  |  -i, --interruptible      Alias for --type=bid  |  --bid_price BID_PRICE             (OPTIONAL) create an INTERRUPTIBLE instance with per machine bid price in $/hour",
+      "checked_on": "2026-09-23",
+      "notes": "Other aliases: -b (bid), -d (on-demand), -r (reserved). min_bid ($/hr) is a query field."
+    },
+    {
+      "id": "vast-07-sort",
+      "topic": "vastai sorting",
+      "claim": "Sort with -o using a comma-separated field list. A '-' suffix sorts descending. The default is score-",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'vastai search offers --help'",
+      "quote": "-o ORDER, --order ORDER  Comma-separated list of fields to sort on. postfix field with - to sort desc. ex: -o 'num_gpus,total_flops-'.  default='score-'",
+      "checked_on": "2026-09-23",
+      "notes": ""
+    },
+    {
+      "id": "vast-08-default-query-storage-limit",
+      "topic": "vastai search defaults",
+      "claim": "Search adds a default filter and prices storage at 5 GiB by default. A call returned 64 offers",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'vastai search offers --help' + observed N_OFFERS_RETURNED=64",
+      "quote": "query                    Query to search for. default: 'external=false rentable=true verified=true', pass -n to ignore default  |  --storage STORAGE        Amount of storage to use for pricing, in GiB. default=5.0GiB",
+      "checked_on": "2026-09-23",
+      "notes": "The 64-result cap is observed behaviour; use --limit for more."
+    },
+    {
+      "id": "vast-09-labels",
+      "topic": "vastai labels",
+      "claim": "Labels can be set at create time or later, and show instances can filter by label",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'vastai create instance --help', 'vastai label instance --help', 'vastai show instances --help'",
+      "quote": "--label LABEL                     label to set on the instance  |  usage: vastai label instance <id> <label>  |  --label LABEL [LABEL ...]                        filter by instance label; pass empty string '' for unlabeled",
+      "checked_on": "2026-09-23",
+      "notes": "On the shared account, only ever touch instances whose label carries this project's prefix. 'show instances --label' makes that filter server-side."
+    },
+    {
+      "id": "vast-10-container-api-key",
+      "topic": "vastai in-container key",
+      "claim": "Each instance gets a per-instance API key (CONTAINER_API_KEY) and its id (CONTAINER_ID), which allow self-stop and self-destroy from inside the container",
+      "verdict": "confirmed",
+      "source": "https://docs.vast.ai/instances/docker-environment",
+      "quote": "Each instance comes with a per-instance API key stored in the `CONTAINER_API_KEY` environment variable, allowing you to run CLI commands from within the container.  |  vastai stop instance $CONTAINER_ID\nvastai destroy instance $CONTAINER_ID",
+      "checked_on": "2026-09-23",
+      "notes": "The key's permission scope is not documented beyond the stop/destroy example. VAST_CONTAINERLABEL is described as 'Unique name/ID of your instance'."
+    },
+    {
+      "id": "vast-11-cli-key-resolution",
+      "topic": "vastai in-container key",
+      "claim": "The vastai CLI picks up CONTAINER_API_KEY automatically",
+      "verdict": "not documented",
+      "source": "https://github.com/vast-ai/vast-cli (vastai/_base.py docstring, via gh code search 2026-09-23)",
+      "quote": "Resolves the API key from (in order): 1. Explicit argument 2. VAST_API_KEY environment variable 3. XDG config file: $XDG_CONFIG_HOME/vastai/vast_api_key ... 4. Legacy file: ~/.vast_api_key",
+      "checked_on": "2026-09-23",
+      "notes": "CONTAINER_API_KEY is not in that resolution list (main branch; not verified against 1.8.0). Pass it explicitly: vastai --api-key \"$CONTAINER_API_KEY\" stop instance \"$CONTAINER_ID\"."
+    },
+    {
+      "id": "vast-12-attach-ssh",
+      "topic": "vastai per-instance ssh key",
+      "claim": "A per-instance SSH key is attached with 'vastai attach ssh <instance_id> <ssh_key>'",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'vastai attach ssh --help'",
+      "quote": "usage: vastai attach ssh instance_id ssh_key  |  Attach an ssh key to an instance. This will allow you to connect to the instance with the ssh key.",
+      "checked_on": "2026-09-23",
+      "notes": "Examples in the help accept a literal key, $(cat ~/.ssh/id_rsa.pub), or a .pub path."
+    },
+    {
+      "id": "vast-13-copy-stopped",
+      "topic": "vastai data movement",
+      "claim": "Data can be copied off a stopped instance (vastai copy between instances, and cloud sync)",
+      "verdict": "confirmed",
+      "source": "https://docs.vast.ai/guides/instances/storage/data-movement (308 from vast.ai/docs/gpu-instances/data-movement); command: ssh sail-gpu 'vastai copy --help'",
+      "quote": "The 3 built-in methods discussed here are unique in that they offer ways to copy data to/from a stopped instance, with some constraints.  |  Instances can be stopped/inactive. See complete Constraints below.  |  The Cloud Sync feature allows you to copy data to/from instance local storage and several cloud storage providers (S3, gdrive, backblaze, etc) - even when the instance is stopped.",
+      "checked_on": "2026-09-23",
+      "notes": "Copy formats: [instance_id:]path, C.<id>:path, local:path, V.<volume>:path, <cloud>.<conn_id>:path. From the CLI help: 'You should not copy to /root or / as a destination directory'. The docs do not say explicitly that the C.<id>:path -> local:path form works on a stopped source."
+    },
+    {
+      "id": "vast-14-stop-semantics",
+      "topic": "vastai stop",
+      "claim": "Stopping keeps the data. Restarting depends on the machine being available",
+      "verdict": "confirmed",
+      "source": "command: ssh sail-gpu 'vastai stop instance --help'",
+      "quote": "When an instance is \"stopped\" all of your data on the instance is preserved, and you can resume use of your instance by starting it again. Once stopped, starting an instance is subject to resource availability on the machine that the instance is located on.",
+      "checked_on": "2026-09-23",
+      "notes": "Whether storage is billed while stopped was not verified in this pass."
+    },
+    {
+      "id": "venue-01-iros2027-city-dates",
+      "topic": "IROS 2027",
+      "claim": "IROS 2027 is in Florence, 26 Sep - 1 Oct 2027",
+      "verdict": "confirmed",
+      "source": "https://2027.ieee-iros.org/ (official site; iros2027.org does not resolve)",
+      "quote": "Human-Centric Robots for Sustainable Life 📅 September 26 – October 1, 2027 📍 Fortezza da Basso, Florence, Italy",
+      "checked_on": "2026-09-23",
+      "notes": "The official landing page has no deadlines, CFP, page limits or template yet (/important-dates/ returns 404)."
+    },
+    {
+      "id": "venue-02-iros2027-deadline",
+      "topic": "IROS 2027",
+      "claim": "The IROS 2027 paper submission deadline is 2027-03-01",
+      "verdict": "confirmed",
+      "source": "https://www.ieee-ras.org/event/call-for-papers-paper-submission-deadline-iros-2027-ieee-rsj-international-conference-on-intelligent-robots-and-systems-iros-27403-0/ (IEEE RAS calendar)",
+      "quote": "Mar 1, 2027 Paper submission deadline: IROS Submit your research papers and proposals for 2027 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS).",
+      "checked_on": "2026-09-23",
+      "notes": "The source is the RAS calendar only; the official IROS 2027 site has no deadline yet. No time zone is given. A secondary aggregator (mldeadlines.com, search snippet only, not verified) says 23:59:59 America/Los_Angeles. For comparison, IROS 2026 was 'March 2, 2026 – Deadline for Paper submissions'."
+    },
+    {
+      "id": "venue-03-iros-ral-option",
+      "topic": "IROS / RA-L",
+      "claim": "An RA-L submission with the IROS option (and its own deadline) exists for 2027",
+      "verdict": "contradicted",
+      "source": "https://2026.ieee-iros.org/contribute/call-for-papers/ ; https://www.ieee-ras.org/publications/ra-l/",
+      "quote": "IROS no longer offers an RA-L+IROS submission option. All published papers from RAM and non-evolutionary published RA-L, T-ASE and T-RO papers are eligible for presentation at IROS, during an eligibility time window.  |  Reminder: there are no conference-specific submission deadlines for RA-L papers.",
+      "checked_on": "2026-09-23",
+      "notes": "The IROS 2026 CFP dropped the option. The 2027 CFP is not out, but the RA-L page lists a transfer window instead (venue-04)."
+    },
+    {
+      "id": "venue-04-ral-transfer-window",
+      "topic": "RA-L",
+      "claim": "An accepted RA-L paper can be presented at IROS 2027 within the transfer window",
+      "verdict": "confirmed",
+      "source": "https://www.ieee-ras.org/publications/ra-l/",
+      "quote": "IROS 2027: August 1, 2026 to April 30, 2027  |  The paper must be transferred within 270 days of acceptance",
+      "checked_on": "2026-09-23",
+      "notes": "Other 2027 windows on the same page: ICRA 2027 March 1, 2026 to December 31, 2026; BioRob 2027 August 1, 2026 to April 1, 2027; CASE 2027 and RO-MAN 2027 to April 30, 2027; Humanoids 2027 October 1, 2026 to June 30, 2027. Whether the dates refer to acceptance or transfer dates is paraphrased by the fetch tool; confirm before relying on edge dates."
+    },
+    {
+      "id": "venue-05-iros-page-limit",
+      "topic": "IROS",
+      "claim": "IROS papers are 6+2 pages",
+      "verdict": "contradicted",
+      "source": "https://2026.ieee-iros.org/contribute/call-for-papers/",
+      "quote": "Papers should be up to eight pages (US letter size) in length. The number of pages includes the references, appendices, etc. This replaces the old 6+2 model, and there is no option to pay for additional pages.",
+      "checked_on": "2026-09-23",
+      "notes": "This is the IROS 2026 rule. The IROS 2027 page limit is not documented yet; assume 8 pages all-inclusive until the 2027 CFP appears."
+    },
+    {
+      "id": "venue-06-ral-page-limit",
+      "topic": "RA-L",
+      "claim": "RA-L letters are 6 pages plus up to 2 paid extra pages, with references counted",
+      "verdict": "confirmed",
+      "source": "https://www.ieee-ras.org/publications/ra-l/information-for-authors-ra-l",
+      "quote": "Letters will be six pages long in two-column IEEE format (see below for details), including figures and references, with up to two extra pages with extra page charges, for a maximum of eight pages.  |  These page limits include everything needed for publication, e.g., figures, tables, and any appendices.",
+      "checked_on": "2026-09-23",
+      "notes": "The extra-page charge is $175 per page, as quoted in another fetch of the same page ('at most two extra pages allowed at a charge ($175 per extra page)')."
+    },
+    {
+      "id": "venue-07-tro-page-limit",
+      "topic": "T-RO",
+      "claim": "T-RO regular papers: 18 pages at first submission, 20 pages maximum final, with a mandatory $175/page charge beyond 12. T-RO no longer takes new short papers",
+      "verdict": "confirmed",
+      "source": "https://www.ieee-ras.org/publications/t-ro/t-ro-information-for-authors/ ; https://www.ieee-ras.org/publications/t-ro/",
+      "quote": "First submissions should be no more than 18 pages  |  Final Regular submissions may be a maximum of 20 pages long.  |  a mandatory page charge (see below) applies to each page beyond 12, up to a maximum of 20 pages  |  include everything needed for publication, e.g., figures, tables, references.",
+      "checked_on": "2026-09-23",
+      "notes": "Communication items: max 4 pages, charged beyond 3. Surveys: max 20, charged beyond 14. The T-RO landing page steers shorter work (8 pages or fewer) to RA-L."
+    },
+    {
+      "id": "venue-08-tro-scope",
+      "topic": "T-RO",
+      "claim": "T-RO's scope covers rehabilitation and wearable robotics",
+      "verdict": "confirmed",
+      "source": "https://www.ieee-ras.org/publications/t-ro/t-ro-information-for-authors/",
+      "quote": "medical robotics and computer-integrated surgery; rehabilitation and healthcare robotics",
+      "checked_on": "2026-09-23",
+      "notes": "The word 'exoskeleton' was not seen in the scope text. The fetch tool also reported a 'Special Section on Wearable Robots' among T-RO special collections (not independently verified)."
+    },
+    {
+      "id": "venue-09-tmrb-page-limits",
+      "topic": "IEEE T-MRB",
+      "claim": "T-MRB page limits: Original 12, Short 4, Review 12, Position 8, with $175 per page over the limit",
+      "verdict": "confirmed",
+      "source": "https://www.ieee-ras.org/publications/t-mrb/information-for-authors/",
+      "quote": "Original Articles are typically 12 pages (page limit)  |  Short Articles are typically 4 pages (page limit)  |  Authors are charged $175/page for the pages exceeding the page limit.",
+      "checked_on": "2026-09-23",
+      "notes": "The template is the IEEE Transactions double-column style (IEEE Author Center). Whether references count is not stated."
+    },
+    {
+      "id": "venue-10-tmrb-scope",
+      "topic": "IEEE T-MRB",
+      "claim": "T-MRB's scope statement mentions exoskeletons",
+      "verdict": "not documented",
+      "source": "https://www.ieee-tmrb.org/new/ ; https://www.ieee-ras.org/publications/t-mrb",
+      "quote": "The IEEE T-MRB publishes non-incremental results on innovative systems that support the prevention, diagnosis, or treatment of human diseases.  |  Main journal topics include: Surgical robotics, Rehabilitation and assistive robotics, Bionic prostheses, ...  |  devices for physical and cognitive rehabilitation",
+      "checked_on": "2026-09-23",
+      "notes": "'exoskeleton' and 'wearable' do not appear; exoskeleton work fits under 'Rehabilitation and assistive robotics'. The bar is 'non-incremental' and disease-oriented (prevention/diagnosis/treatment)."
+    },
+    {
+      "id": "venue-11-scirobotics-format",
+      "topic": "Science Robotics",
+      "claim": "Science Robotics Research Articles are up to 8000 words",
+      "verdict": "confirmed",
+      "source": "https://www.science.org/content/page/scirobotics-instructions-research-articles (text from search-engine snippet; direct fetch returned HTTP 403)",
+      "quote": "Research Articles can be up to 8000 words long and can be enhanced with online materials.",
+      "checked_on": "2026-09-23",
+      "notes": "Abstract length, figure limit and reference limit were not verified (page blocked to automated fetch). Submission is via the Science portal."
+    },
+    {
+      "id": "venue-12-iros-template",
+      "topic": "templates",
+      "claim": "IROS uses the IEEEtran conference class",
+      "verdict": "contradicted",
+      "source": "https://2026.ieee-iros.org/contribute/call-for-papers/ -> https://ras.papercept.net/conferences/support/tex.php",
+      "quote": "To ensure formatting compliance (e.g. margins, fonts and size), use the provided templates  |  \\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  |  \\IEEEoverridecommandlockouts  |  \\overrideIEEEmargins",
+      "checked_on": "2026-09-23",
+      "notes": "IROS (PaperCept/PaperPlaza) supplies ieeeconf.cls in ieeeconf.zip (with root.tex), not IEEEtran.cls. US letter. The IROS 2027 template is not yet published; this is the 2026 CFP."
+    },
+    {
+      "id": "venue-13-ral-template",
+      "topic": "templates",
+      "claim": "RA-L uses the conference class for initial submission and IEEEtran (journal) for the final version",
+      "verdict": "confirmed",
+      "source": "https://www.ieee-ras.org/publications/ra-l/information-for-authors-ra-l",
+      "quote": "For compatibility reasons, the first submission to the Letters will be formatted as a RAS conference manuscript.  |  \\documentclass[letterpaper, 10 pt, journal, twoside]{ieeetran}",
+      "checked_on": "2026-09-23",
+      "notes": "The initial submission uses ieeeconf.zip (http://ras.papercept.net/conferences/support/files/ieeeconf.zip)."
+    },
+    {
+      "id": "venue-14-tro-template",
+      "topic": "templates",
+      "claim": "T-RO uses IEEEtran journal mode",
+      "verdict": "confirmed",
+      "source": "https://www.ieee-ras.org/publications/t-ro/t-ro-information-for-authors/",
+      "quote": "Regular and Survey papers...using the command \\documentclass[journal]{IEEEtran}  |  Communication Items should be prepared using the command \\documentclass[9pt,technote]{IEEEtran}",
+      "checked_on": "2026-09-23",
+      "notes": ""
+    }
+  ],
+  "codex_exec_help": "Run Codex non-interactively\nUsage: codex exec [OPTIONS] [PROMPT]\n       codex exec [OPTIONS] <COMMAND> [ARGS]\nCommands:\n  resume  Resume a previous session by id or pick the most recent with --last\n  fork    Fork a previous session by id into a new session\n  review  Run a code review against the current repository\n  help    Print this message or the help of the given subcommand(s)\nArguments:\n  [PROMPT]\n          Initial instructions for the agent. If not provided as an argument (or if `-` is used),\n          instructions are read from stdin. If stdin is piped and a prompt is also provided, stdin\n          is appended as a `<stdin>` block\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"disk-full-read-access\"]'` - `-c\n          shell_environment_policy.inherit=all`\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`\n      --disable <FEATURE>\n          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`\n      --strict-config\n          Error out when config.toml contains fields that are not recognized by this version of\n          Codex\n  -i, --image <FILE>...\n          Optional image(s) to attach to the initial prompt\n  -m, --model <MODEL>\n          Model the agent should use\n      --oss\n          Use open-source provider\n      --local-provider <OSS_PROVIDER>\n          Specify which local provider to use (lmstudio or ollama). If not specified with --oss,\n          will use config default or show selection\n  -p, --profile <CONFIG_PROFILE_V2>\n          Layer $CODEX_HOME/<name>.config.toml on top of the base user config\n  -s, --sandbox <SANDBOX_MODE>\n          Select the sandbox policy to use when executing model-generated shell commands\n          [possible values: read-only, workspace-write, danger-full-access]\n      --approve-for-me\n          Route approval requests through automatic review using the workspace-write sandbox\n      --dangerously-bypass-approvals-and-sandbox\n          Skip all confirmation prompts and execute commands without sandboxing. EXTREMELY\n          DANGEROUS. Intended solely for running in environments that are externally sandboxed\n      --dangerously-bypass-hook-trust\n          Run enabled hooks without requiring persisted hook trust for this invocation. DANGEROUS.\n          Intended only for automation that already vets hook sources\n  -C, --cd <DIR>\n          Tell the agent to use the specified directory as its working root\n      --add-dir <DIR>\n          Additional directories that should be writable alongside the primary workspace\n      --thread-source <SOURCE>\n          Source classification for newly created or forked threads\n      --skip-git-repo-check\n          Allow running Codex outside a Git repository\n      --ephemeral\n          Run without persisting session files to disk\n      --ignore-user-config\n          Do not load `$CODEX_HOME/config.toml`; auth still uses `CODEX_HOME`\n      --ignore-rules\n          Do not load user or project execpolicy `.rules` files\n      --output-schema <FILE>\n          Path to a JSON Schema file describing the model's final response shape\n      --color <COLOR>\n          Specifies color settings for use in the output\n          [default: auto]\n          [possible values: always, never, auto]\n      --json\n          Print events to stdout as JSONL\n  -o, --output-last-message <FILE>\n          Specifies file where the last message from the agent should be written\n  -h, --help\n          Print help (see a summary with '-h')\n  -V, --version\n          Print version",
+  "codex_models": [
+    "gpt-6-astra",
+    "gpt-reserve",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-5.6-luna",
+    "gpt-5.5",
+    "codex-auto-review"
+  ],
+  "vast_offer_snapshot": {
+    "timestamp": "cpu_heavy: 2026-09-23T08:54:22Z; rtx5090: 2026-09-23T08:54:46Z (server clock, UTC)",
+    "method": "Read-only 'vastai search offers ... -o dph_total --raw' on sail-gpu (vastai 1.8.0), piped to python3. No instance, rental or label commands were run. The CLI default query (external=false rentable=true verified=true) also applies. dph_total includes 5 GiB of storage (the --storage default). usd_per_eff_core_hr = dph_total / cpu_cores_effective. cpu_ram_gb = raw cpu_ram / 1000. max_days = raw duration / 86400.",
+    "cpu_heavy_query": "vastai search offers 'cpu_cores_effective>=32 num_gpus=1 verified=true rentable=true' -o 'dph_total' --raw  (64 offers returned; 15 cheapest shown; on-demand pricing)",
+    "cpu_heavy": [
+      {"id": 46601059, "gpu_name": "A16", "num_gpus": 1, "cpu_name": "Xeon(R) Gold 6430", "cpu_cores": 128, "cpu_cores_effective": 32.0, "cpu_ram_gb": 32.2, "dph_total": 0.1076, "usd_per_eff_core_hr": 0.00336, "storage_cost_usd_per_gb_month": 0.13333, "inet_up_cost_usd_per_gb": 0.0001, "inet_down_cost_usd_per_gb": 0.0001, "reliability": 0.9968, "min_bid": 0.06667, "max_days": 132.1, "end_date": "2027-02-02", "geolocation": "Vietnam, VN"},
+      {"id": 48974413, "gpu_name": "Tesla T4", "num_gpus": 1, "cpu_name": "Xeon(R) E5-2686 v4", "cpu_cores": 72, "cpu_cores_effective": 36.0, "cpu_ram_gb": 32.1, "dph_total": 0.1228, "usd_per_eff_core_hr": 0.00341, "storage_cost_usd_per_gb_month": 0.4, "inet_up_cost_usd_per_gb": 0.00391, "inet_down_cost_usd_per_gb": 0.0026, "reliability": 0.994, "min_bid": 0.12, "max_days": 188.9, "end_date": "2027-03-31", "geolocation": "Nevada, US"},
+      {"id": 51664275, "gpu_name": "RTX 5060 Ti", "num_gpus": 1, "cpu_name": "AMD EPYC 7B13 64-Core Processor", "cpu_cores": 256, "cpu_cores_effective": 32.0, "cpu_ram_gb": 32.2, "dph_total": 0.1347, "usd_per_eff_core_hr": 0.00421, "storage_cost_usd_per_gb_month": 0.2, "inet_up_cost_usd_per_gb": 0.03906, "inet_down_cost_usd_per_gb": 0.03906, "reliability": 0.9932, "min_bid": 0.098, "max_days": 18.4, "end_date": "2026-10-11", "geolocation": "Ohio, US"},
+      {"id": 46568462, "gpu_name": "Tesla V100", "num_gpus": 1, "cpu_name": "AMD EPYC 7K62 48-Core Processor", "cpu_cores": 96, "cpu_cores_effective": 48.0, "cpu_ram_gb": 64.4, "dph_total": 0.1605, "usd_per_eff_core_hr": 0.00334, "storage_cost_usd_per_gb_month": 0.06667, "inet_up_cost_usd_per_gb": 0.0013, "inet_down_cost_usd_per_gb": 0.0013, "reliability": 0.9978, "min_bid": 0.13333, "max_days": 87.0, "end_date": "2026-12-19", "geolocation": "Sri Lanka, LK"},
+      {"id": 46245722, "gpu_name": "RTX 4060 Ti", "num_gpus": 1, "cpu_name": "Core(TM) i9-14900KF", "cpu_cores": 32, "cpu_cores_effective": 32.0, "cpu_ram_gb": 31.9, "dph_total": 0.1747, "usd_per_eff_core_hr": 0.00546, "storage_cost_usd_per_gb_month": 0.2, "inet_up_cost_usd_per_gb": 0.00391, "inet_down_cost_usd_per_gb": 0.0026, "reliability": 0.9955, "min_bid": 0.16, "max_days": 131.7, "end_date": "2027-02-02", "geolocation": "Mexico, MX"},
+      {"id": 49407382, "gpu_name": "RTX 4060 Ti", "num_gpus": 1, "cpu_name": "Xeon(R) E5-2699 v3", "cpu_cores": 72, "cpu_cores_effective": 36.0, "cpu_ram_gb": 257.9, "dph_total": 0.1808, "usd_per_eff_core_hr": 0.00502, "storage_cost_usd_per_gb_month": 0.11333, "inet_up_cost_usd_per_gb": 0.00781, "inet_down_cost_usd_per_gb": 0.00781, "reliability": 0.9987, "min_bid": 0.13333, "max_days": 325.6, "end_date": "2027-08-14", "geolocation": "Germany, DE"},
+      {"id": 51029940, "gpu_name": "RTX 3090", "num_gpus": 1, "cpu_name": "Xeon(R) E5-2697 v4", "cpu_cores": 72, "cpu_cores_effective": 36.0, "cpu_ram_gb": 128.9, "dph_total": 0.189, "usd_per_eff_core_hr": 0.00525, "storage_cost_usd_per_gb_month": 0.33333, "inet_up_cost_usd_per_gb": 0.00521, "inet_down_cost_usd_per_gb": 0.00521, "reliability": 0.9695, "min_bid": 0.17333, "max_days": 44.3, "end_date": "2026-11-06", "geolocation": "Alberta, CA"},
+      {"id": 46433852, "gpu_name": "RTX 3070", "num_gpus": 1, "cpu_name": "AMD EPYC 7532 32-Core Processor", "cpu_cores": 64, "cpu_cores_effective": 32.0, "cpu_ram_gb": 257.9, "dph_total": 0.2014, "usd_per_eff_core_hr": 0.00629, "storage_cost_usd_per_gb_month": 0.2, "inet_up_cost_usd_per_gb": 0.01953, "inet_down_cost_usd_per_gb": 0.01953, "reliability": 0.9991, "min_bid": 0.10667, "max_days": 38.5, "end_date": "2026-10-31", "geolocation": "Quebec, CA"},
+      {"id": 52168575, "gpu_name": "RTX 5060 Ti", "num_gpus": 1, "cpu_name": "AMD EPYC 7K62 48-Core Processor", "cpu_cores": 96, "cpu_cores_effective": 48.0, "cpu_ram_gb": 16.0, "dph_total": 0.2014, "usd_per_eff_core_hr": 0.0042, "storage_cost_usd_per_gb_month": 0.2, "inet_up_cost_usd_per_gb": 0.03906, "inet_down_cost_usd_per_gb": 0.03906, "reliability": 0.9531, "min_bid": 0.099, "max_days": 181.0, "end_date": "2027-03-23", "geolocation": "Ohio, US"},
+      {"id": 35888793, "gpu_name": "Tesla P100", "num_gpus": 1, "cpu_name": "Xeon(R) E5-2695 v4", "cpu_cores": 72, "cpu_cores_effective": 36.0, "cpu_ram_gb": 257.9, "dph_total": 0.2017, "usd_per_eff_core_hr": 0.0056, "storage_cost_usd_per_gb_month": 0.24, "inet_up_cost_usd_per_gb": 0.00391, "inet_down_cost_usd_per_gb": 0.0026, "reliability": 0.9954, "min_bid": 0.08, "max_days": 37.0, "end_date": "2026-10-30", "geolocation": "United Kingdom, GB"},
+      {"id": 49401542, "gpu_name": "RTX 3060", "num_gpus": 1, "cpu_name": "Xeon(R) E5-2697A v4", "cpu_cores": 64, "cpu_cores_effective": 64.0, "cpu_ram_gb": 257.8, "dph_total": 0.2676, "usd_per_eff_core_hr": 0.00418, "storage_cost_usd_per_gb_month": 0.13333, "inet_up_cost_usd_per_gb": 0.01172, "inet_down_cost_usd_per_gb": 0.01172, "reliability": 0.9977, "min_bid": 0.13333, "max_days": 128.3, "end_date": "2027-01-29", "geolocation": "Norway, NO"},
+      {"id": 50950849, "gpu_name": "RTX 2060S", "num_gpus": 1, "cpu_name": "AMD EPYC 7502 32-Core Processor", "cpu_cores": 32, "cpu_cores_effective": 32.0, "cpu_ram_gb": 24.0, "dph_total": 0.2681, "usd_per_eff_core_hr": 0.00838, "storage_cost_usd_per_gb_month": 0.2, "inet_up_cost_usd_per_gb": 0.00117, "inet_down_cost_usd_per_gb": 0.00078, "reliability": 0.9831, "min_bid": 0.26667, "max_days": 30.0, "end_date": "2026-10-23", "geolocation": "California, US"},
+      {"id": 52198117, "gpu_name": "RTX 3090 Ti", "num_gpus": 1, "cpu_name": "AMD EPYC 7D12 32-Core Processor", "cpu_cores": 64, "cpu_cores_effective": 32.0, "cpu_ram_gb": 64.3, "dph_total": 0.2681, "usd_per_eff_core_hr": 0.00838, "storage_cost_usd_per_gb_month": 0.2, "inet_up_cost_usd_per_gb": 0.05208, "inet_down_cost_usd_per_gb": 0.05208, "reliability": 0.9635, "min_bid": 0.26667, "max_days": 39.2, "end_date": "2026-11-01", "geolocation": "Oman, OM"},
+      {"id": 34353866, "gpu_name": "RTX PRO 4000", "num_gpus": 1, "cpu_name": "Xeon(R) Platinum 8260", "cpu_cores": 96, "cpu_cores_effective": 32.0, "cpu_ram_gb": 128.8, "dph_total": 0.2681, "usd_per_eff_core_hr": 0.00838, "storage_cost_usd_per_gb_month": 0.21333, "inet_up_cost_usd_per_gb": 0.00391, "inet_down_cost_usd_per_gb": 0.0026, "reliability": 0.9982, "min_bid": 0.2, "max_days": 18.6, "end_date": "2026-10-11", "geolocation": "Belgium, BE"},
+      {"id": 47564332, "gpu_name": "RTX 5070 Ti", "num_gpus": 1, "cpu_name": "AMD EPYC 7V12 64-Core Processor", "cpu_cores": 128, "cpu_cores_effective": 128.0, "cpu_ram_gb": 515.6, "dph_total": 0.3268, "usd_per_eff_core_hr": 0.00255, "storage_cost_usd_per_gb_month": 0.4, "inet_up_cost_usd_per_gb": 0.01172, "inet_down_cost_usd_per_gb": 0.00781, "reliability": 0.9974, "min_bid": 0.296, "max_days": 807.9, "end_date": "2028-12-09", "geolocation": "Italy, IT"}
+    ],
+    "rtx5090_query": "vastai search offers 'gpu_name=RTX_5090 verified=true rentable=true' -t on-demand -o 'dph_total' --raw  (64 offers returned; 10 cheapest shown; all 1x GPU; all verification=verified)",
+    "rtx5090": [
+      {"id": 49250870, "gpu_name": "RTX 5090", "num_gpus": 1, "cpu_name": "AMD EPYC 7K62 48-Core Processor", "cpu_cores": 96, "cpu_cores_effective": 48.0, "cpu_ram_gb": 48.2, "dph_total": 0.4681, "usd_per_eff_core_hr": 0.00975, "storage_cost_usd_per_gb_month": 0.2, "inet_up_cost_usd_per_gb": 0.0013, "inet_down_cost_usd_per_gb": 0.02604, "reliability": 0.9962, "min_bid": 0.28, "max_days": 6.1, "end_date": "2026-09-29", "geolocation": "Zhejiang, CN"},
+      {"id": 48989714, "gpu_name": "RTX 5090", "num_gpus": 1, "cpu_name": "AMD Ryzen 7 7800X3D 8-Core Processor", "cpu_cores": 8, "cpu_cores_effective": 8.0, "cpu_ram_gb": 31.2, "dph_total": 0.469, "usd_per_eff_core_hr": 0.05862, "storage_cost_usd_per_gb_month": 0.33333, "inet_up_cost_usd_per_gb": 0.00521, "inet_down_cost_usd_per_gb": 0.00521, "reliability": 0.9956, "min_bid": 0.907, "max_days": 25.3, "end_date": "2026-10-18", "geolocation": "South Korea, KR"},
+      {"id": 49298967, "gpu_name": "RTX 5090", "num_gpus": 1, "cpu_name": "AMD EPYC 7R32 48-Core Processor", "cpu_cores": 96, "cpu_cores_effective": 24.0, "cpu_ram_gb": 40.2, "dph_total": 0.4694, "usd_per_eff_core_hr": 0.01956, "storage_cost_usd_per_gb_month": 0.4, "inet_up_cost_usd_per_gb": 0.00391, "inet_down_cost_usd_per_gb": 0.0026, "reliability": 0.9905, "min_bid": 0.46667, "max_days": 189.2, "end_date": "2027-03-31", "geolocation": "United States, US"},
+      {"id": 50988765, "gpu_name": "RTX 5090", "num_gpus": 1, "cpu_name": "AMD EPYC 7B12 64-Core Processor", "cpu_cores": 256, "cpu_cores_effective": 32.0, "cpu_ram_gb": 64.5, "dph_total": 0.4809, "usd_per_eff_core_hr": 0.01503, "storage_cost_usd_per_gb_month": 0.13333, "inet_up_cost_usd_per_gb": 0.00391, "inet_down_cost_usd_per_gb": 0.0026, "reliability": 0.9144, "min_bid": 0.45333, "max_days": 20.9, "end_date": "2026-10-14", "geolocation": "United States, US"},
+      {"id": 49506097, "gpu_name": "RTX 5090", "num_gpus": 1, "cpu_name": "AMD EPYC 7B12 64-Core Processor", "cpu_cores": 256, "cpu_cores_effective": 32.0, "cpu_ram_gb": 64.5, "dph_total": 0.4809, "usd_per_eff_core_hr": 0.01503, "storage_cost_usd_per_gb_month": 0.13333, "inet_up_cost_usd_per_gb": 0.00391, "inet_down_cost_usd_per_gb": 0.0026, "reliability": 0.9491, "min_bid": 0.45333, "max_days": 8.0, "end_date": "2026-10-01", "geolocation": "United States, US"},
+      {"id": 47776327, "gpu_name": "RTX 5090", "num_gpus": 1, "cpu_name": "12th Gen Core(TM) i5-12400F", "cpu_cores": 12, "cpu_cores_effective": 12.0, "cpu_ram_gb": 64.1, "dph_total": 0.4814, "usd_per_eff_core_hr": 0.04012, "storage_cost_usd_per_gb_month": 0.2, "inet_up_cost_usd_per_gb": 0.00391, "inet_down_cost_usd_per_gb": 0.0026, "reliability": 0.9962, "min_bid": 0.48, "max_days": 71.8, "end_date": "2026-12-04", "geolocation": "Shanghai, CN"},
+      {"id": 50280123, "gpu_name": "RTX 5090", "num_gpus": 1, "cpu_name": "AMD EPYC 9655 96-Core Processor", "cpu_cores": 48, "cpu_cores_effective": 48.0, "cpu_ram_gb": 110.6, "dph_total": 0.5904, "usd_per_eff_core_hr": 0.0123, "storage_cost_usd_per_gb_month": 0.53333, "inet_up_cost_usd_per_gb": 0.01, "inet_down_cost_usd_per_gb": 0.01, "reliability": 0.9975, "min_bid": 0.323, "max_days": 0.2, "end_date": "2026-09-23", "geolocation": "California, US"},
+      {"id": 51573034, "gpu_name": "RTX 5090", "num_gpus": 1, "cpu_name": "AMD Ryzen 9 9950X 16-Core Processor", "cpu_cores": 32, "cpu_cores_effective": 16.0, "cpu_ram_gb": 64.2, "dph_total": 0.5908, "usd_per_eff_core_hr": 0.03693, "storage_cost_usd_per_gb_month": 0.6, "inet_up_cost_usd_per_gb": 0.0026, "inet_down_cost_usd_per_gb": 0.0026, "reliability": 0.996, "min_bid": 0.58667, "max_days": 6.8, "end_date": "2026-09-30", "geolocation": "Virginia, US"},
+      {"id": 51917274, "gpu_name": "RTX 5090", "num_gpus": 1, "cpu_name": "AMD EPYC 7B12 64-Core Processor", "cpu_cores": 256, "cpu_cores_effective": 32.0, "cpu_ram_gb": 64.5, "dph_total": 0.5934, "usd_per_eff_core_hr": 0.01854, "storage_cost_usd_per_gb_month": 0.2, "inet_up_cost_usd_per_gb": 0.00391, "inet_down_cost_usd_per_gb": 0.0026, "reliability": 0.9473, "min_bid": 0.416, "max_days": 248.2, "end_date": "2027-05-29", "geolocation": "Thailand, TH"},
+      {"id": 51418138, "gpu_name": "RTX 5090", "num_gpus": 1, "cpu_name": "AMD Ryzen 9 9950X 16-Core Processor", "cpu_cores": 32, "cpu_cores_effective": 32.0, "cpu_ram_gb": 61.6, "dph_total": 0.6009, "usd_per_eff_core_hr": 0.01878, "storage_cost_usd_per_gb_month": 0.13333, "inet_up_cost_usd_per_gb": 0.00391, "inet_down_cost_usd_per_gb": 0.0026, "reliability": 0.9953, "min_bid": 0.58667, "max_days": 31.1, "end_date": "2026-10-24", "geolocation": "Nevada, US"}
+    ],
+    "observations": [
+      "Cheapest CPU per dollar in this snapshot: the RTX 5070 Ti host (EPYC 7V12, 128 effective cores, 515.6 GB RAM) at $0.3268/h = $0.00255 per effective core-hour. Next are V100/A16/T4 hosts at about $0.0033-0.0034. Old Xeon E5 v3/v4 cores are much slower per core, so rank by measured transitions/s per $, not by core count.",
+      "The cheapest on-demand verified RTX 5090 cost $0.468-0.60/h. Their CPU shares were 8-48 effective cores, and several expire within 1-8 days (max_days 0.2-8.0).",
+      "Bandwidth prices varied 500x ($0.0001-0.052/GB) and storage 9x ($0.067-0.6/GB/month). A cost model per transition must add storage (per GB-month) and inet_down (dataset/checkpoint pulls) to dph.",
+      "min_bid is below the on-demand price on most offers (e.g. 5090 id 49250870: $0.28 bid vs $0.468 on-demand). One raw record showed min_bid above dph_total (id 48989714), so do not assume bid < on-demand."
+    ]
+  },
+  "venues": {
+    "IROS_2027": {
+      "name": "2027 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)",
+      "city_venue": "Fortezza da Basso, Florence, Italy",
+      "dates": "September 26 – October 1, 2027",
+      "theme": "Human-Centric Robots for Sustainable Life",
+      "official_site": "https://2027.ieee-iros.org/",
+      "paper_deadline": "2027-03-01 (IEEE RAS calendar: 'Mar 1, 2027 Paper submission deadline: IROS'); time zone not documented; the official site has no deadline yet",
+      "page_limit": "2027: not documented. IROS 2026 precedent: up to 8 pages US letter, references included, no paid extra pages ('This replaces the old 6+2 model')",
+      "template": "PaperCept ieeeconf.cls (\\documentclass[letterpaper, 10 pt, conference]{ieeeconf}); not IEEEtran.cls",
+      "ral_with_iros_option": "No. IROS 2026 CFP: 'IROS no longer offers an RA-L+IROS submission option.' RA-L: 'there are no conference-specific submission deadlines for RA-L papers.' Accepted RA-L papers can be transferred to IROS 2027 in the window August 1, 2026 to April 30, 2027 (within 270 days of acceptance).",
+      "checked_on": "2026-09-23"
+    },
+    "RA-L": {
+      "page_limit": "6 pages two-column incl. figures and references + up to 2 extra pages at $175/page (max 8)",
+      "template": "initial: RAS conference manuscript (ieeeconf.zip); final: \\documentclass[letterpaper, 10 pt, journal, twoside]{ieeetran}",
+      "conference_transfer_windows_2027": {"ICRA 2027": "March 1, 2026 to December 31, 2026", "IROS 2027": "August 1, 2026 to April 30, 2027", "BioRob 2027": "August 1, 2026 to April 1, 2027", "CASE 2027": "August 1, 2026 to April 30, 2027", "RO-MAN 2027": "September 1, 2026 to April 30, 2027", "Humanoids 2027": "October 1, 2026 to June 30, 2027"},
+      "source": "https://www.ieee-ras.org/publications/ra-l/information-for-authors-ra-l ; https://www.ieee-ras.org/publications/ra-l/",
+      "checked_on": "2026-09-23"
+    },
+    "T-RO": {
+      "page_limit": "regular: first submission max 18 pages, final max 20, mandatory $175/page beyond 12; communications max 4 (charged beyond 3); surveys max 20 (charged beyond 14); references count; no new short papers (use RA-L for 8 pages or fewer)",
+      "template": "\\documentclass[journal]{IEEEtran}",
+      "scope_note": "scope includes 'rehabilitation and healthcare robotics'; 'exoskeleton' not seen",
+      "source": "https://www.ieee-ras.org/publications/t-ro/t-ro-information-for-authors/",
+      "checked_on": "2026-09-23"
+    },
+    "T-MRB": {
+      "page_limit": "Original 12, Short 4, Review 12, Position 8 pages; $175/page over the limit",
+      "scope_note": "'prevention, diagnosis, or treatment of human diseases'; topics include 'Rehabilitation and assistive robotics' and 'Bionic prostheses'; 'exoskeleton'/'wearable' not in the scope text; bar is 'non-incremental results'",
+      "template": "IEEE Transactions double-column (IEEE Author Center)",
+      "source": "https://www.ieee-ras.org/publications/t-mrb/information-for-authors/ ; https://www.ieee-tmrb.org/new/",
+      "checked_on": "2026-09-23"
+    },
+    "Science_Robotics": {
+      "format": "Research Articles up to 8000 words, plus online supplementary materials (search-snippet evidence; page returned HTTP 403). Abstract/figure/reference limits not verified",
+      "source": "https://www.science.org/content/page/scirobotics-instructions-research-articles",
+      "checked_on": "2026-09-23"
+    }
+  },
+  "design_implications": [
+    "BUILDER permission mode (must install packages, use the network, start GPU systemd --user units, push to GitHub): no sandboxed Codex 0.153.4 mode meets all four with no extra configuration. (a) The GPU is invisible in read-only/workspace-write (#19676 and #3141 open; bwrap mounts a minimal /dev). (b) .git is read-only in workspace-write, so commits and pushes fail in-sandbox. (c) With network off, seccomp denies connect(), so systemctl --user fails. (d) Network is off by default.",
+    "Safest mode that runs unattended and reliably: 'codex exec --dangerously-bypass-approvals-and-sandbox' (the only mode where all four work), made safe by an external boundary. Use a dedicated Linux user for the builder with no sudo and no read access to the shared Vast key (~/.config/vastai) or other users' homes. Give it a repo-scoped GitHub credential (deploy key or fine-grained PAT for one repo) and server-side branch protection on main. Put resource caps (MemoryMax/CPUQuota/TasksMax) on its systemd --user slice and enable lingering. Strip secrets from the environment (shell_environment_policy.ignore_default_excludes=false; the default passes KEY/SECRET/TOKEN vars through). Add execpolicy 'forbidden' rules (git push --force, vastai create/destroy/stop, rm -rf of home) as a guardrail only: their enforcement under bypass is undocumented and prefix rules can be evaded.",
+    "More-contained alternative, if the user accepts occasional stalls: 'codex exec --approve-for-me -c sandbox_workspace_write.network_access=true --add-dir <caches>' plus execpolicy 'allow' rules for exact prefixes that must run unsandboxed (git add/commit/push origin <branch>; one vetted launcher such as ~/bin/forge-launch that writes and starts GPU units, kept outside the workspace and not writable by the agent). Everything else stays sandboxed, and other escalations go to the codex-auto-review reviewer. Costs: the reviewer is non-deterministic and fails closed after 90 s; 3 consecutive or 10 recent denials interrupt the turn. Do NOT allow bare 'systemd-run --user' or 'systemctl --user': either is an unrestricted sandbox escape.",
+    "Never mix the two permission systems. Use either sandbox_mode/sandbox_workspace_write (-s, --approve-for-me) or default_permissions/[permissions.<name>], not both. '-p/--profile' only layers $CODEX_HOME/<name>.config.toml (put builder/worker settings there). exec has no -P or -a flag, so use -c default_permissions=... and -c approval_policy=....",
+    "Headless default is approval 'never': a blocked command fails back to the model and never hangs. Only auto_review turns on-request prompts back on. The loop wrapper must treat turn.failed or an interrupted turn as 'resume with the same permission flags'. 'codex exec resume' does not remember the original permissions and has no -s, so restate them with -c or the bypass flag on every resume.",
+    "Session handling: never use --ephemeral for builder/worker runs. Record thread ids from the --json 'thread.started' event in your own registry (exec threads cannot be named, #46804). Use -o for the final message and --output-schema for structured results. Rollouts are in ~/.codex/sessions/YYYY/MM/DD/*.jsonl, with state in state_5.sqlite. exec threads are hidden in the Codex Desktop sidebar (#42083 open) and in the TUI picker unless 'codex resume --include-non-interactive' is used, so the Watch/Steer panels should read the JSONL/rollouts rather than rely on the Codex app. exec needs a git repo or --skip-git-repo-check.",
+    "GPU work should always run as systemd --user units, outside the Codex sandbox, launched by a vetted launcher. Do not rely on the writable_roots=['/dev'] workaround: results are mixed and one report says it now errors.",
+    "Vast 'transitions per dollar' policy: rank offers by measured env-steps/s divided by (dph_total + storage GB x storage_cost/730 + expected GB x inet_down_cost), not by cpu_cores_effective. Filter on duration (max_days) against job length and on reliability, and sort with -o 'dph_total'. In this snapshot, CPU-heavy hosts started at about $0.0026 per effective core-hour and 1x RTX 5090 at $0.468/h (8-48 effective cores).",
+    "Vast shared-account safety: label every instance at create time (--label <project-prefix>) and only ever list or act on instances via 'vastai show instances --label <prefix>'. For in-container self-stop use 'vastai --api-key \"$CONTAINER_API_KEY\" stop instance \"$CONTAINER_ID\"' (the CLI key lookup does not document CONTAINER_API_KEY). Stopped instances keep their data and can be copied out with vastai copy or cloud sync; do not copy to / or /root.",
+    "Venues: IROS 2027 (Florence, 26 Sep-1 Oct 2027) has a paper deadline of 2027-03-01 per the RAS calendar only; re-check the official CFP for the time zone, page limit (2026 was 8 pages all-inclusive, no paid extras) and template (ieeeconf.cls, not IEEEtran). There is no RA-L+IROS option: an RA-L paper accepted between 2026-08-01 and 2027-04-30 can be transferred to IROS 2027. For exoskeleton work, BioRob 2027 (RA-L window to 2027-04-01) and T-MRB (12 pages, disease/rehabilitation framing) fit. T-RO allows up to 20 pages, charged beyond 12.",
+    "Version drift: the server runs codex-cli 0.153.4 while 0.155.1 is already in the wild. Pin the version for the programme, and re-run 'codex exec --help' plus these source checks before relying on flags after any upgrade."
+  ]
+}

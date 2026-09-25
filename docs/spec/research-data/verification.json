@@ -1,0 +1,1008 @@
+{
+ "ok": [
+  {
+   "kind": "arxiv",
+   "id": "1602.07714",
+   "claimed": "Learning values across many orders of magnitude",
+   "found": "Learning values across many orders of magnitude",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "1707.04393",
+   "claimed": "Sustainable computational science: the ReScience initiative",
+   "found": "Sustainable computational science: the ReScience initiative",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "1707.06347",
+   "claimed": "Proximal Policy Optimization Algorithms",
+   "found": "Proximal Policy Optimization Algorithms",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "1709.06560",
+   "claimed": "Deep Reinforcement Learning That Matters",
+   "found": "Deep Reinforcement Learning that Matters",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "1804.02717",
+   "claimed": "DeepMimic: Example-Guided Deep Reinforcement Learning of Physics-Based Character Skills",
+   "found": "DeepMimic: Example-Guided Deep Reinforcement Learning of Physics-Based Character Skills",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "1806.08295",
+   "claimed": "How Many Random Seeds? Statistical Power Analysis in Deep Reinforcement Learning Experiments",
+   "found": "How Many Random Seeds? Statistical Power Analysis in Deep Reinforcement Learning Experiments",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "1909.03004",
+   "claimed": "Show Your Work: Improved Reporting of Experimental Results",
+   "found": "Show Your Work: Improved Reporting of Experimental Results",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "1910.05789",
+   "claimed": "On the Utility of Learning about Humans for Human-AI Coordination",
+   "found": "On the Utility of Learning about Humans for Human-AI Coordination",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2003.02979",
+   "claimed": "\"Other-Play\" for Zero-Shot Coordination",
+   "found": "&#34;Other-Play&#34; for Zero-Shot Coordination",
+   "similarity": 0.93
+  },
+  {
+   "kind": "arxiv",
+   "id": "2005.05719",
+   "claimed": "Smooth Exploration for Robotic Reinforcement Learning",
+   "found": "Smooth Exploration for Robotic Reinforcement Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2005.12729",
+   "claimed": "Implementation Matters in Deep Policy Gradients: A Case Study on PPO and TRPO",
+   "found": "Implementation Matters in Deep Policy Gradients: A Case Study on PPO and TRPO",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2006.05990",
+   "claimed": "What Matters In On-Policy Reinforcement Learning? A Large-Scale Empirical Study",
+   "found": "What Matters In On-Policy Reinforcement Learning? A Large-Scale Empirical Study",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2011.09533",
+   "claimed": "Is Independent Learning All You Need in the StarCraft Multi-Agent Challenge?",
+   "found": "Is Independent Learning All You Need in the StarCraft Multi-Agent Challenge?",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2011.10098",
+   "claimed": "The fundamental principles of reproducibility",
+   "found": "The Fundamental Principles of Reproducibility",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2103.01955",
+   "claimed": "The Surprising Effectiveness of PPO in Cooperative, Multi-Agent Games",
+   "found": "The Surprising Effectiveness of PPO in Cooperative, Multi-Agent Games",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2104.02180",
+   "claimed": "AMP: Adversarial Motion Priors for Stylized Physics-Based Character Control",
+   "found": "AMP: Adversarial Motion Priors for Stylized Physics-Based Character Control",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2106.05262",
+   "claimed": "TempoRL: Learning When to Act",
+   "found": "TempoRL: Learning When to Act",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2108.13264",
+   "claimed": "Deep Reinforcement Learning at the Edge of the Statistical Precipice",
+   "found": "Deep Reinforcement Learning at the Edge of the Statistical Precipice",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2109.11251",
+   "claimed": "Trust Region Policy Optimisation in Multi-Agent Reinforcement Learning",
+   "found": "Trust Region Policy Optimisation in Multi-Agent Reinforcement Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2109.11978",
+   "claimed": "Learning to Walk in Minutes Using Massively Parallel Deep Reinforcement Learning",
+   "found": "Learning to Walk in Minutes Using Massively Parallel Deep Reinforcement Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2110.08176",
+   "claimed": "Collaborating with Humans without Human Data",
+   "found": "Collaborating with Humans without Human Data",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2206.00484",
+   "claimed": "DEP-RL: Embodied Exploration for Reinforcement Learning in Overactuated and Musculoskeletal Systems",
+   "found": "DEP-RL: Embodied Exploration for Reinforcement Learning in Overactuated and Musculoskeletal Systems",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2302.02792",
+   "claimed": "Dealing With Non-stationarity in Decentralized Cooperative Multi-Agent Deep Reinforcement Learning via Multi-Timescale Learning",
+   "found": "Dealing With Non-stationarity in Decentralized Cooperative Multi-Agent Deep Reinforcement Learning via Multi-Timescale Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2304.01315",
+   "claimed": "Empirical Design in Reinforcement Learning",
+   "found": "Empirical Design in Reinforcement Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2305.01124",
+   "claimed": "Human adaptation to adaptive machines converges to game-theoretic equilibria",
+   "found": "Human adaptation to adaptive machines converges to game-theoretic equilibria",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2305.02058",
+   "claimed": "Human Machine Co-adaption Interface via Cooperation Markov Decision Process System",
+   "found": "Human Machine Co-adaption Interface via Cooperation Markov Decision Process System",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2305.20065",
+   "claimed": "Latent Exploration for Reinforcement Learning",
+   "found": "Latent Exploration for Reinforcement Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2306.01324",
+   "claimed": "Hyperparameters in Reinforcement Learning and How To Tune Them",
+   "found": "Hyperparameters in Reinforcement Learning and How To Tune Them",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2307.03716",
+   "claimed": "SAR: Generalization of Physiological Agility and Dexterity via Synergistic Action Representation",
+   "found": "SAR: Generalization of Physiological Agility and Dexterity via Synergistic Action Representation",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2312.07340",
+   "claimed": "MuscleVAE: Model-Based Controllers of Muscle-Actuated Characters",
+   "found": "MuscleVAE: Model-Based Controllers of Muscle-Actuated Characters",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2406.18412",
+   "claimed": "Sensorless model-based tension control for a cable-driven exosuit",
+   "found": "Sensorless model-based tension control for a cable-driven exosuit",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2406.18537",
+   "claimed": "AddBiomechanics Dataset: Capturing the Physics of Human Motion at Scale",
+   "found": "AddBiomechanics Dataset: Capturing the Physics of Human Motion at Scale",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2408.14597",
+   "claimed": "On Centralized Critics in Multi-Agent Reinforcement Learning",
+   "found": "On Centralized Critics in Multi-Agent Reinforcement Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2412.03949",
+   "claimed": "Learning Speed-Adaptive Walking Agent Using Imitation Learning with Physics-Informed Simulation",
+   "found": "Learning Speed-Adaptive Walking Agent Using Imitation Learning with Physics-Informed Simulation",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2412.07165",
+   "claimed": "A Method for Evaluating Hyperparameter Sensitivity in Reinforcement Learning",
+   "found": "A Method for Evaluating Hyperparameter Sensitivity in Reinforcement Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2502.08844",
+   "claimed": "MuJoCo Playground",
+   "found": "MuJoCo Playground",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2503.03662",
+   "claimed": "Adaptive Negative Damping Control for User-Dependent Multi-Terrain Walking Assistance With a Hip Exoskeleton",
+   "found": "Adaptive Negative Damping Control for User-Dependent Multi-Terrain Walking Assistance with a Hip Exoskeleton",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2503.07319",
+   "claimed": "Human Machine Co-Adaptation Model and Its Convergence Analysis",
+   "found": "Human Machine Co-Adaptation Model and Its Convergence Analysis",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2503.14637",
+   "claimed": "KINESIS: Motion Imitation for Human Musculoskeletal Locomotion",
+   "found": "KINESIS: Motion Imitation for Human Musculoskeletal Locomotion",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2503.22575",
+   "claimed": "On the Mistaken Assumption of Interchangeable Deep Reinforcement Learning Implementations",
+   "found": "On the Mistaken Assumption of Interchangeable Deep Reinforcement Learning Implementations",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2507.21638",
+   "claimed": "Assistax: A Multi-Agent Hardware-Accelerated Reinforcement Learning Benchmark for Assistive Robotics",
+   "found": "Assistax: A Multi-Agent Hardware-Accelerated Reinforcement Learning Benchmark for Assistive Robotics",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2511.04831",
+   "claimed": "Isaac Lab: A GPU-Accelerated Simulation Framework for Multi-Modal Robot Learning",
+   "found": "Isaac Lab: A GPU-Accelerated Simulation Framework for Multi-Modal Robot Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2601.22074",
+   "claimed": "mjlab: A Lightweight Framework for GPU-Accelerated Robot Learning",
+   "found": "mjlab: A Lightweight Framework for GPU-Accelerated Robot Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2601.22550",
+   "claimed": "Exo-Plore: Exploring Exoskeleton Control Space through Human-aligned Simulation",
+   "found": "Exo-Plore: Exploring Exoskeleton Control Space through Human-aligned Simulation",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2602.17794",
+   "claimed": "Reinforcement-Learning-Based Assistance Reduces Squat Effort with a Modular Hip–Knee Exoskeleton",
+   "found": "Reinforcement-Learning-Based Assistance Reduces Squat Effort with a Modular Hip--Knee Exoskeleton",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2602.18862",
+   "claimed": "Gait Asymmetry from Unilateral Weakness and Improvement With Ankle Assistance: a Reinforcement Learning based Simulation Study",
+   "found": "Gait Asymmetry from Unilateral Weakness and Improvement With Ankle Assistance: a Reinforcement Learning based Simulation Study",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2603.04166",
+   "claimed": "Learning Hip Exoskeleton Control Policy via Predictive Neuromusculoskeletal Simulation",
+   "found": "Learning Hip Exoskeleton Control Policy via Predictive Neuromusculoskeletal Simulation",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2603.06009",
+   "claimed": "Preventing Learning Stagnation in PPO by Scaling to 1 Million Parallel Environments",
+   "found": "Preventing Learning Stagnation in PPO by Scaling to 1 Million Parallel Environments",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2603.07618",
+   "claimed": "SMAT: Staged Multi-Agent Training for Co-Adaptive Exoskeleton Control",
+   "found": "SMAT: Staged Multi-Agent Training for Co-Adaptive Exoskeleton Control",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2603.07629",
+   "claimed": "Exoskeleton Control through Learning to Reduce Biological Joint Moments in Simulations",
+   "found": "Exoskeleton Control through Learning to Reduce Biological Joint Moments in Simulations",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2603.10474",
+   "claimed": "Muscle Synergy Priors Enhance Biomechanical Fidelity in Predictive Musculoskeletal Locomotion Simulation",
+   "found": "Muscle Synergy Priors Enhance Biomechanical Fidelity in Predictive Musculoskeletal Locomotion Simulation",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2603.12408",
+   "claimed": "Imitation Learning from Human Motion Alone Does Not Guarantee Biomechanically Plausible Gait Kinetics",
+   "found": "Imitation Learning from Human Motion Alone Does Not Guarantee Biomechanically Plausible Gait Kinetics",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2603.22580",
+   "claimed": "Versatile Exoskeleton Control Supports Elderly Joint Energetics During Hip-Intensive Tasks",
+   "found": "Versatile Exoskeleton Control Supports Elderly Joint Energetics During Hip-Intensive Tasks",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2603.25544",
+   "claimed": "Towards Embodied AI with MuscleMimic: Unlocking full-body musculoskeletal motor learning at scale",
+   "found": "Towards Embodied AI with MuscleMimic: Unlocking full-body musculoskeletal motor learning at scale",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2603.29332",
+   "claimed": "Scaling Whole-Body Human Musculoskeletal Behavior Emulation for Specificity and Diversity",
+   "found": "Scaling Whole-Body Human Musculoskeletal Behavior Emulation for Specificity and Diversity",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2604.08882",
+   "claimed": "Simulation of Adaptive Running With Flexible Sports Prosthesis Using Reinforcement Learning of Hybrid-Link System",
+   "found": "Simulation of Adaptive Running with Flexible Sports Prosthesis using Reinforcement Learning of Hybrid-link System",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2604.09431",
+   "claimed": "Musculoskeletal Motion Imitation for Learning Personalized Exoskeleton Control Policy in Impaired Gait",
+   "found": "Musculoskeletal Motion Imitation for Learning Personalized Exoskeleton Control Policy in Impaired Gait",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2605.24922",
+   "claimed": "MuJoCoUni:Persistent Batched Runtime Primitives for MuJoCo",
+   "found": "MuJoCoUni:Persistent Batched Runtime Primitives for MuJoCo",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2606.06370",
+   "claimed": "Ensuring Interaction Safety in Multitask Exoskeleton Control: A Simulation-Trained Variable Impedance Framework",
+   "found": "Ensuring Interaction Safety in Multitask Exoskeleton Control: A Simulation-Trained Variable Impedance Framework",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2606.06746",
+   "claimed": "Performance Variation in Deep Reinforcement Learning",
+   "found": "Performance Variation in Deep Reinforcement Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2606.08366",
+   "claimed": "MetaboliSim: a Python implementation of the Mader model for dynamic and steady-state simulation of muscular energy metabolism",
+   "found": "MetaboliSim: a Python implementation of the Mader model for dynamic and steady-state simulation of muscular energy metabolism",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2606.30072",
+   "claimed": "ACPO: Agent-Chained Policy Optimization for Multi-Agent Reinforcement Learning",
+   "found": "ACPO: Agent-Chained Policy Optimization for Multi-Agent Reinforcement Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2607.03017",
+   "claimed": "Beyond Heuristics: A Standardized Real2Sim Pipeline for Physical Human Robot Interaction in Human-in-the-Loop Simulation",
+   "found": "Beyond Heuristics: A Standardized Real2Sim Pipeline for Physical Human Robot Interaction in Human-in-the-Loop Simulation",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2607.13059",
+   "claimed": "GPUSimBench: Towards Scalable and Reliable GPU-Accelerated Simulators in Embodied AI",
+   "found": "GPUSimBench: Towards Scalable and Reliable GPU-Accelerated Simulators in Embodied AI",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2607.22858",
+   "claimed": "A Replay-Constrained Simulation Framework for Personalization of Powered Knee--Ankle Prosthesis Controllers",
+   "found": "A Replay-Constrained Simulation Framework for Personalization of Powered Knee--Ankle Prosthesis Controllers",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2608.00715",
+   "claimed": "Staged Multi-Agent Training (SMAT) for Hip Exoskeletons: Metabolic and Biomechanical Validation of a Simulation-Trained Co-Adaptive Controller",
+   "found": "Staged Multi-Agent Training (SMAT) for Hip Exoskeletons: Metabolic and Biomechanical Validation of a Simulation-Trained Co-Adaptive Controller",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2608.03528",
+   "claimed": "Tired Actor: Fatigue-Informed Character Control",
+   "found": "Tired Actor: Fatigue-Informed Character Control",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2608.03644",
+   "claimed": "Is Inter-Seed Cross-Play Enough? Evaluating the Robustness of Zero-Shot Coordination Algorithms to Implementation Details",
+   "found": "Is Inter-Seed Cross-Play Enough? Evaluating the Robustness of Zero-Shot Coordination Algorithms to Implementation Details",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2608.17030",
+   "claimed": "Lambda-Hold Control: Human-Like Movement Emerges from a Minimal Task Reward in Predictive Musculoskeletal Simulation",
+   "found": "Lambda-Hold Control: Human-Like Movement Emerges from a Minimal Task Reward in Predictive Musculoskeletal Simulation",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2608.24488",
+   "claimed": "Where Entropy Is Measured Matters: Policy Geometry in Bounded Continuous-Control PPO",
+   "found": "Where Entropy Is Measured Matters: Policy Geometry in Bounded Continuous-Control PPO",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2609.11083",
+   "claimed": "Learning Realistic Athletic Sprinting Without Demonstrations",
+   "found": "Learning Realistic Athletic Sprinting Without Demonstrations",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2609.11733",
+   "claimed": "Reflex-Informed Neuromuscular Reinforcement Learning for Muscle-Driven Locomotion",
+   "found": "Reflex-Informed Neuromuscular Reinforcement Learning for Muscle-Driven Locomotion",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2609.19690",
+   "claimed": "UniExo: Unified Multi-Skill Policies for Musculoskeletal Locomotion and Co-Adaptive Exoskeleton Control",
+   "found": "UniExo: Unified Multi-Skill Policies for Musculoskeletal Locomotion and Co-Adaptive Exoskeleton Control",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2609.21909",
+   "claimed": "Beyond Kinematics: Benchmarking Simulation Fidelity for Muscle-Driven Imitation Learning",
+   "found": "Beyond Kinematics: Benchmarking Simulation Fidelity for Muscle-Driven Imitation Learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2609.22630",
+   "claimed": "Simultaneous Forward and Inverse Human-in-the-Loop Optimization",
+   "found": "Simultaneous Forward and Inverse Human-in-the-Loop Optimization",
+   "similarity": 1.0
+  },
+  {
+   "kind": "arxiv",
+   "id": "2609.25417",
+   "claimed": "Effects of Assistance Delay on Joint Mechanics and Energetics in Biological Torque Control of a Hip Exoskeleton",
+   "found": "Effects of Assistance Delay on Joint Mechanics and Energetics in Biological Torque Control of a Hip Exoskeleton",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1007/s10439-026-04184-9",
+   "claimed": "Running Speed is Maximized by Strengthening the Hip Flexors and Hip Adductors",
+   "found": "Running Speed is Maximized by Strengthening the Hip Flexors and Hip Adductors",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1007/s11517-026-03634-9",
+   "claimed": "Simulation study of exoskeleton–musculoskeletal coupling for exoskeleton assistance via multi-agent reinforcement learning",
+   "found": "Simulation study of exoskeleton–musculoskeletal coupling for exoskeleton assistance via multi-agent reinforcement learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1016/j.cub.2015.08.016",
+   "claimed": "Humans Can Continuously Optimize Energetic Cost during Walking",
+   "found": "Humans Can Continuously Optimize Energetic Cost during Walking",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1016/j.jbiomech.2011.04.040",
+   "claimed": "Limitations to maximum sprinting speed imposed by muscle mechanical properties",
+   "found": "Limitations to maximum sprinting speed imposed by muscle mechanical properties",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1016/j.jbiomech.2012.11.024",
+   "claimed": "Muscle contributions to fore-aft and vertical body mass center accelerations over a range of running speeds",
+   "found": "Muscle contributions to fore-aft and vertical body mass center accelerations over a range of running speeds",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1016/j.jbiomech.2018.06.005",
+   "claimed": "Modification of a three-compartment muscle fatigue model to predict peak torque decline during intermittent tasks",
+   "found": "Modification of a three-compartment muscle fatigue model to predict peak torque decline during intermittent tasks",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1016/j.jbiomech.2021.110320",
+   "claimed": "A comprehensive, open-source dataset of lower limb biomechanics in multiple conditions of stairs, ramps, and level-ground ambulation and transitions",
+   "found": "A comprehensive, open-source dataset of lower limb biomechanics in multiple conditions of stairs, ramps, and level-ground ambulation and transitions",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1038/s41586-024-07382-4",
+   "claimed": "Experiment-free exoskeleton assistance via learning in simulation [Editor's Note added 27 July 2026]",
+   "found": "Experiment-free exoskeleton assistance via learning in simulation",
+   "similarity": 0.8
+  },
+  {
+   "kind": "doi",
+   "id": "10.1038/s41586-024-07697-2",
+   "claimed": "On human-in-the-loop optimization of human–robot interaction",
+   "found": "On human-in-the-loop optimization of human–robot interaction",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1038/s41586-024-08157-7",
+   "claimed": "Task-agnostic exoskeleton control via biological joint moment estimation",
+   "found": "Task-agnostic exoskeleton control via biological joint moment estimation",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1038/s41592-021-01256-7",
+   "claimed": "Reproducibility standards for machine learning in the life sciences",
+   "found": "Reproducibility standards for machine learning in the life sciences",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1038/s41597-022-01817-1",
+   "claimed": "A biomechanics dataset of healthy human walking at various speeds, step lengths and step widths",
+   "found": "A biomechanics dataset of healthy human walking at various speeds, step lengths and step widths",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1038/s41597-023-02840-6",
+   "claimed": "A human lower-limb biomechanics and wearable sensors dataset during cyclic and non-cyclic activities",
+   "found": "A human lower-limb biomechanics and wearable sensors dataset during cyclic and non-cyclic activities",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1038/s41598-019-45914-5",
+   "claimed": "Metabolic cost adaptations during training with a soft exosuit assisting the hip joint",
+   "found": "Metabolic cost adaptations during training with a soft exosuit assisting the hip joint",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1038/s41598-022-20023-y",
+   "claimed": "Modifications to the net knee moments lead to the greatest improvements in accelerative sprinting performance: a predictive simulation study",
+   "found": "Modifications to the net knee moments lead to the greatest improvements in accelerative sprinting performance: a predictive simulation study",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1038/s42256-026-01297-7",
+   "claimed": "A roadmap for end-to-end task-agnostic exoskeleton control",
+   "found": "A roadmap for end-to-end task-agnostic exoskeleton control",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1073/pnas.1708274114",
+   "claimed": "The preregistration revolution",
+   "found": "The preregistration revolution",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1073/pnas.2611548123",
+   "claimed": "Beyond “non-significant” results: Why and how to test for practical equivalence",
+   "found": "Beyond “non-significant” results: Why and how to test for practical equivalence",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1080/00222895.1986.10735369",
+   "claimed": "Once More on the Equilibrium-Point Hypothesis (λ Model) for Motor Control",
+   "found": "Once More on the Equilibrium-Point Hypothesis (λ Model) for Motor Control",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1080/10255842.2025.2595150",
+   "claimed": "Using dynamic Bayesian optimization to induce desired effects in the presence of motor learning: a simulation study",
+   "found": "Using dynamic Bayesian optimization to induce desired effects in the presence of motor learning: a simulation study",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1080/14763141.2026.2693711",
+   "claimed": "Lower limb muscle activity under full and partial towing assistance in sprint running",
+   "found": "Lower limb muscle activity under full and partial towing assistance in sprint running",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1101/2024.04.05.587982",
+   "claimed": "Simulating human-in-the-loop optimization of exoskeleton assistance to compare optimization algorithm performance",
+   "found": "Simulating human-in-the-loop optimization of exoskeleton assistance to compare optimization algorithm performance",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1109/ICRA46639.2022.9811684",
+   "claimed": "MyoSim: Fast and physiologically realistic MuJoCo models for musculoskeletal and exoskeletal studies",
+   "found": "MyoSim: Fast and physiologically realistic MuJoCo models for musculoskeletal and exoskeletal studies",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1109/LCSYS.2023.3287138",
+   "claimed": "A Dual Control Approach to Solve Exploration Versus Exploitation Trade-Offs in the Design of Personalized Physical Exercise Sessions",
+   "found": "A Dual Control Approach to Solve Exploration Versus Exploitation Trade-Offs in the Design of Personalized Physical Exercise Sessions",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1109/LRA.2026.3699246",
+   "claimed": "End-to-End Policy Learning for Hip Exoskeleton via Reinforcement Learning and Reflex-Based Musculoskeletal Simulation",
+   "found": "End-to-End Policy Learning for Hip Exoskeleton via Reinforcement Learning and Reflex-Based Musculoskeletal Simulation",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1109/TCST.2026.3713361",
+   "claimed": "Finite-Time Robust Control for Bowden Cable-Driven Exoskeletons With Time-Varying Cable Configurations",
+   "found": "Finite-Time Robust Control for Bowden Cable-Driven Exoskeletons With Time-Varying Cable Configurations",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1109/TMECH.2026.3691108",
+   "claimed": "PositiveAssist: Energy-Gated Control for Positive Power Assistance of Exoskeleton in Walking, Running, and Stair Climbing",
+   "found": "PositiveAssist: Energy-Gated Control for Positive Power Assistance of Exoskeleton in Walking, Running, and Stair Climbing",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1109/TMRB.2024.3503905",
+   "claimed": "Design and Overground Testing of a Portable Hip Exosuit for Enhancing Running Efficiency",
+   "found": "Design and Overground Testing of a Portable Hip Exosuit for Enhancing Running Efficiency",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1109/TMRB.2026.3712823",
+   "claimed": "Optimized Mappings From Biological Hip Moment Estimates to Exoskeleton Torque Can Personalize Assistance Across Users and Generalize Across Tasks",
+   "found": "Optimized Mappings From Biological Hip Moment Estimates to Exoskeleton Torque Can Personalize Assistance Across Users and Generalize Across Tasks",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1109/TNSRE.2021.3074154",
+   "claimed": "Optimizing Exoskeleton Assistance for Faster Self-Selected Walking",
+   "found": "Optimizing Exoskeleton Assistance for Faster Self-Selected Walking",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1109/TNSRE.2026.3682054",
+   "claimed": "Design and Validation of a Modified Delayed Output Feedback Controller for Hip Exoskeleton Assistance",
+   "found": "Design and Validation of a Modified Delayed Output Feedback Controller for Hip Exoskeleton Assistance",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1109/TRO.2019.2913318",
+   "claimed": "Delayed Output Feedback Control for Gait Assistance With a Robotic Hip Exoskeleton",
+   "found": "Delayed Output Feedback Control for Gait Assistance With a Robotic Hip Exoskeleton",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1109/tmech.2026.3691108",
+   "claimed": "PositiveAssist: Energy-Gated Control for Positive Power Assistance of Exoskeleton in Walking, Running, and Stair Climbing",
+   "found": "PositiveAssist: Energy-Gated Control for Positive Power Assistance of Exoskeleton in Walking, Running, and Stair Climbing",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1113/EP090171",
+   "claimed": "Myths and methodologies: The use of equivalence and non-inferiority tests for interventional studies in exercise physiology and sport science",
+   "found": "Myths and methodologies: The use of equivalence and non‐inferiority tests for interventional studies in exercise physiology and sport science",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1113/JP270228",
+   "claimed": "A neural circuitry that emphasizes spinal feedback generates diverse behaviours of human locomotion",
+   "found": "A neural circuitry that emphasizes spinal feedback generates diverse behaviours of human locomotion",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1115/1.4070823",
+   "claimed": "Deciphering the “Art” in Modeling and Simulation of the Knee Joint: Model Benchmarking",
+   "found": "Deciphering the “Art” in Modeling and Simulation of the Knee Joint: Model Benchmarking",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1126/science.aal5054",
+   "claimed": "Human-in-the-loop optimization of exoskeleton assistance during walking",
+   "found": "Human-in-the-loop optimization of exoskeleton assistance during walking",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1126/scirobotics.aar5438",
+   "claimed": "Human-in-the-loop optimization of hip assistance with a soft exosuit during walking",
+   "found": "Human-in-the-loop optimization of hip assistance with a soft exosuit during walking",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1126/scirobotics.aay9108",
+   "claimed": "Improving the energy economy of human running with powered and unpowered ankle exoskeleton assistance",
+   "found": "Improving the energy economy of human running with powered and unpowered ankle exoskeleton assistance",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1126/scirobotics.abf1078",
+   "claimed": "How adaptation, training, and customization contribute to benefits from exoskeleton assistance",
+   "found": "How adaptation, training, and customization contribute to benefits from exoskeleton assistance",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1126/scirobotics.adf5611",
+   "claimed": "Reducing sprint time with exosuit assistance in the real world",
+   "found": "Reducing sprint time with exosuit assistance in the real world",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1137/S1064827594275534",
+   "claimed": "The Accumulation of Rounding Errors and Port Validation for Global Atmospheric Models",
+   "found": "The Accumulation of Rounding Errors and Port Validation for Global Atmospheric Models",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1152/jappl.2000.89.5.1991",
+   "claimed": "Faster top running speeds are achieved with greater ground forces not more rapid leg movements",
+   "found": "Faster top running speeds are achieved with greater ground forces not more rapid leg movements",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1177/2515245918770963",
+   "claimed": "Equivalence Testing for Psychological Research: A Tutorial",
+   "found": "Equivalence Testing for Psychological Research: A Tutorial",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1186/s12984-021-00919-y",
+   "claimed": "Deep reinforcement learning for modeling human locomotion control in neuromechanical simulation",
+   "found": "Deep reinforcement learning for modeling human locomotion control in neuromechanical simulation",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1186/s12984-021-00928-x",
+   "claimed": "Reducing the energy cost of running using a lightweight, low-profile elastic exosuit",
+   "found": "Reducing the energy cost of running using a lightweight, low-profile elastic exosuit",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1186/s12984-023-01147-2",
+   "claimed": "Robust walking control of a lower limb rehabilitation exoskeleton coupled with a musculoskeletal model via deep reinforcement learning",
+   "found": "Robust walking control of a lower limb rehabilitation exoskeleton coupled with a musculoskeletal model via deep reinforcement learning",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1186/s12984-026-02106-3",
+   "claimed": "Why inverse simulations overestimate optimal ankle exoskeleton assistance: the role of bi-articular coordination and joint stiffness",
+   "found": "Why inverse simulations overestimate optimal ankle exoskeleton assistance: the role of bi-articular coordination and joint stiffness",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1242/jeb.064527",
+   "claimed": "Muscular strategy shift in human running: dependence of running speed on hip and ankle muscle performance",
+   "found": "Muscular strategy shift in human running: dependence of running speed on hip and ankle muscle performance",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1242/jeb.202895",
+   "claimed": "Connecting the legs with a spring improves human running economy",
+   "found": "Connecting the legs with a spring improves human running economy",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1249/mss.0000000000002978",
+   "claimed": "Predictive Simulations of Human Sprinting: Effects of Muscle–Tendon Properties on Sprint Performance",
+   "found": "Predictive Simulations of Human Sprinting: Effects of Muscle–Tendon Properties on Sprint Performance",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.1371/journal.pone.0163417",
+   "claimed": "Simulating Ideal Assistive Devices to Reduce the Metabolic Cost of Running",
+   "found": "Simulating Ideal Assistive Devices to Reduce the Metabolic Cost of Running",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.21105/joss.01421",
+   "claimed": "SCONE: Open Source Software for Predictive Simulation of Biological Motion",
+   "found": "SCONE: Open Source Software for Predictive Simulation of Biological Motion",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.3389/fbioe.2024.1324587",
+   "claimed": "Evaluation of controllers for augmentative hip exoskeletons and their effects on metabolic cost of walking: explicit versus implicit synchronization",
+   "found": "Evaluation of controllers for augmentative hip exoskeletons and their effects on metabolic cost of walking: explicit versus implicit synchronization",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.3390/biomimetics9110665",
+   "claimed": "Comparison of Empirical and Reinforcement Learning (RL)-Based Control Based on Proximal Policy Optimization (PPO) for Walking Assistance: Does AI Always Win?",
+   "found": "Comparison of Empirical and Reinforcement Learning (RL)-Based Control Based on Proximal Policy Optimization (PPO) for Walking Assistance: Does AI Always Win?",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.5194/gmd-8-2829-2015",
+   "claimed": "A new ensemble-based consistency test for the Community Earth System Model (pyCECT v1.0)",
+   "found": "A new ensemble-based consistency test for the Community Earth System Model (pyCECT v1.0)",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.52202/068431-1980",
+   "claimed": "Human-Robotic Prosthesis as Collaborating Agents for Symmetrical Walking",
+   "found": "Human-Robotic Prosthesis as Collaborating Agents for Symmetrical Walking",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.52202/085713-2100",
+   "claimed": "MyoChallenge 2024: A New Benchmark for Physiological Dexterity and Agility in Bionic Humans",
+   "found": "MyoChallenge 2024: A New Benchmark for Physiological Dexterity and Agility in Bionic Humans",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.5281/zenodo.6457662",
+   "claimed": "Comprehensive Kinetic and EMG Dataset of Daily Locomotion with 6 types of Sensors",
+   "found": "Comprehensive Kinetic and EMG Dataset of Daily Locomotion with 6 types of Sensors",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.64898/2026.04.01.715109",
+   "claimed": "Experiment-free learning of exoskeleton assistance remains an unsolved problem",
+   "found": "Experiment-free learning of exoskeleton assistance remains an unsolved problem",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.64898/2026.04.13.718234",
+   "claimed": "The effects of muscle fibre type distribution on gait biomechanics: A predictive simulation study",
+   "found": "The effects of muscle fibre type distribution on gait biomechanics: A predictive simulation study",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.64898/2026.06.09.731213",
+   "claimed": "Unified comparison of spinal locomotion control architectures in neuromechanical simulations",
+   "found": "Unified comparison of spinal locomotion control architectures in neuromechanical simulations",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.64898/2026.06.10.731447",
+   "claimed": "Validation of Dynamic Bayesian Optimization for Human-in-the-Loop Optimization of Exoskeleton Control at User-Driven Walking Speed",
+   "found": "Validation of Dynamic Bayesian Optimization for Human-in-the-Loop Optimization of Exoskeleton Control at User-Driven Walking Speed",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.64898/2026.06.16.731058",
+   "claimed": "Experiment-free learning of exoskeleton assistance is not an unsolved problem",
+   "found": "Experiment-free learning of exoskeleton assistance is not an unsolved problem",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.64898/2026.08.25.746839",
+   "claimed": "MyoAssist 1.0: An Open-Source Framework for Neuromechanical Simulation of Physical Human-Device Interaction",
+   "found": "MyoAssist 1.0: An Open-Source Framework for Neuromechanical Simulation of Physical Human-Device Interaction",
+   "similarity": 1.0
+  },
+  {
+   "kind": "doi",
+   "id": "10.7717/peerj.10975",
+   "claimed": "Three-dimensional data-tracking simulations of sprinting using a direct collocation optimal control approach",
+   "found": "Three-dimensional data-tracking simulations of sprinting using a direct collocation optimal control approach",
+   "similarity": 1.0
+  }
+ ],
+ "title_mismatch": [
+  {
+   "kind": "arxiv",
+   "id": "2309.02976",
+   "claimed": "Emergence of natural and robust bipedal walking by learning from biologically plausible objectives",
+   "found": "Natural and Robust Walking using Reinforcement Learning without Demonstrations in High-Dimensional Musculoskeletal Models",
+   "similarity": 0.42
+  }
+ ],
+ "not_found": []
+}

@@ -1,0 +1,401 @@
+{
+  "status": "FINAL (2026-09-23). All line refs are to the b1baf69 checkout on sail-gpu unless marked site-packages/... (the project .venv). 'probe_*' = read-only CPU introspection runs described under 'probes'.",
+  "checked_on": "2026-09-23",
+  "commit": "b1baf69da59dc6728515d0977cbc8fbf00b9225a (2026-08-25 15:09 -0400, 'Merge pull request #37 from neumovelab/dev'). It is tag v1.0.0 (464740a, 2026-08-19) plus b199ec8 'Fix issue #33 and #34'. The server checkout is a clean, shallow single-commit clone (git log | wc -l = 1). Upstream main HEAD was still b1baf69 on 2026-09-23 (gh api repos/neumovelab/myoassist/commits).",
+  "paths": {
+    "server_checkout": "sail-gpu:/home/aurnab/projects/sail-sprint-20260905/myoassist",
+    "venv": "sail-gpu:/home/aurnab/projects/sail-sprint-20260905/.venv (Python 3.12.3; mujoco 3.4.0, MyoSuite 2.8.4, gymnasium 0.29.1, stable_baselines3 2.9.0, torch 2.14.0+cu130, assist_sim 1.0.0, myo_sim 0.2.2, myoassist_terrains 1.0.0; no jax, mujoco-mjx or mujoco_warp installed (site-packages listing))",
+    "env_base": "rl_train/envs/myoassist_leg_base.py (553 lines)",
+    "env_imitation": "rl_train/envs/myoassist_leg_imitation.py (378 lines)",
+    "env_imitation_exo": "rl_train/envs/myoassist_leg_imitation_exo.py (9 lines; step() just calls super)",
+    "env_registration": "rl_train/envs/__init__.py:31-48 (myoAssistLeg-v0, myoAssistLegImitation-v0, myoAssistLegImitationExo-v0; max_episode_steps=1000, but the handler calls .unwrapped so the TimeLimit wrapper is dropped)",
+    "environment_handler": "rl_train/envs/environment_handler.py (369 lines)",
+    "policies": "rl_train/train/policies/rl_agent_base.py (179), rl_agent_human.py (62), rl_agent_exo.py (162), network_index_handler.py (121), mirror.py (76)",
+    "mirror_ppo": "rl_train/train/mirror_ppo.py (95)",
+    "config_dataclasses": "rl_train/train/train_configs/config.py (170), config_imitation.py (30), config_imiatation_exo.py (54; the filename is misspelled)",
+    "config_json": "rl_train/train/train_configs/imitation_tutorial_22_separated_net_{partial_obs,full_obs,exo_off,speed_control}.json, test.json, device_sweep/imitation_22_<Device>_h128_e32_sidenet_mirror0p1_actpen10.json (8 devices, including Hippo_L1)",
+    "entry_points": "rl_train/run_train.py (159), rl_train/run_policy_eval.py (230), rl_train/run_sim_minimal.py (16)",
+    "analyzer": "rl_train/analyzer/gait_evaluate.py (528), gait_analyze.py (1121), gait_data.py (194), train_analyzer.py (200), train_log_analyzer.py (206), reference_motion_replayer.ipynb",
+    "utils": "rl_train/utils/learning_callback.py (164), train_log_handler.py (66), data_types.py (74), train_checkpoint_data*.py",
+    "compose": "myoassist_utils/compose.py (524), myoassist_utils/env_spec.py (154), myoassist_utils/eval_utils.py (782)",
+    "tools": "tools/score_exo_policy.py (569), make_device_sweep_configs.py (350), plot_kinematics_exo.py (127), plot_exo_comparison.py (114), benchmarks/{bench_throughput,bench_threads,profile_vecenv}.py + README.md, tests/{test_device_configs,test_reward_terms,test_shared_side_exo_net,test_terrains,test_co_build,test_co_layout}.py",
+    "reference_data": "rl_train/reference_data/short_reference_gait.npz (24,886,966 B), segmented.npz (79,005 B)",
+    "hippo_device": "site-packages/assist_sim/models/Hippo/L1config.yaml (44 lines), L1model.xml (61 lines), mesh/*.stl (8 files)",
+    "assist_sim_compose_internals": "site-packages/assist_sim/loading.py load_combined:81-160; combine.py ModelCombiner.combine:160-260 and keyframe fallback 880-912; root_frame.py to_planar_root:104-171 (axes 46-53); canonical_keyframes.py",
+    "myosuite_internals": "site-packages/myosuite/envs/env_base.py (_setup 67-141, step 255-267, _forward 280-308, get_env_infos, _reset 505-520, dt 522-523); myosuite/robot/robot.py (process_actuator 596-657, step 660-686, reset 713-761); myosuite/envs/obs_vec_dict.py:51-89",
+    "sb3_internals": "site-packages/stable_baselines3/ppo/ppo.py:222-278; common/on_policy_algorithm.py:209-216; common/base_class.py:700-744; common/policies.py:309-316",
+    "docs_in_repo": "README.md; docs/getting-started/{index.md, defining-an-environment.md}; docs/reinforcement-learning/{index.md, 02_configuration.md, 04_network-index-handler.md, 05_code_structure.md, 06_troubleshooting.md}; docs/controller-optimization/*.md; docs/examples/*.json",
+    "docs_site": "https://myoassist.neumove.org (fetched 2026-09-23; pages /citations/ and /modeling/msk-models.html read)",
+    "prior_work": "sail-gpu:/home/aurnab/projects/sail-sprint-20260905/{smat_integration.py (178 lines, sha256 897868d0...c49c38 = results.json source_script_sha256), test_smat_integration.py (57), smat_integration.log, ppo_smoke_config.json, out/smat_integration/*, user_controlled_viewer.py (390, sha256 a027e572...), user_controlled_viewer.html}",
+    "run_output_layout": "rl_train/results/train_session_<YYYYmmdd-HHMMSS>[_n]/{session_config.json, train_log.json, trained_models/model_<num_timesteps>.zip, analyze_results_<steps>_<idx>/} (run_train.py:83-88,137-148; rl_train/utils/train_log_handler.py:10-25; learning_callback.py:89-91)"
+  },
+  "env_api": {
+    "class_hierarchy": "MyoAssistLegBase(myosuite.envs.env_base.MujocoEnv) -> MyoAssistLegImitation -> MyoAssistLegImitationExo (rl_train/envs/myoassist_leg_base.py:14; rl_train/envs/myoassist_leg_imitation.py:103; myoassist_leg_imitation_exo.py:4-9). It is not MyoSuite BaseV0, so BaseV0's muscle-action sigmoid is not applied.",
+    "construction": "EnvironmentHandler.create_environment(config, is_rendering_on, is_evaluate_mode=False) (rl_train/envs/environment_handler.py:89-166). Steps: load the reference npz; if msk_key and device_key are both set, EnvSpec(msk, device, terrain).validate().compose() -> XML string (115-126), then _validate_action_layout (127). planar_root is never passed, so myolegs26 keeps its freejoint root. If the keys are unset, config.env_params.model_path (an XML string or path) is the escape hatch (128-133). Then gym.make(env_id, seed, model_path, env_params, is_evaluate_mode, reference_data).unwrapped. If num_envs==1 or rendering is on, a single env is built and ppo n_steps is forced to batch_size (148-154); otherwise a SubprocVecEnv of num_envs workers with the default (fork) start method (156-161).",
+    "setup_sequence": "_setup (rl_train/envs/myoassist_leg_base.py:59-216) sets opt.timestep=1/physics_sim_framerate (63), randomises the target velocity (70), finds device actuators by dyntype!=muscle (86-87) and the muscle act indices (94-106), and handles lumbar: with no lumbar_extension joint it overwrites body('torso').quat=[1,0,0,lumbar_joint_fixed_angle] (149). On planar-root myolegs26 that is a 14.81 deg rotation about world +y, a sagittal pitch (probe_env). It then sets frame_skip=physics//control (155), builds rwd_keys_wt (156-163) and calls MyoSuite _setup, which takes one zero-action step (env_base.py:136). It asserts nkey>0 and loads key_qpos[0] ('stand') as init (195-200), hides the configured geom groups (204-205), then takes one step plus 30 settling steps at zero action, i.e. 50% muscle excitation (213-216).",
+    "config_loading": "python rl_train/run_train.py --config_file_path X.json. Any dataclass field can be overridden as --config.<dotted.field> (run_train.py:119-128; rl_train/utils/data_types.py:41-74). The config class is chosen by env_id (rl_train/envs/environment_handler.py:208-222). Thread caps: OMP/MKL/OPENBLAS/NUMEXPR default to 8 (MYOASSIST_NUM_THREADS), and torch.set_num_threads is applied (run_train.py:18-35).",
+    "step_contract": "step(a) -> (obs, reward, terminated, truncated, info) as a gymnasium 5-tuple. reward = rwd_dict['dense'] (env_base.py:308, rwd_mode 'dense'). info = MyoSuite env_info with time, rwd_dense, rwd_sparse, solved, done, obs_dict, proprio_dict, rwd_dict and state (env_base.py get_env_infos). The imitation step advances the reference index before physics (rl_train/envs/myoassist_leg_imitation.py:284-308).",
+    "public_methods": "set_target_velocity_mode_manually(mode, starting_phase, initial_target_velocity, min_target_velocity, max_target_velocity, target_velocity_period=None) (rl_train/envs/myoassist_leg_base.py:380-399). set_reward_weights(RewardWeights) replaces only the inner per-joint imitation weights, not rwd_keys_wt (rl_train/envs/myoassist_leg_imitation.py:137-138). imitation_step(is_x_follow, specific_index) does kinematic reference playback (rl_train/envs/myoassist_leg_imitation.py:268-280). just_forward().",
+    "validation": "_validate_action_layout (rl_train/envs/environment_handler.py:18-86): an error if motor actuators exist and env_id is not the Exo id, and the actuator indices claimed by net_indexing_info must cover exactly [0, nu). It runs only on the compose path.",
+    "verified_on_myolegs26": "probe_env: the default compose path fails on myolegs26 with KeyError \"Invalid name 'pelvis_ty'\" raised at rl_train/envs/myoassist_leg_imitation.py:341 (_height_corrected_reference <- setup_reference_data:313 <- _setup:130). Composing with planar_root=True and passing the XML as model_path builds MyoAssistLegImitationExo with obs 48, act 28, action bounds [-1,1], dt 0.0333 s, frame_skip 40 and timestep 1/1200 under the Hippo sweep config."
+  },
+  "observation_construction": {
+    "order": "obs = concat(qpos, qvel, act, sensor, target_velocity), in DEFAULT_OBS_KEYS order (rl_train/envs/myoassist_leg_base.py:35-41). MyoSuite concatenates as float32 (myosuite/envs/obs_vec_dict.py:77-89). 'time' is in obs_dict but not in the vector.",
+    "qpos": "data.joint(name).qpos[0] for name in env_params.observation_joint_pos_keys (rl_train/envs/myoassist_leg_base.py:226-232). The shipped configs use 8: [ankle_angle_l, ankle_angle_r, hip_flexion_l, hip_flexion_r, knee_angle_l, knee_angle_r, pelvis_tilt, pelvis_ty]; pelvis_tx is excluded. Only element 0 is read, so a freejoint root cannot be observed through this path.",
+    "qvel": "data.joint(name).qvel[0] for observation_joint_vel_keys (rl_train/envs/myoassist_leg_base.py:229-233). The shipped configs use 9: the 7 non-root joints above plus pelvis_tx and pelvis_ty.",
+    "act": "data.act at muscle-actuator indices only (device filter states are excluded; rl_train/envs/myoassist_leg_base.py:94-106, 234-244). These are MuJoCo activation states, not the excitations the policy sends. They follow actuator order: right side first (verified for myolegs26 in probe_compose and for myolegs22+Hippo in a separate compose check). The JSON comments that label obs [17,28) 'left' are therefore wrong.",
+    "sensor": "data.sensor(name).data for observation_joint_sensor_keys. Names containing 'foot' or 'toes' are divided by sum(body_mass)*9.81, which includes the device mass (rl_train/envs/myoassist_leg_base.py:245-252). The shipped configs use [r_foot, l_foot, r_toes, l_toes] touch sensors (4).",
+    "target_velocity": "1 scalar, self._target_velocity (rl_train/envs/myoassist_leg_base.py:254).",
+    "normalisation": "None beyond the touch-by-bodyweight scaling: no running mean/std, no VecNormalize (run_train.py builds none), and no clipping. The declared observation_space Box(-10,10) (env_base.py:75,140) is not enforced; probe_env saw knee_angle_r qvel 21.76 in a reset observation.",
+    "dims": "myolegs22 configs: 8+9+22+4+1 = 44 (tools/tests/test_device_configs.py EXPECTED_OBS=44). myolegs26 (planar root) with the same key lists: 8+9+26+4+1 = 48 (probe_env). 48-dim index map: qpos 0-7 (hip_flexion_l 2, hip_flexion_r 3); qvel 8-16 (hip_flexion_l 10, hip_flexion_r 11, pelvis_tx 15); act 17-42 (right 17-29, left 30-42); sensors 43-46; target 47.",
+    "history_prev_actions_phase": "Not found. rl_train has no frame stacking, no observation history, no previous-action input and no phase or reference-index observation (the obs keys are fixed at rl_train/envs/myoassist_leg_base.py:35-41 and asserted at 181-185). SMAT's 18-input exo actor (3 samples of bilateral hip angle and velocity, plus 3 samples of its own 2 previous actions) must be built."
+  },
+  "action_mapping": {
+    "policy_head": "Every actor MLP ends Linear+Tanh, so the mean is in [-1,1] (rl_agent_human.py:26-27; rl_agent_exo.py:48-49). The distribution is DiagGaussianDistribution(mean, exp(log_std)) with one state-independent log_std vector of length nu, initialised to custom_policy_params.log_std_init (default -2.0; shipped configs 0.0) (rl_agent_base.py:91-95; config.py:141). Samples are not squashed.",
+    "constant_slots": "'constant' mappings overwrite action slots after sampling (rl_agent_exo.py:142-153; network_index_handler.py:18-23, 75-84). The log-prob still sums over those dims.",
+    "clip_path": "SB3 clips the sampled action to action_space [-1,1] before env.step but stores the unclipped action for the log-prob (on_policy_algorithm.py:209-216). MyoSuite env_base.step clips again (env_base.py:261).",
+    "to_ctrl": "normalize_act=True (the MyoSuite default; env_base.py:74, 98-100) makes robot.process_actuator apply a linear map ctrl = mean(ctrlrange) + a*(ctrlrange[1]-ctrlrange[0])/2 to every actuator (robot.py:610-614). No sigmoid.",
+    "muscles": "ctrlrange [0,1], so excitation u = 0.5 + 0.5a; a = 0 means 50% excitation. u is written to data.ctrl. Activation data.act follows MuJoCo mjDYN_MUSCLE first-order dynamics with dynprm (0.01, 0.04, 0) for all 26 muscles (activation 10 ms, deactivation 40 ms, no smoothing; probe_compose), integrated every physics substep. Force comes from gaintype/biastype 'muscle' on 26 spatial tendons; F0 ranges from 332 N (fdl) to 9501 N (vasti) (probe_compose).",
+    "hippo_exo": "Exo_R/Exo_L are general actuators: dyntype none, gain fixed 100, bias none, joint transmission on hip_flexion_r/l, gear 1, ctrlrange [-1,1] (L1config.yaml:20-44; probe_compose). So ctrl = a and hip torque = 100*a N*m (+ = flexion). The per-step physics substeps (robot.step n_frames = int(dt/timestep), robot.py:683) hold ctrl constant (zero-order hold).",
+    "exo_off_trap": "imitation_tutorial_22_separated_net_exo_off.json pins actions 22-23 to constant 1.0. On Tutorial_L1 (ctrlrange [-1,0]; probe) that gives ctrl 0, i.e. zero torque. On Hippo_L1 (ctrlrange [-1,1]) the same 1.0 gives +100 N*m of flexion. A zero-torque pin for Hippo must be 0.0.",
+    "action_order_myolegs26_hippo": "abd_r, add_r, hamstrings_r, bifemsh_r, edl_r, fdl_r, glutmax_r, iliopsoas_r, rectfem_r, vasti_r, gastroc_r, soleus_r, tibant_r, then the same 13 for _l, then Exo_R, Exo_L: muscles 0-25, Exo_R 26, Exo_L 27 (probe_compose).",
+    "deterministic_eval": "model.predict(obs, deterministic=True) takes the mean action, which goes through the same clip and linear map (gait_evaluate.py:95; rl_agent_base.py:171-179)."
+  },
+  "reward_keys": [
+    {
+      "key": "forward_reward",
+      "formula": "dt * exp(-5 * (qvel[pelvis_tx] - v_target)^2)",
+      "notes": "rl_train/envs/myoassist_leg_base.py:289-291. Dataclass default weight 0.01; shipped configs 1.0. v_target is corrupted during training by the randomiser bug (see termination_reset)."
+    },
+    {
+      "key": "muscle_activation_penalty",
+      "formula": "-dt * mean_over_muscles(act^2)",
+      "notes": "rl_train/envs/myoassist_leg_base.py:293-304, 479-494. The mean includes the lumbar motor ctrl if enable_lumbar_joint. Default weight 0.1; the device-sweep configs use 10. With 26 muscles the mean runs over 26, not 22, so the effective per-muscle price changes."
+    },
+    {
+      "key": "exo_activation_penalty",
+      "formula": "-dt * mean_over_device_actuators((ctrl / max|ctrlrange|)^2)",
+      "notes": "rl_train/envs/myoassist_leg_base.py:311, 467-477. Default 0 (the sweep configs write 0.0). Normalised by ctrlrange, so scaling the gain instead of ctrlrange keeps this term in [0,1] units."
+    },
+    {
+      "key": "muscle_activation_diff_penalty",
+      "formula": "+dt * mean(exp(-4 * (act_prev - act)^2))",
+      "notes": "rl_train/envs/myoassist_leg_base.py:318-324. Despite the name this is a positive smoothness bonus (at most dt per step). act_prev is never reset between episodes; only construction sets it to None (line 75). Default 0.1."
+    },
+    {
+      "key": "foot_force_penalty",
+      "formula": "-dt * max(0, (|F_r| + |F_l|) / (m_total*g) - 1.2), with F_side = touch(side_foot) + touch(side_toes)",
+      "notes": "rl_train/envs/myoassist_leg_base.py:326-330, 543-548. m_total includes the device. Default 0; shipped 0.5."
+    },
+    {
+      "key": "joint_constraint_force_penalty",
+      "formula": "-dt * max_i |jointlimitfrc_i| / (m_total*g)",
+      "notes": "rl_train/envs/myoassist_leg_base.py:313, 496-501. Default sensors are r/l knee, hip, ankle and mtp (8, lines 24-33); all 8 exist on myolegs26 (probe_compose). Default 0; shipped 1.0."
+    },
+    {
+      "key": "muscle_activation_penalty_per_step",
+      "formula": "at each detected heel strike: dt * (-(sum over control steps since last strike of sum_muscles(act^2) * dt)); the value is held between strikes",
+      "notes": "rl_train/envs/myoassist_leg_base.py:258-282. Heel strike: the min over the last 3 samples of one foot's (foot+toes) touch > 0.1, alternating feet (522-541). Default 0."
+    },
+    {
+      "key": "average_velocity_per_step",
+      "formula": "at heel strike: dt * (-|sum_t dt*(v_pelvis_tx - v_target)|) / 1.0 (leg_length=1); held between strikes",
+      "notes": "rl_train/envs/myoassist_leg_base.py:260, 266-267. Default 0."
+    },
+    {
+      "key": "footstep_delta_time",
+      "formula": "at heel strike: dt * (time since the previous strike); held",
+      "notes": "rl_train/envs/myoassist_leg_base.py:259, 268. Default 0."
+    },
+    {
+      "key": "qpos_imitation_rewards",
+      "formula": "sum_j w_j * dt * exp(-8 * (q_j - q_ref_j[i])^2) over the keys of reward_keys_and_weights.qpos_imitation_rewards",
+      "notes": "rl_train/envs/myoassist_leg_imitation.py:144-156, 193-211. DOUBLE WEIGHTING: the outer weight in 'dense' is sum_j w_j (rl_train/envs/myoassist_leg_base.py:158-163), so each joint's term is scaled by w_j * sum(w). Shipped w = {pelvis_ty .1, pelvis_tilt 1, hip_flexion_l/r .2, knee_angle_l/r 1, ankle_angle_l/r .2}, outer 3.9 (probe_env rwd_keys_wt)."
+    },
+    {
+      "key": "qvel_imitation_rewards",
+      "formula": "sum_j w_j * dt * exp(-8 * (dq_j - dq_ref_j[i] * v_target / dq_ref_pelvis_tx[i])^2)",
+      "notes": "rl_train/envs/myoassist_leg_imitation.py:158-174, 202-214. Same double weighting (outer 1.0 in the shipped configs). The speed ratio uses the reference's instantaneous pelvis speed (0.925-1.634 m/s within strides), not its mean."
+    },
+    {
+      "key": "end_effector_imitation_reward",
+      "formula": "dt * mean(exp(-5 * 0^2)) = dt (constant)",
+      "notes": "rl_train/envs/myoassist_leg_imitation.py:179-188, 207. _get_end_effector_diff is a stub returning [0], so this term is a constant alive bonus. Dataclass default 0.3; shipped configs 0.0."
+    },
+    {
+      "key": "dense (returned reward)",
+      "formula": "sum_k W_k * r_k over rwd_keys_wt keys present in rwd_dict; sparse=0, solved=False, done=(pelvis_ty < safe_height)",
+      "notes": "rl_train/envs/myoassist_leg_base.py:350-367 and rl_train/envs/myoassist_leg_imitation.py:232-251. Every term is multiplied by the control dt (1/control_framerate), so per-step magnitudes shrink at 50 Hz while per-second totals stay the same. When the reference index runs out (no loop) the step reward is forced to 0 and the episode is truncated (rl_train/envs/myoassist_leg_imitation.py:300-302). MyoSuite returns rwd_dict['dense'] (env_base.py:308)."
+    }
+  ],
+  "termination_reset": {
+    "terminated": "(a) pelvis_ty qpos < safe_height (rl_train/envs/myoassist_leg_base.py:461-465). Dataclass default 0.65; shipped 0.7. On planar-root myolegs26 the 'stand' key has pelvis_ty 0.91 with the pelvis world z at 0.9129 (probe_env). (b) Imitation env: out of trajectory, when any |q_j - q_ref_j[i]| > out_of_trajectory_threshold over the qpos_imitation_rewards keys (rl_train/envs/myoassist_leg_imitation.py:304-306). Dataclass default 1; shipped 0.2 rad (0.6 exo_off/test, 100 speed_control).",
+    "truncated": "(a) the step count reaches custom_max_episode_steps (rl_train/envs/myoassist_leg_base.py:72-73, 369-375). Default 500; shipped 1000, which is 33.3 s at 30 Hz or 20 s at 50 Hz. (b) The reference index passes its end with loop_reference_data False; reward is set to 0 (rl_train/envs/myoassist_leg_imitation.py:285-302). loop_reference_data is an _setup kwarg (rl_train/envs/myoassist_leg_imitation.py:121) that EnvironmentHandler never passes, so it is always False in training.",
+    "reset_sequence": "Imitation reset (rl_train/envs/myoassist_leg_imitation.py:361-374): start index = rng.integers(0, int(0.8*len)) if flag_random_ref_index (shipped true), else 0, using an unseeded np.random.default_rng() (TODO at 362). _follow_reference_motion(False) writes qpos of reference_data_keys (pelvis_tx forced to 0) and qvel = dq_ref * v_target/dq_ref_pelvis_tx (253-266). Base reset (rl_train/envs/myoassist_leg_base.py:442-459) re-randomises the target velocity (training only), sets pelvis_tx qvel = v_target, clears heel-strike and per-step buffers, then MyoSuite _reset -> robot.reset: sim.reset() (clears act, ctrl, time) and then writes the passed qpos/qvel (robot.py:713-761).",
+    "reset_state_carryover": "The qpos/qvel passed to reset are the current sim values with only reference_data_keys overwritten, so every DOF not in reference_data_keys keeps its value from the end of the previous episode. That covers mtp, knee translations, muscle path-point slide joints (these are equality-coupled), and on 3D also pelvis_tz, pelvis_list, pelvis_rotation, hip_adduction_* and hip_rotation_*. Muscle activations do restart at 0.",
+    "target_velocity_bug": "_change_mode_and_target_velocity_randomly passes positional args in the wrong slots (rl_train/envs/myoassist_leg_base.py:407-414 vs the signature at 380-388): starting_phase<-v_min, min<-v_max, max<-random phase in [0, 2pi). The corruption compounds across resets. probe_env with config min=max=1.25 m/s gave targets 4.995, 3.096, 0.935, 4.867, 4.69 and 3.968 over 6 resets, with min/max attributes drifting (for example 3.177/5.386, then 5.386/0.635). The eval path is unaffected because evaluate mode skips the reset randomisation and gait_evaluate.py:79-86 calls the setter with the correct order. History (GitHub API): the 6-arg misordered call first appears in 4a4cbe3 (2025-08-05) and is in every later main commit through b1baf69. It is fixed only on the unmerged branch feat/prosthesis-rl commit 038f558 (2026-08-23), whose comment measures mean 2.94 m/s over 400 resets, 47% > 3 m/s, max 6.26.",
+    "velocity_modes": "Each reset draws uniformly among UNIFORM, SINUSOIDAL and STEP (rl_train/envs/myoassist_leg_base.py:19-22, 401-440). With a correct fix and min=max all three give a constant target.",
+    "evaluation_overrides": "GaitEvaluatorBase.initialize_env sets num_envs=1, custom_max_episode_steps=1e9 and out_of_trajectory_threshold=1e6 (rl_train/analyzer/gait_evaluate.py:29-37). It evaluates the last checkpoint deterministically and stops at done/truncated if terminate_when_done (55-119).",
+    "observed_zero_action_episode_length": "probe_timing, planar-root myolegs26+Hippo, Hippo sweep config (out_of_trajectory_threshold 0.2), v_target correctly fixed at 1.25 m/s, action 0 (50% excitation of every muscle, exo 0): episodes end after 1-2 control steps at 30/1200, 50/1000 and 50/1200. Pelvis height stays above safe_height, so the out-of-trajectory check ends them. The env gives an untrained policy almost no survival time at this threshold."
+  },
+  "reference_data": {
+    "short_reference_gait.npz": {
+      "keys": "'metadata' {sample_rate: 500, data_length: 449000} and 'series_data'. Each is a pickled dict stored as a 0-d object array; the series values are Python lists.",
+      "series": "q_<coord> and dq_<coord> for 36 OpenSim-style coordinates each (72 series): pelvis_tx/tz/ty/tilt/list/rotation, hip_flexion/adduction/rotation_r/l, knee_angle_r/l, ankle_angle_r/l, subtalar_angle_r/l (all zero), mtp_angle_r/l (all zero), lumbar_extension/bending/rotation, arm_flex/add/rot_r/l, elbow_flex_r/l, pro_sup_r/l, wrist_flex/dev_r/l (all zero).",
+      "shape_and_rate": "Every series has 44,900 samples at 500 Hz = 89.8 s. The metadata data_length (449,000) is off by 10x.",
+      "speed": "One continuous trial: q_pelvis_tx rises monotonically from 4.89 to 119.96 m; mean speed 1.2815 m/s; 10 s window means 1.270-1.293 m/s; dq_pelvis_tx ranges 0.925-1.634 m/s within strides.",
+      "gait": "The dominant hip-flexion frequency is 0.902 Hz, a stride of about 1.109 s, about 81 strides. q_pelvis_ty is 0.859-0.945 m (mean 0.906). Hip flexion r is -0.517 to 0.400 rad and knee r is -1.102 to 0.013 rad.",
+      "subjects_provenance": "Not stated in the file (the metadata has only sample_rate and data_length) or in the repo docs.",
+      "source": "probe_ref (numpy load on sail-gpu, 2026-09-23)"
+    },
+    "segmented.npz": {
+      "keys": "75 keys: 'meta_data' {segments_list: [1.14, 2.26, 3.36, 4.51, 5.61, 6.73, 7.89] s} plus q_/dq_ arrays for the same 36 coordinates.",
+      "shape": "(100,) each: one gait cycle at 1% resolution. q_pelvis_ty is mean-shifted (-0.056 to 0.015). Mean dq_pelvis_tx is 1.2698 m/s.",
+      "use": "Evaluation and plots only (run_policy_eval.py:150 loads it by relative path; tools/plot_kinematics_exo.py). The left-leg reference equals the right shifted by 50% of the cycle and must be rolled (plot_kinematics_exo.py:9-13)."
+    },
+    "resampling": "load_reference_data resamples every series by np.interp over sample index to int(N * control_framerate / 500) samples (rl_train/envs/environment_handler.py:192-204): 2694 at 30 Hz, 4490 at 50 Hz. The evaluator repeats this (gait_evaluate.py:503-516).",
+    "playback_and_phase": "The imitation index advances exactly 1 sample per control step (rl_train/envs/myoassist_leg_imitation.py:285-295), so the reference plays at its recorded cadence (about 1.28 m/s) whatever v_target is. There is no phase variable or phase observation. Episodes start at a random index in [0, 0.8*len). qpos targets are not speed-scaled; qvel targets are scaled by v_target/dq_ref_pelvis_tx[i] (rl_train/envs/myoassist_leg_imitation.py:159-167). A late random start leaves at least 539 steps at 30 Hz, or 898 at 50 Hz, before the reference-end truncation.",
+    "height_correction": "_height_corrected_reference shifts q_pelvis_ty by (key 'stand' pelvis_ty - reference mean) only when that offset is >= +0.02 m (rl_train/envs/myoassist_leg_imitation.py:317-359). On b1baf69 negative offsets are never corrected (the unmerged branch changes this to abs()). It needs a joint named pelvis_ty, which is why the freejoint myolegs26 fails.",
+    "3d_dofs_available": "The reference contains q/dq for pelvis_tz, pelvis_list, pelvis_rotation and hip_adduction/rotation, so the 3D DOFs could be tracked and reset. Sign conventions against the planar-root axes (tz along world +y, list about +x, rotation about +z; assist_sim/root_frame.py:46-53) are unverified."
+  },
+  "framerates": {
+    "config_keys": "env_params.control_framerate (default 30) and env_params.physics_sim_framerate (default 1200) (config.py:45-46). Every shipped config uses 30/1200.",
+    "mechanics": "model.opt.timestep = 1/physics_sim_framerate (rl_train/envs/myoassist_leg_base.py:63), overriding the XML 0.002 s. frame_skip = physics // control (integer division, rl_train/envs/myoassist_leg_base.py:155). env.dt = timestep*frame_skip (env_base.py:522-523). robot.step runs n_frames = int(dt/timestep) mj_steps with ctrl held (robot.py:683-685).",
+    "50Hz_options": "control 50 Hz with physics 1200 Hz gives frame_skip 24 and dt exactly 0.02 s; with physics 1000 Hz, frame_skip 20 and dt 0.02 s. Both are exact in floating point (python check: int(dt/timestep) = 24 and 20). Both are configurable in JSON with no code change. The reference is resampled to 50 Hz (4490 samples).",
+    "pitfall": "Non-divisible pairs floor silently. For example 1000//30 = 33 substeps gives a real 30.30 Hz control rate while the reference is resampled for exactly 30 Hz (rl_train/envs/environment_handler.py:199-204).",
+    "timing_measured": "sail-gpu CPU is an AMD EPYC 9535 (128 threads, load average about 1.5-1.9 during the probes). probe_timing, best of 3 x 1200 steps at dt 1/1200, zero ctrl, 1 thread: myolegs26+Hippo planar root 62.7 us per mj_step, myolegs22+Hippo 52.1 us, so the 3D model costs about 1.2x. probe_compose single runs gave 64.8 us (planar) and 68.2 us (freejoint). Physics per 50 Hz control step is therefore about 1.25 ms at 1000 Hz or 1.5 ms at 1200 Hz. probe_timing env.step wall time averaged over 200 zero-action steps, including the frequent resets (zero action ends episodes after 1-2 steps): 3.95 ms at 30/1200, 2.36 ms at 50/1000, 2.66 ms at 50/1200. These are upper bounds per env per core."
+  },
+  "separated_networks": {
+    "config_location": "policy_params.custom_policy_params = {net_arch: {net_name: [hidden...]}, net_indexing_info: {net_name: {observation: [...], action: [...]}}, log_std_init, reset_shared_net_after_load, reset_policy_net_after_load, reset_value_net_after_load} (config.py:132-143). ExoImitation's extra fields (human_observation_indices and so on) are unused ('This actually does nothing', config_imiatation_exo.py:37-43).",
+    "policy_selection": "env_id myoAssistLegImitationExo-v0 selects HumanExoActorCriticPolicy; any other id selects HumanActorCriticPolicy (rl_train/envs/environment_handler.py:13, 263-268).",
+    "net_names": "human_actor; exo_actor, or exo_actor_r plus exo_actor_l (one weight-shared module applied per leg with that leg's inputs first; both names must be present or neither; rl_agent_exo.py:52-114); common_critic (rl_agent_exo.py:116-127). HumanActorCriticPolicy uses human_actor and common_critic on the full observation (rl_agent_human.py:9-41).",
+    "observation_mapping": "'range' [start, end) takes a contiguous slice. 'index' takes a list of indices in the listed order (network_index_handler.py:50-73). The input width is the total mapped length (25-33).",
+    "action_mapping": "'range_mapping' copies range_net to range_action. 'index_mapping' copies result[:, idx] = out[:, idx] with the same indices on both sides, so it is only usable when the net output is as wide as the action vector. 'constant' takes range_action and default_value, is written in forward_actor, and is re-applied after sampling (network_index_handler.py:86-121, 75-84). Unclaimed action slots stay 0 (the mean) and are rejected on the compose path by _validate_action_layout.",
+    "mlp_details": "Hidden layers are Linear+Tanh. Actor outputs end with Tanh; the critic output is linear with 1 unit. Every Linear gets orthogonal init with gain 1 and zero bias via self.apply(init_weights) (rl_agent_base.py:97; SB3 policies.py:309-316), not SB3's usual 0.01 output gain.",
+    "training_mechanics": "One SB3 PPO (or MirrorPPO) loss = policy_loss + ent_coef*entropy_loss + vf_coef*value_loss (ppo.py:256). It is one Adam optimizer over all parameters (rl_agent_base.py:99). probe_policy confirmed 1 param group, eps 1e-8, and coverage of all unique params, with the shared side-net deduplicated. The log-prob is one joint Gaussian summed over all nu dims (probe_policy: log_prob == per-dim sum over 28 dims). Entropy is summed over all dims, gradients are clipped over all params (ppo.py:274-278), and one target_kl early stop is shared by all actors (ppo.py:267). No per-actor losses, clip ranges, learning rates or KL.",
+    "mirror_ppo": "MirrorPPO (mirror_coef>0) takes an extra optimizer step on mean((pi(s) - M_a pi(M_s s))^2) after each PPO.train (mirror_ppo.py:63-95). Its permutations are pure index swaps for a 'planar' model with no sign flips (policies/mirror.py:5-6, 58-76), so they are invalid for 3D DOFs such as hip adduction/rotation and pelvis list/rotation.",
+    "smat_sized_param_counts": "probe_policy, with 48-dim obs: human_actor 256/128 -> 26 = 48,794 params; one per-side exo net 128/64 on 8 inputs -> 1 = 9,473; common_critic 256/128 = 45,569; log_std 28."
+  },
+  "shared_critic": {
+    "exists": true,
+    "how": "'common_critic' in net_indexing_info/net_arch: one value MLP over a configurable observation subset (rl_agent_exo.py:36-38, 116-127). One V(s) is used in the single PPO loss for every actor. There are no per-actor critics or value losses.",
+    "shipped_sizes": "[64, 64] in every shipped config (device sweep included). SMAT's [256, 128] is set with net_arch.common_critic = [256, 128].",
+    "value_clipping": "The shipped configs set clip_range_vf=100, which effectively disables value clipping."
+  },
+  "staging_support": {
+    "exists_on_main": [
+      "prev_trained_policy_path: PPO.load(path, env, custom_objects={'policy_class': ...}, **ppo_params) loads the whole zip (weights and optimizer state) (rl_train/envs/environment_handler.py:276-292; docs/reinforcement-learning/index.md:216-223). It requires identical observation/action spaces (SB3 check_for_correct_spaces, base_class.py:700-717). The stored policy_kwargs (net_arch, net_indexing_info) win, because the config's policy_params are not passed (commented at rl_train/envs/environment_handler.py:283). It always builds plain PPO, so mirror_coef is dropped (docs 02_configuration.md:156).",
+      "reset_policy_net_after_load / reset_value_net_after_load re-create the actor(s) or critic after loading (rl_train/envs/environment_handler.py:288-292; rl_agent_exo.py:155-162). reset_shared_net_after_load is a no-op (02_configuration.md:171).",
+      "'constant' action mapping pins action slots to a fixed value, which can hold the exo at zero torque (use 0.0 on Hippo; network_index_handler.py:75-84).",
+      "Reward weights change between stages by using one config JSON per stage run; rwd_keys_wt is built from the config at env setup (rl_train/envs/myoassist_leg_base.py:156-163).",
+      "set_reward_weights(...) on the imitation env changes only the inner per-joint weights, not the outer rwd_keys_wt, and nothing calls it (ARA is disabled, rl_train/envs/myoassist_leg_imitation.py:77-97, 137-138).",
+      "Device gain: no RL config knob on main. Gain comes from the assist_sim device YAML (Hippo L1config.yaml:25,37: gainprm 100). assist_sim can apply per-MSK actuator overrides at compose time (combine.py ModelCombiner.combine calls _apply_actuator_overrides; docs page /modeling/devices/per-msk-overrides.html), not per training stage."
+    ],
+    "exists_but_broken": [
+      "reset_*_after_load re-instantiates modules after the optimizer was built. probe_policy: the new parameter objects are not in the optimizer and 18 orphaned tensors remain in it, so re-initialised networks never train. The new modules also get PyTorch default init, not orthogonal.",
+      "prev_trained_policy_path cannot cross stages that change the action dimension (for example a human-only stage 1 with nu=26 to a device stage with nu=28), or the observation layout, or the network architecture."
+    ],
+    "unmerged_upstream_branch_feat_prosthesis_rl_7780d7a": [
+      "Target-velocity randomiser fix (038f558) with tests/test_target_velocity.py.",
+      "EnvParams.device_ctrl_scale in (0,1] narrows the device ctrlrange at setup (a torque-authority scale; <=1 only).",
+      "reward_curriculum {key: [start_scale, end_scale]} with reward_curriculum_start/end. The callback pushes set_reward_weight_scales through env_method at rollout boundaries, scaling the configured rwd_keys_wt.",
+      "Speed curriculum (curriculum_start_velocity, curriculum_fraction) via set_target_velocity_range.",
+      "scale_reference_playback, out_of_trajectory_joint_keys, reset_keyframe_joint_keys, and a reference height correction for negative offsets."
+    ],
+    "absent": [
+      "Freezing one actor while training another: grep finds no requires_grad or freeze handling in rl_train, myoassist_utils or tools, except log_std requires_grad=True (rl_agent_base.py:94).",
+      "Per-actor log-prob and entropy masking, and per-actor log_std parameter groups (log_std is a single vector).",
+      "A per-stage optimizer rebuild, and per-actor learning rates.",
+      "Weight-hash verification of frozen parameters.",
+      "Partial loading (for example only human_actor from a previous stage into a new layout).",
+      "A per-stage device torque/gain setting and an exo zero-torque guarantee check.",
+      "A multi-stage driver or scheduler."
+    ],
+    "to_build_for_smat": [
+      "StagedHumanExoPolicy (port smat_integration.StagedPolicy): human MLP 256/128 -> 26 tanh, exo MLP 128/64 on 18 inputs -> 2 tanh, shared critic 256/128, a separate log_std Parameter per actor, and set_stage() that sets requires_grad and rebuilds Adam over trainable params only.",
+      "evaluate_actions/forward masking: stages 1-2 human log-prob and entropy only, with the exo held at deterministic 0 (not sampled); stage 3 exo only, with the human sampled from the frozen policy as part of the environment; stage 4 both.",
+      "A stage driver: 4 sequential PPO runs (32 envs), strict state_dict transfer between stages instead of PPO.load, per-stage config (reward weights, gain, total steps), and a per-stage manifest (model XML sha256, masses, gain, hashes, steps, seeds).",
+      "Freeze proof: sha256 per parameter group (human_*, exo_*, critic, log_std groups) before and after each stage, asserting unchanged groups (stage 3: human, human_log_std; stages 1-2: exo, exo_log_std). Add a fixed-obs output equality check and a save/reload hash equality check (the prior-work pattern, smat_integration.py:72-80, 146-168).",
+      "Device gain per stage: set model.actuator_gainprm[Exo_R/L, 0] to 0 (or pin the action to 0) in stage 2, 6.0 in stage 3 and 25.0 in stage 4, keeping ctrlrange [-1,1]. Assert |actuator_force| <= gain in a physics-audit wrapper (prior PhysicsAuditEnv pattern)."
+    ]
+  },
+  "composed_model_myolegs26_hippo": {
+    "compose_api": "myoassist_utils.compose.compose_env_model(msk_key, device_key, terrain=None, export_path=None, planar_root=False, cache_dir=None) -> MJCF XML string (compose.py:335-389). EnvSpec(msk, device, terrain).validate().compose(export_path=None, cache_dir=None) wraps it without planar_root (env_spec.py:97-154). Underneath is assist_sim.load_combined(msk_key, device_key, export_xml=None, cache_dir=None, planar_root=False) -> (MjModel, MjData) (assist_sim/loading.py:81-160). The bare MSK comes from assist_sim.load_msk or registry._resolve_msk(key).compile(). Cache: MYOASSIST_CACHE_DIR or cache_dir (compose.py:386-389).",
+    "compose_time_s": "1.03 (first, freejoint); 0.58 (planar_root, warm) (probe_compose)",
+    "root": "The RL-default compose keeps a FREE joint named 'root' (nq-nv = 1). planar_root=True replaces it with named slide/hinge DOFs pelvis_tx (x fwd), pelvis_ty (z up), pelvis_tz (y), pelvis_tilt (about -y), pelvis_list (about x) and pelvis_rotation (about z), giving nq 46, nv 46 (assist_sim/root_frame.py:46-53, 104-171; probe_compose).",
+    "nq": 47,
+    "nv": 46,
+    "nu": 28,
+    "na": 26,
+    "nbody": 46,
+    "njnt": 41,
+    "ngeom": 65,
+    "nmesh": 45,
+    "nsite": 784,
+    "muscles": "26 actuators with dyntype/gaintype/biastype = muscle and tendon transmission; ctrlrange [0,1]; actlimited false; dynprm (0.01, 0.04, 0) for all.",
+    "device_actuators": "Exo_R, Exo_L: general, dyntype none, gain fixed 100, bias none, joint transmission hip_flexion_r/l, gear 1, ctrlrange [-1,1].",
+    "tendons": "26 total: 0 fixed, 26 spatial. 96 wrap elements, all mjWRAP_SITE; 0 sphere or cylinder wrapping geoms.",
+    "wrap_objects": "0 wrapping geoms. Muscle paths are site-only (784 sites), and moving path points are modelled as slide joints coupled by equality constraints.",
+    "equality_constraints": "28, all mjEQ_JOINT with quartic polycoef. 4 couple knee_{r,l}_translation1/2 to knee_angle; 24 couple muscle path-point slide joints (hamstrings, rect_fem, vasti, gastroc to knee angle; iliopsoas to hip_flexion) to their driving joint. No weld, connect or tendon equalities.",
+    "joints": "41 = 1 free joint 'root' + 12 hinges (hip_flexion, hip_adduction, hip_rotation, knee_angle, ankle_angle, mtp_angle per side) + 4 knee-translation slides (knee_{r,l}_translation1/2) + 24 muscle path-point slides (hamstrings P2 x/y, rect_fem P3 x/y, vasti P4 x/y, gastroc P2 x/y/z, iliopsoas P3 x/y/z per side). nv = 6 + 40 = 46 and nq = 7 + 40 = 47. All 40 non-free joints are limited; 40 dofs have nonzero damping and armature (probe_compose). There is no lumbar joint.",
+    "sensors": "12: touch r_foot, r_toes, l_foot, l_toes; jointlimitfrc r/l knee, hip, ankle and mtp sensors.",
+    "keyframes": "5: stand, walk_left, walk_right, squat, lunge. These are the assist_sim canonical fallback (combine.py:885-910); the bare myolegs26 has nkey 0. The freejoint 'stand' key puts root z at 1.0 m, so the pelvis starts 1.0 m up and drops (probe_env), versus pelvis_ty 0.91 and world z 0.9129 on planar root. The base-env comment claiming nkey=0 for composed myolegs26 (rl_train/envs/myoassist_leg_base.py:193-197) is stale.",
+    "contacts": "Colliding geoms by type: 1 plane (the terrain; contype=conaffinity=1), 4 capsules and 3 ellipsoids on torso/neck/head (contype 1, conaffinity 0), and 23 meshes (contype=conaffinity=1). All colliding geoms have friction (1, 0.005, 0) and condim 3. There are 25 explicit <pair> entries (left-vs-right leg bone meshes) and 0 excludes.",
+    "mesh_collisions": "Yes. 15 human bone meshes (pelvis x3; femur, tibia x2, talus, calcn, toes per leg) and all 8 Hippo meshes collide. probe_env: during a 1 s passive fall from 'stand' at zero ctrl, device-device contacts occurred (Hippo thigh_cuff_r vs thigh_cuff_l, Hippo thigh_r vs thigh_cuff_l). At 0.2 s the only contacts were toes vs ground.",
+    "physics_options": "XML timestep 0.002 (500 Hz; the env overrides it); integrator Euler (eulerdamp enabled); solver Newton, 100 iterations, 50 ls_iterations; tolerance 1e-8; cone pyramidal; impratio 1; noslip 0; jacobian auto; gravity (0,0,-9.81); no disable/enable flags.",
+    "mass_kg": {
+      "with_device": 82.9905,
+      "bare_myolegs26": 78.0905,
+      "device_total": 4.9,
+      "myolegs22_plus_Hippo_for_comparison": 82.9905
+    },
+    "device_body_masses_kg": {
+      "Hippo_L1_hippo_backplate": 0.929764,
+      "Hippo_L1_hippo_hipshell_lr": 0.744376,
+      "Hippo_L1_hippo_waist_bands": 0.283131,
+      "Hippo_L1_hippo_ak10_9": 1.92,
+      "Hippo_L1_hippo_thigh_r": 0.347605,
+      "Hippo_L1_hippo_thigh_cuff_r": 0.163742,
+      "Hippo_L1_hippo_thigh_l": 0.34764,
+      "Hippo_L1_hippo_thigh_cuff_l": 0.163742
+    },
+    "device_attachment": "backplate welded to pelvis (hipshell, waist bands and the single AK10-9 housing body are its children); thigh_r/l plus cuffs welded to femur_r/l (L1config.yaml:9-15; L1model.xml:24-58). No device joints. The 'ideal hip-flexion actuators' have 'starting values -- tune per controller' (L1config.yaml:17-19).",
+    "rl_env_compatibility": "freejoint (default RL compose): stock env FAILS (KeyError pelvis_ty). planar_root via model_path: stock env builds with obs 48 and act 28 (probe_env).",
+    "timing": "mj_step best of 3 is 62.7 us (planar root) against 52.1 us for myolegs22+Hippo on the same AMD EPYC 9535 core (probe_timing). Single runs gave 68.2 us (freejoint) and 64.8 us (planar) (probe_compose). All at dt 1/1200 with zero ctrl."
+  },
+  "gpu_backend_risk_features": [
+    {
+      "feature": "26 MuJoCo muscle actuators (dyntype, gaintype and biastype 'muscle')",
+      "status": "Listed as supported by both MJX-JAX (dynamics NONE/INTEGRATOR/FILTER/FILTEREXACT/MUSCLE; gain and bias MUSCLE) and MJX-Warp (All) in the MJX feature-parity table (mujoco.readthedocs.io/en/stable/mjx.html, fetched 2026-09-23). Parity untested here."
+    },
+    {
+      "feature": "26 spatial tendons with 96 SITE wraps, no geom wrapping",
+      "status": "SITE wrapping and spatial tendons are listed for both backends. Low risk, but tendon length/velocity parity should be checked."
+    },
+    {
+      "feature": "28 JOINT equality constraints with quartic polycoef (knee translations and moving muscle path points)",
+      "status": "Equality JOINT is listed for both. The polynomial coupling feeds the muscle moment arms, so it needs a trajectory parity test."
+    },
+    {
+      "feature": "23 colliding mesh geoms (15 bone meshes plus 8 Hippo meshes) and 25 explicit mesh-mesh <pair>s between the legs",
+      "status": "MJX-JAX: MESH collides via convex hulls, and the docs advise maxhullvert <= 64 and limiting contacts for performance. MJX-Warp 'fully supports mesh collisions'. Mesh-heavy contact is the main throughput and parity risk."
+    },
+    {
+      "feature": "3 ELLIPSOID collision geoms on torso/head (contype 1, conaffinity 0). By filter they can pair with conaffinity-1 meshes such as the Hippo backplate.",
+      "status": "MJX-JAX does not support ELLIPSOID vs (BOX, MESH, HFIELD) collisions (feature table footnote 3). MJX-Warp lists all geoms. Exclude the pairs or change the geoms for MJX-JAX."
+    },
+    {
+      "feature": "8 JOINTLIMITFRC sensors, used by joint_constraint_force_penalty",
+      "status": "JOINTLIMITFRC is not in MJX-JAX's supported sensor list (footnote 2). MJX-Warp supports 'All except PLUGIN'. For MJX-JAX, compute limit forces from efc data or drop the term."
+    },
+    {
+      "feature": "4 TOUCH sensors, used by obs and heel-strike detection",
+      "status": "TOUCH is listed as supported in MJX-JAX; Warp supports all."
+    },
+    {
+      "feature": "Free joint root (RL default) or 6 named root DOFs (planar root)",
+      "status": "Both are supported."
+    },
+    {
+      "feature": "Euler integrator, Newton solver, pyramidal cone, 100 iterations / 50 ls_iterations",
+      "status": "Supported. MJX-JAX performance guidance says to reduce iterations and possibly disable eulerdamp."
+    },
+    {
+      "feature": "Runtime model edits in env setup (torso body_quat, lumbar jnt_range, gainprm/ctrlrange changes)",
+      "status": "They must be applied to the MjModel before device transfer (put_model). They are not per-env mutable in batched code without rebuilding."
+    },
+    {
+      "feature": "The Python MyoSuite/MyoAssist env stack (obs dicts, heel-strike buffers, reference indexing, np.random)",
+      "status": "CPU-only Python and not portable. Obs, reward, termination and reset must be rewritten in JAX/Warp."
+    },
+    {
+      "feature": "Availability on sail-gpu",
+      "status": "jax, mujoco-mjx and mujoco_warp are not installed in the project venv (site-packages listing 2026-09-23). put_model was not attempted."
+    }
+  ],
+  "upstream_changes_since_b1baf69": [
+    "main: no commits after b1baf69 as of 2026-09-23 (gh api repos/neumovelab/myoassist/commits; branches list main=b1baf69).",
+    "dev (935e0ec, 2026-08-26, 'remove stale tutorial param path'): 1 ahead of main and 1 behind (the merge commit). It touches only ctrl_optim/optim/training_configs/tutorial.bat (-1 line).",
+    "feat/prosthesis-rl (7780d7a, 2026-08-31): 15 commits ahead of b1baf69, 2 behind, NOT merged. Relevant commits: 038f558 fixes the target velocity randomiser and adds a speed curriculum; 13c88da anneals the imitation reward away through reward_curriculum and set_reward_weight_scales; 6eb6756 caps the prosthetic device command (device_ctrl_scale); 0dfc971 and f222833 correct the reference pelvis height for compositions that stand below it. It also adds scale_reference_playback, out_of_trajectory_joint_keys, reset_keyframe_joint_keys, prosthesis configs, tools/make_prosthesis_configs.py and tests (test_target_velocity.py, test_reward_curriculum.py, test_prosthesis_configs.py).",
+    "Releases/tags: v1.0.0 only (464740a, published 2026-08-19). b1baf69 = v1.0.0 + 'Fix issue #33 and #34' (b199ec8, tutorial-doc bugs) + merge.",
+    "Open issues on 2026-09-23: #38 (2026-08-28) says myo-sim 0.2.1 gives chest_r about 12.868 kg of phantom mass and asks for a >=0.2.2 requirement. The server has myo_sim 0.2.2, and bare myolegs26 measures 78.09 kg. #36 (2026-08-24): RuntimeError 'Cannot re-initialize CUDA in forked subprocess' from learning_callback's multiprocessing Pool (fork) every evaluate_frequency rollouts; the proposed fix is the spawn context. #35 (2026-08-24): a SubprocVecEnv worker dies with EOFError after about 88 rollouts (fork-related), reported with a device-sweep config.",
+    "Preprint: 'MyoAssist 1.0' was posted on bioRxiv 2026-08-26 (DOI 10.64898/2026.08.25.746839), the day after b1baf69."
+  ],
+  "myoassist_paper": {
+    "arxiv_search": "export.arxiv.org/api/query?search_query=all:MyoAssist&max_results=10 returned totalResults 1: 2603.07618v1 (SMAT itself). There is no MyoAssist paper on arXiv.",
+    "myoassist_1_0": {
+      "title": "MyoAssist 1.0: An Open-Source Framework for Neuromechanical Simulation of Physical Human-Device Interaction",
+      "authors": "Robbins C*, Son H*, Tan CK, Wang C, van Kanten R, Sartori M, Durandau G, Kumar V, Caggiano V, Song S",
+      "venue": "bioRxiv preprint (new results, bioengineering), v1 posted 2026-08-26, CC-BY",
+      "doi": "10.64898/2026.08.25.746839",
+      "verified_by": "Crossref query.bibliographic=MyoAssist and api.biorxiv.org/details/biorxiv/10.64898/2026.08.25.746839 (2026-09-23)",
+      "read": "abstract only (15 device models; MSK models from reduced lower-limb up to 416-muscle full body; RL plus controller-optimization frameworks on the same composed environments)"
+    },
+    "myoassist_0_1": {
+      "title": "MyoAssist 0.1: MyoSuite for Dexterity and Agility in Bionic Humans",
+      "authors": "Tan CK, ..., Song S",
+      "venue": "IEEE ICORR 2025",
+      "source": "myoassist.neumove.org/citations/ (fetched 2026-09-23); DOI not verified here"
+    },
+    "note": "The docs site lists both under 'Citations'. SMAT cites MyoAssist 0.1 (see infra/smat_spec.json simulator.source), so the SMAT authors' code base predates 1.0."
+  },
+  "reusable_prior_work": {
+    "smat_integration.py": {
+      "what": "A four-stage SMAT-style integration test (2026-09-05) on planar myolegs22 plus the Tutorial_L1 ankle device (22 muscles), using MyoAssist's env through EnvironmentHandler with the model_path escape hatch and env_id myoAssistLegImitation-v0 (smat_integration.py:128-145). The script on disk matches results.json source_script_sha256 897868d0...c49c38.",
+      "freezing": "StagedPolicy.set_stage (lines 37-47): human_actor params and human_log_std get requires_grad = (stage != 3); exo_actor and exo_log_std get requires_grad = (stage >= 3); the critic always trains. The Adam optimizer is rebuilt every stage over requires_grad params only (eps 1e-5), which also resets Adam moments.",
+      "log_prob_masking": "evaluate_actions (53-60): the human log-prob and entropy are included iff stage != 3, and the exo ones iff stage >= 3. forward (61-67): stage 2 appends constant exo actions of 1.0 (zero torque on Tutorial's [-1,0] range; this must be 0.0 on Hippo). Stage 1 has no exo dims (a human-only model, action dim 22).",
+      "separate_stds_and_norm": "Separate human_log_std (22) and exo_log_std (2), both initialised to -1.0. Observation normalisation buffers are fixed identity (obs_center 0, obs_scale 1) with no running statistics.",
+      "hash_verification": "policy_groups() takes sha256 over state_dict slices by prefix (human_, exo_, critic, obs_) (72-80). It asserts that human changes iff stage != 3, exo changes iff stage >= 3, the critic always changes and the normalisation never does (159-162). Stage 3 also checks that the human mean and std outputs on fixed observations are bitwise equal (147-156). Each checkpoint is saved, reloaded, and checked for equal hashes and deterministic predictions (164-168).",
+      "stage_transfer": "A new PPO object per stage plus policy.load_state_dict(previous, strict=True) (143-145). This works across action dims because every parameter shape is stage-invariant.",
+      "models": "Stage 1: assist_sim.load_msk('myolegs22') plus a manually injected floor plane. Stages 2-4: load_combined('myolegs22', 'Tutorial_L1') with forcelimited forcerange +/-6 N*m on the device actuators in ALL of stages 2-4 (DEVICE_FORCE_LIMIT, 14, 97-103). That is force clipping, not SMAT's 6 then 25 N*m gain schedule. Model XML sha256 and per-body masses and inertias are recorded (82-106).",
+      "physics_audit": "PhysicsAuditEnv (108-126) checks inside step for finite action/state/obs/reward, zero device ctrl and force in stage 2, and the force cap. test_smat_integration.py has 8 unit tests (masking, stage/shape rejection, frozen variance, NaN rejection).",
+      "results": "512 transitions per stage, 2048 total, 8 PPO updates per stage (n_steps 128, batch 128, 2 epochs). 95/105/97/115 terminated episodes per stage. Masses 78.0905 kg (stage 1) and 80.4205 kg (stages 2-4). This is plumbing only, not learned gait (smat_integration.log; out/smat_integration/results.json). The short episodes are consistent with the target-velocity bug (targets up to about 6 m/s) plus untrained policies.",
+      "reusable": "Almost all of the staging logic ports directly: set_stage/requires_grad, per-stage optimizer rebuild, masked log-prob and entropy, separate log_std, group hashing, fixed-obs freeze check, save/reload check, manifest, PhysicsAuditEnv and the tests. To change: 26 muscles and the Hippo action layout; a zero exo action (0.0) instead of 1.0; gain scaling (6/25 N*m) instead of forcerange; SMAT network sizes; the 18-input exo history observation; 32 SubprocVecEnv with spawn; the MyoAssist target-velocity fix; planar-root myolegs26."
+    },
+    "user_controlled_viewer.py": {
+      "what": "A localhost browser viewer (ThreadingHTTPServer on 127.0.0.1:<port>, 1024-65535) with a per-launch secret token, Host/Origin checks, a strict CSP, JSON commands of 1024 bytes or less, and a bounded command queue (make_handler 302-360; main 362-386).",
+      "backends": "'walking' runs the released DEP-RL myoLegWalk 150M checkpoint (sha256-verified). 'staged' reloads smat_integration stage checkpoints and model XML with sha256 checks against results.json, and verifies policy_groups hashes before running (SimulationBackend.load 21-100).",
+      "rendering_recording": "MUJOCO_GL=egl offscreen render at 640x480 to JPEG frames (render 139-144). A simulated-time cap of 60 s or less. Each step records qpos, qvel, act, ctrl, qacc, actuator_force, observation, action, pelvis xyz and reward. A full rollout.json is written to out/user_controlled_viewer/<UTC>-<hex>/ (record 121-137; Controller 152-291). It also hashes physical model arrays (body_mass ... actuator_dynprm) into model_parameter_sha256 (84-94).",
+      "reusable": "Its security pattern (loopback plus token plus origin check), hash-verified checkpoint loading, EGL JPEG streaming and rollout JSON capture suit the SMAT sandbox viewer. The hard-coded expectations (nu 22/24, the Tutorial staged manifest, the myoAssistLegImitation-v0 id) must be generalised to 26+2 and to the Hippo stages."
+    },
+    "other": "ppo_smoke_config.json is a 2-env smoke config (30/1200 Hz, Tutorial_L1, n_steps 128, batch 256). The KB records about 670 transitions/s for that smoke (sail-lab-application-kb .../05-simulation-and-rl-transfer.md:59)."
+  },
+  "gaps_for_smat": [
+    "3D model path: compose myolegs26 with planar_root=True. Either pass the XML as env_params.model_path (msk_key and device_key left None, which also skips _validate_action_layout) or patch EnvSpec.compose and create_environment to forward planar_root. The freejoint route needs a rewrite of every named pelvis_tx/ty/tilt read (obs, reward, done, reference follow, height correction).",
+    "Fix the target-velocity randomiser (cherry-pick feat/prosthesis-rl 038f558 or pass keyword args at rl_train/envs/myoassist_leg_base.py:407-414) and add a regression test asserting that v_target == 1.25 on every reset when min=max=1.25.",
+    "Stage-1 human-only model: compose_env_model requires a device. Either build the bare MSK (assist_sim.load_msk / registry._resolve_msk plus to_planar_root plus a floor plane plus a keyframe, since the bare myolegs26 has nkey 0), or keep the Hippo-composed model with device body masses set to 0 and device collisions disabled so nq/nv/nu and obs/action layouts are identical across stages. Record the mass difference and model hash per stage.",
+    "The SMAT exo observation (18 inputs): add an env-side ring buffer of the 3 most recent [hip_flexion_r, hip_flexion_l, dq_hip_flexion_r, dq_hip_flexion_l] samples and the 3 most recent exo actions [a_R, a_L] (the actions actually applied, post-clip), reset at episode start. Append it as a new obs block (extend DEFAULT_OBS_KEYS and get_obs_dict; the assert at rl_train/envs/myoassist_leg_base.py:181-185 enforces key parity) and index it with net_indexing_info 'index' mappings.",
+    "The SMAT human observation: define and add the 3D DOFs (pelvis_list, pelvis_rotation, pelvis_tz, hip_adduction_r/l, hip_rotation_r/l, possibly mtp) to observation_joint_pos/vel_keys, per infra/smat_spec.json. Also add them to reference_data_keys or reset them explicitly, because otherwise they carry over from the previous episode (robot.reset path).",
+    "Stage-specific device torque: implement exo_gain_nm in EnvParams that sets actuator_gainprm[Exo_R/L, 0] at setup (0 or a pinned 0.0 action in stage 2, 6.0 in stage 3, 25.0 in stage 4) and asserts actuator_force bounds in a physics-audit wrapper. Do not reuse exo_off's constant 1.0 on Hippo.",
+    "A staged policy class with separate human/exo log_std, requires_grad freezing, per-stage optimizer rebuild, masked log-prob and entropy, and SMAT sizes (human 256/128, exo 128/64 on 18 inputs, shared critic 256/128). Replace MyoAssist's single-log_std HumanExoActorCriticPolicy.",
+    "A stage driver: 4 sequential runs with strict state_dict transfer (not prev_trained_policy_path, which fails on space or kwargs changes), per-stage config JSON for rewards, gain and step budget, and per-stage checkpoints and manifests with sha256 group hashes before and after. Assert frozen groups unchanged and a fixed-obs output equality.",
+    "Rewards: implement the SMAT reward terms from infra/smat_spec.json as new rwd_dict keys. Decide on the dt scaling convention. Avoid the dict-weight double weighting (qpos/qvel imitation outer weight = sum of inner weights) or reproduce it deliberately. Note that end_effector_imitation_reward is a constant and that muscle_activation_diff_penalty is a bonus.",
+    "Rates: set control_framerate 50 and physics_sim_framerate 1000 or 1200 (both exact). Re-check that the reference resample length is 4490 and that the episode length custom_max_episode_steps is expressed at 50 Hz.",
+    "Disable or fix operational hazards: torch.autograd.set_detect_anomaly(True) at import (rl_agent_base.py:17, rl_agent_exo.py:15). The in-training analysis Pool (fork; issue #36): set evaluate_frequency very large or use a spawn context. SubprocVecEnv fork crashes (issue #35): use start_method='spawn'. Set MYOASSIST_NUM_THREADS.",
+    "Set mirror_coef to 0. The mirror maps are planar index swaps without sign flips (mirror.py:5-6), so they are wrong for 3D.",
+    "Evaluation tooling: tools/score_exo_policy.py and plot_*.py default the body mass to 90.96 kg, which is the myolegs22 mass with the myo-sim 0.2.1 phantom chest mass. Pass --mass 82.99 (Hippo) or 78.09 (bare). _MUSCLE_STEMS lacks abd/add (the Hippo detection still works through the _R/_L markers). The hip assist window is 'provisional'. make_device_sweep_configs.py hard-codes 22 muscles (lines 128, 163, 318), so SMAT configs need a new generator.",
+    "Tests: an obs/act layout test for 48+18 obs and 28 actions (pattern: tools/tests/test_device_configs.py), a zero-exo-force test for stages 1-2, a freeze-hash test for stage 3, a target-velocity test, and a gain test (6 and 25 N*m at a = +/-1)."
+  ],
+  "open_questions": [
+    "Did SMAT (built on MyoAssist 0.1 per smat_spec) train on code that has the target-velocity bug? The misordered call exists on main from 4a4cbe3 (2025-08-05) onward. If it does, the paper's 1.25 m/s claim may not match the speeds seen in training.",
+    "Did SMAT use a freejoint 3D root or a planar-root reframing, and which human observation keys did it use (smat_spec leaves this to the paper extraction)?",
+    "SMAT describes human outputs as values in [0,1] that control excitations. MyoAssist maps tanh [-1,1] to [0,1] linearly. Was there a sigmoid, and does it matter for exploration at a=0 (50% excitation)?",
+    "Are the reference sign conventions for pelvis_tz, pelvis_list, pelvis_rotation and hip_adduction/rotation consistent with the planar-root axes (tz along +y, list about +x, rotation about +z)? A kinematic playback check is needed (imitation_step with 3D keys).",
+    "Should device meshes collide (they self-collide between the thighs in probe_env), and should they collide with bones and the ground? The paper's device contact model is unknown.",
+    "Physics rate: SMAT does not report it (smat_spec physics_timestep 'not reported'). Choose 1000 or 1200 Hz and justify it.",
+    "Is the shared critic kept or re-initialised at each stage boundary, and is log_std carried over or reset? These are SMAT choices, not MyoAssist ones.",
+    "Stage 1 without the device: a bare MSK (different XML, same DOFs) or the device-composed model with zero mass? This affects hash comparability and contact geometry.",
+    "Can MJX-JAX put_model accept this model (JOINTLIMITFRC sensors, ellipsoid-mesh candidate pairs), and does MJX-Warp match CPU trajectories for muscles, polycoef equalities and mesh contacts? Untested: no jax or warp in the venv.",
+    "Will feat/prosthesis-rl (with the velocity fix, reward curriculum and device_ctrl_scale) merge into main? Cherry-pick now or wait?",
+    "The freejoint 'stand' keyframe starts the pelvis at 1.0 m (about 9 cm above standing). This matters only if the freejoint route is used."
+  ],
+  "probes": {
+    "method": "Read-only python scripts piped base64 over ssh (no files written on the server) and run with the project venv, CUDA_VISIBLE_DEVICES empty, OMP 2 threads, a few seconds each, on 2026-09-23. Compose temp dirs are cleaned at exit by compose.py.",
+    "probe_compose": "compose_env_model('myolegs26','Hippo_L1') and planar_root=True. Recorded sizes, actuator/tendon/wrap/equality/contact/sensor/keyframe inventories, masses, bare-MSK mass (registry._resolve_msk('myolegs26').compile()), options, and 1200-step mj_step timing.",
+    "probe_env": "Contacts at 'stand' and during a 1 s passive fall. Planar-root stand pose. Torso quat hack axis. EnvironmentHandler.create_environment on myolegs26 (freejoint: fails; planar root via model_path: builds). 6 resets of target velocity. Zero-action steps (terminated after 1 step, pelvis_ty 0.891, out of trajectory, with the random target 4-5 m/s scaling the reset velocities). env.step timing.",
+    "probe_policy": "HumanExoActorCriticPolicy with 48/28 spaces and SMAT sizes: param counts, optimizer groups and coverage, joint log-prob, and reset_network optimizer orphaning (18 orphaned tensors).",
+    "probe_ref": "numpy inspection of both npz files: keys, lengths, speeds, FFT stride frequency, resample lengths.",
+    "probe_timing": "Best of 3 mj_step timing for myolegs22+Hippo vs planar myolegs26+Hippo on the same core. env.step timing over 200 zero-action steps at 30/1200, 50/1000 and 50/1200, with v_target correctly fixed at 1.25 (evaluate mode plus set_target_velocity_mode_manually), recording episode lengths and reference lengths (2694, 4490, 4490). CPU: AMD EPYC 9535.",
+    "web": "gh api (commits, branches, compare, issues, releases), the arXiv API, Crossref, the bioRxiv API, myoassist.neumove.org pages and the MJX docs feature-parity table, all on 2026-09-23."
+  }
+}

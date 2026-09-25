@@ -1,0 +1,3560 @@
+{
+  "checked_on": "2026-09-23",
+  "run_window_kst": "17:52-18:25 (Asia/Seoul)",
+  "host": {
+    "hostname": "sail-gpu01",
+    "cpu": "AMD EPYC 9535 64-Core, 2 threads/core (128 logical), 1 NUMA node",
+    "ram_gb": 30.8,
+    "gpu": "NVIDIA GeForce RTX 5090 32 GB (sm_120)",
+    "driver": "595.84 (CUDA 13.2)"
+  },
+  "gpu_rule_check": {
+    "rule": "before any GPU work: no process owned by a non-aurnab account may hold > 1024 MiB",
+    "checks_raw": [
+      [
+        "gpu_check 2026-09-23T18:13:26+09:00",
+        "NVIDIA GeForce RTX 5090, 1957 MiB, 32607 MiB, 90 %",
+        "pid=1451014 used_mib=1934 user=aurnab",
+        "GPU_RULE: OK"
+      ],
+      [
+        "gpu_check 2026-09-23T18:14:53+09:00",
+        "NVIDIA GeForce RTX 5090, 1957 MiB, 32607 MiB, 90 %",
+        "pid=1456982 used_mib=1934 user=aurnab",
+        "GPU_RULE: OK"
+      ],
+      [
+        "gpu_check 2026-09-23T18:17:00+09:00",
+        "NVIDIA GeForce RTX 5090, 15 MiB, 32607 MiB, 0 %",
+        "GPU_RULE: OK"
+      ],
+      [
+        "gpu_check 2026-09-23T18:19:20+09:00",
+        "NVIDIA GeForce RTX 5090, 1959 MiB, 32607 MiB, 93 %",
+        "pid=1462505 used_mib=1936 user=aurnab",
+        "GPU_RULE: OK"
+      ],
+      [
+        "gpu_check 2026-09-23T18:19:27+09:00",
+        "NVIDIA GeForce RTX 5090, 1959 MiB, 32607 MiB, 93 %",
+        "pid=1462505 used_mib=1936 user=aurnab",
+        "GPU_RULE: OK"
+      ],
+      [
+        "gpu_check 2026-09-23T18:33:09+09:00",
+        "NVIDIA GeForce RTX 5090, 15 MiB, 32607 MiB, 0 %",
+        "GPU_RULE: OK"
+      ]
+    ],
+    "result": "OK at every check; only aurnab-owned processes were ever on the GPU (ugrp-cl-autoresearch clforge training jobs, bursty, ~1.9-2.3 GiB, up to 93% util)",
+    "gpu_parts_ran": true,
+    "gpu_wall_s": {
+      "support_stock_attempt": 2.4,
+      "support_with_workaround_incl_cold_jit": 64.7,
+      "main_parity_and_sweep": 44.3,
+      "parity_controls": 5.5,
+      "testspeed_crosscheck_wall": 42.1,
+      "determinism_controls": 9.9,
+      "total_approx": 168.9,
+      "budget": 600
+    },
+    "own_gpu_mem_peak_mb": 3620,
+    "other_gpu_processes_seen_by_monitor": {
+      "support": {
+        "1456982": {
+          "user": "aurnab",
+          "max_mib": 2272
+        }
+      },
+      "main": {}
+    }
+  },
+  "versions": {
+    "compose_env": {
+      "venv": "/home/aurnab/projects/sail-sprint-20260905/.venv (read-only use)",
+      "python": "3.12.3",
+      "mujoco": "3.4.0",
+      "assist_sim": "1.0.0",
+      "myo_sim": "0.2.2",
+      "MyoAssist": "1.0.0 editable, git b1baf69da59dc6728515d0977cbc8fbf00b9225a",
+      "myoassist_terrains": "1.0.0"
+    },
+    "probe_env": {
+      "python": "3.12.3 (/usr/bin/python3.12 via uv 0.12.7)",
+      "packages": [
+        "absl-py 2.5.0",
+        "etils 1.14.0",
+        "fsspec 2026.9.0",
+        "glfw 2.10.2",
+        "mujoco 3.14.0",
+        "mujoco-warp 3.14.0",
+        "numpy 2.5.3",
+        "pyopengl 3.1.10",
+        "typing-extensions 4.16.0",
+        "warp-lang 1.17.0",
+        "websockets 17.1",
+        "zipp 4.1.0"
+      ]
+    },
+    "warp_runtime": {
+      "warp": "1.17.0",
+      "mujoco_warp": "3.14.0",
+      "mujoco": "3.14.0",
+      "warp_cuda_toolkit": "(12, 9)",
+      "cuda_driver": "(13, 2)"
+    },
+    "note": "mujoco-warp 3.14.0 requires mujoco>=3.12.0 and warp-lang>=1.15; latest mujoco 3.14.0 (released 2026-09-22) was used, no pin needed"
+  },
+  "model_stats": {
+    "human": {
+      "xml": "/home/aurnab/.cache/smatsprint-probe-2026-09-23/model/human.xml",
+      "nq": 47,
+      "nv": 46,
+      "nu": 26,
+      "na": 26,
+      "nbody": 38,
+      "njnt": 41,
+      "ngeom": 57,
+      "nsite": 784,
+      "nmesh": 37,
+      "nmeshvert": 26951,
+      "nmeshface": 52924,
+      "nkey": 0,
+      "nsensor": 12,
+      "n_muscles": 26,
+      "n_nonmuscle_actuators": 0,
+      "nonmuscle_actuators": [],
+      "actuator_dyntypes": {
+        "mjDYN_MUSCLE": 26
+      },
+      "actuator_gaintypes": {
+        "mjGAIN_MUSCLE": 26
+      },
+      "actuator_trntypes": {
+        "mjTRN_TENDON": 26
+      },
+      "ntendon": 26,
+      "n_tendons_fixed": 0,
+      "n_tendons_spatial": 26,
+      "nwrap": 96,
+      "wrap_types": {
+        "mjWRAP_SITE": 96
+      },
+      "n_wrap_geoms": 0,
+      "wrap_geom_types": {},
+      "neq": 28,
+      "eq_types": {
+        "mjEQ_JOINT": 28
+      },
+      "joint_types": {
+        "mjJNT_FREE": 1,
+        "mjJNT_HINGE": 12,
+        "mjJNT_SLIDE": 28
+      },
+      "n_limited_joints": 40,
+      "n_limited_tendons": 0,
+      "geom_types": {
+        "mjGEOM_PLANE": 1,
+        "mjGEOM_MESH": 37,
+        "mjGEOM_CYLINDER": 4,
+        "mjGEOM_CAPSULE": 4,
+        "mjGEOM_ELLIPSOID": 3,
+        "mjGEOM_SPHERE": 8
+      },
+      "n_colliding_geoms": 23,
+      "colliding_geom_types": {
+        "mjGEOM_PLANE": 1,
+        "mjGEOM_CAPSULE": 4,
+        "mjGEOM_ELLIPSOID": 3,
+        "mjGEOM_MESH": 15
+      },
+      "colliding_geoms": [
+        {
+          "name": "terrain",
+          "body": "world",
+          "type": "mjGEOM_PLANE",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        {
+          "name": "",
+          "body": "torso",
+          "type": "mjGEOM_CAPSULE",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.08,
+            0.077,
+            0.0
+          ]
+        },
+        {
+          "name": "thorax_coll1",
+          "body": "torso",
+          "type": "mjGEOM_ELLIPSOID",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.26,
+            0.095,
+            0.14
+          ]
+        },
+        {
+          "name": "thorax_coll2",
+          "body": "torso",
+          "type": "mjGEOM_CAPSULE",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.11,
+            0.065,
+            0.0
+          ]
+        },
+        {
+          "name": "thorax_coll3",
+          "body": "torso",
+          "type": "mjGEOM_CAPSULE",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.075,
+            0.145,
+            0.0
+          ]
+        },
+        {
+          "name": "hat_cervical_coll",
+          "body": "neck",
+          "type": "mjGEOM_CAPSULE",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.05,
+            0.04,
+            0.0
+          ]
+        },
+        {
+          "name": "hat_jaw_coll2",
+          "body": "head",
+          "type": "mjGEOM_ELLIPSOID",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.07,
+            0.12,
+            0.065
+          ]
+        },
+        {
+          "name": "hat_skull_coll",
+          "body": "head",
+          "type": "mjGEOM_ELLIPSOID",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.1,
+            0.1,
+            0.075
+          ]
+        },
+        {
+          "name": "pelvis_geom_1",
+          "body": "pelvis",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0405,
+            0.0471,
+            0.0845
+          ]
+        },
+        {
+          "name": "pelvis_geom_2",
+          "body": "pelvis",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0608,
+            0.0849,
+            0.1146
+          ]
+        },
+        {
+          "name": "pelvis_geom_3",
+          "body": "pelvis",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0608,
+            0.0849,
+            0.1146
+          ]
+        },
+        {
+          "name": "femur_r_geom_1",
+          "body": "femur_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0325,
+            0.0433,
+            0.2292
+          ]
+        },
+        {
+          "name": "tibia_r_geom_1",
+          "body": "tibia_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.029,
+            0.0401,
+            0.2261
+          ]
+        },
+        {
+          "name": "tibia_r_geom_2",
+          "body": "tibia_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0162,
+            0.016,
+            0.1825
+          ]
+        },
+        {
+          "name": "talus_r_geom_1",
+          "body": "talus_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0168,
+            0.0217,
+            0.024
+          ]
+        },
+        {
+          "name": "calcn_r_geom_1",
+          "body": "calcn_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0294,
+            0.0515,
+            0.1014
+          ]
+        },
+        {
+          "name": "toes_r_geom_1",
+          "body": "toes_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.007,
+            0.0395,
+            0.0643
+          ]
+        },
+        {
+          "name": "femur_l_geom_1",
+          "body": "femur_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0325,
+            0.0433,
+            0.2292
+          ]
+        },
+        {
+          "name": "tibia_l_geom_1",
+          "body": "tibia_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.029,
+            0.0401,
+            0.2261
+          ]
+        },
+        {
+          "name": "tibia_l_geom_2",
+          "body": "tibia_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0162,
+            0.016,
+            0.1825
+          ]
+        },
+        {
+          "name": "talus_l_geom_1",
+          "body": "talus_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0168,
+            0.0217,
+            0.024
+          ]
+        },
+        {
+          "name": "calcn_l_geom_1",
+          "body": "calcn_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0294,
+            0.0515,
+            0.1014
+          ]
+        },
+        {
+          "name": "toes_l_geom_1",
+          "body": "toes_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.007,
+            0.0395,
+            0.0643
+          ]
+        }
+      ],
+      "colliding_mesh_geoms": [
+        {
+          "name": "pelvis_geom_1",
+          "nvert": 192
+        },
+        {
+          "name": "pelvis_geom_2",
+          "nvert": 122
+        },
+        {
+          "name": "pelvis_geom_3",
+          "nvert": 122
+        },
+        {
+          "name": "femur_r_geom_1",
+          "nvert": 456
+        },
+        {
+          "name": "tibia_r_geom_1",
+          "nvert": 186
+        },
+        {
+          "name": "tibia_r_geom_2",
+          "nvert": 122
+        },
+        {
+          "name": "talus_r_geom_1",
+          "nvert": 99
+        },
+        {
+          "name": "calcn_r_geom_1",
+          "nvert": 1000
+        },
+        {
+          "name": "toes_r_geom_1",
+          "nvert": 958
+        },
+        {
+          "name": "femur_l_geom_1",
+          "nvert": 456
+        },
+        {
+          "name": "tibia_l_geom_1",
+          "nvert": 186
+        },
+        {
+          "name": "tibia_l_geom_2",
+          "nvert": 122
+        },
+        {
+          "name": "talus_l_geom_1",
+          "nvert": 99
+        },
+        {
+          "name": "calcn_l_geom_1",
+          "nvert": 1000
+        },
+        {
+          "name": "toes_l_geom_1",
+          "nvert": 958
+        }
+      ],
+      "candidate_collision_pairs_approx": {
+        "mjGEOM_CAPSULE-mjGEOM_PLANE": 4,
+        "mjGEOM_ELLIPSOID-mjGEOM_PLANE": 3,
+        "mjGEOM_MESH-mjGEOM_PLANE": 15,
+        "mjGEOM_CAPSULE-mjGEOM_MESH": 40,
+        "mjGEOM_ELLIPSOID-mjGEOM_MESH": 30,
+        "mjGEOM_MESH-mjGEOM_MESH": 76
+      },
+      "npair": 25,
+      "nexclude": 0,
+      "timestep": 0.002,
+      "substeps_at_50Hz": 10,
+      "integrator": "mjINT_EULER",
+      "solver": "mjSOL_NEWTON",
+      "cone": "mjCONE_PYRAMIDAL",
+      "jacobian": "mjJAC_AUTO",
+      "iterations": 100,
+      "ls_iterations": 50,
+      "tolerance": 1e-08,
+      "noslip_iterations": 0,
+      "ccd_iterations": 35,
+      "disableflags": 0,
+      "enableflags": 0,
+      "gravity": [
+        0.0,
+        0.0,
+        -9.81
+      ],
+      "total_mass_kg": 78.0905,
+      "device_mass_kg": 0.0,
+      "human_mass_kg": 78.0905,
+      "device_bodies": [],
+      "muscle_ctrlrange_unique": [
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "keyframe_names": [],
+      "initial_state_qpos0": {
+        "root_pos": [
+          0.0,
+          0.0,
+          0.9102
+        ],
+        "pelvis_z": 0.9102,
+        "ncon": 12,
+        "min_contact_dist": -0.005,
+        "nefc": 76
+      },
+      "character_passive": {
+        "mode": "passive",
+        "episodes": 1,
+        "episode_s": 1.0,
+        "ncon_mean": 8.572,
+        "ncon_max": 12,
+        "ncon_p95": 10.0,
+        "nefc_mean": 69.65,
+        "nefc_max": 80,
+        "nefc_p95": 76.0,
+        "solver_iter_mean": 1.29,
+        "solver_iter_max": 4,
+        "frac_steps_at_iter_limit": 0.0,
+        "pelvis_z_min": 0.605,
+        "pelvis_z_end_last_episode": 0.605,
+        "time_to_pelvis_below_60pct_s": [
+          null
+        ],
+        "top_contact_pairs": {
+          "mjGEOM_PLANE:world | mjGEOM_MESH:toes_r": 1802,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:toes_l": 1754,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_r": 365,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_l": 365
+        },
+        "mujoco_warnings_during": []
+      },
+      "character_random": {
+        "mode": "random",
+        "episodes": 4,
+        "episode_s": 1.0,
+        "ncon_mean": 6.459,
+        "ncon_max": 12,
+        "ncon_p95": 10.0,
+        "nefc_mean": 66.64,
+        "nefc_max": 89,
+        "nefc_p95": 79.0,
+        "solver_iter_mean": 1.77,
+        "solver_iter_max": 6,
+        "frac_steps_at_iter_limit": 0.0,
+        "pelvis_z_min": 0.19,
+        "pelvis_z_end_last_episode": 0.19,
+        "time_to_pelvis_below_60pct_s": [
+          1.0,
+          0.96,
+          0.98,
+          0.9
+        ],
+        "top_contact_pairs": {
+          "mjGEOM_PLANE:world | mjGEOM_MESH:toes_l": 4872,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:toes_r": 4829,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_r": 964,
+          "mjGEOM_MESH:calcn_r | mjGEOM_MESH:calcn_l": 822,
+          "mjGEOM_MESH:tibia_r | mjGEOM_MESH:tibia_l": 726,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_l": 650,
+          "mjGEOM_MESH:talus_r | mjGEOM_MESH:calcn_l": 55
+        },
+        "mujoco_warnings_during": []
+      },
+      "compose": {
+        "pipeline": "same MyoAssist _compose_env_model pipeline with assist_sim.load_msk swapped in-process for load_combined (no device)",
+        "export": "self-contained XML + copied mesh assets; verified: identical fingerprint and bitwise-identical 300-step rollout vs compose string",
+        "xml_sha256": "fff6f2f97433c93ac7cb6cf13ddc197580a751407fbf68f4a7bba1607e34d569",
+        "n_asset_files": 36,
+        "asset_mb": 2.5,
+        "compose_s": 0.381
+      }
+    },
+    "human_plus_hippo": {
+      "xml": "/home/aurnab/.cache/smatsprint-probe-2026-09-23/model/human_plus_hippo.xml",
+      "nq": 47,
+      "nv": 46,
+      "nu": 28,
+      "na": 26,
+      "nbody": 46,
+      "njnt": 41,
+      "ngeom": 65,
+      "nsite": 784,
+      "nmesh": 45,
+      "nmeshvert": 251454,
+      "nmeshface": 502144,
+      "nkey": 5,
+      "nsensor": 12,
+      "n_muscles": 26,
+      "n_nonmuscle_actuators": 2,
+      "nonmuscle_actuators": [
+        {
+          "name": "Exo_R",
+          "dyn": "mjDYN_NONE",
+          "gain": "mjGAIN_FIXED",
+          "gainprm0": 100.0,
+          "ctrlrange": [
+            -1.0,
+            1.0
+          ],
+          "joint": "hip_flexion_r"
+        },
+        {
+          "name": "Exo_L",
+          "dyn": "mjDYN_NONE",
+          "gain": "mjGAIN_FIXED",
+          "gainprm0": 100.0,
+          "ctrlrange": [
+            -1.0,
+            1.0
+          ],
+          "joint": "hip_flexion_l"
+        }
+      ],
+      "actuator_dyntypes": {
+        "mjDYN_MUSCLE": 26,
+        "mjDYN_NONE": 2
+      },
+      "actuator_gaintypes": {
+        "mjGAIN_MUSCLE": 26,
+        "mjGAIN_FIXED": 2
+      },
+      "actuator_trntypes": {
+        "mjTRN_TENDON": 26,
+        "mjTRN_JOINT": 2
+      },
+      "ntendon": 26,
+      "n_tendons_fixed": 0,
+      "n_tendons_spatial": 26,
+      "nwrap": 96,
+      "wrap_types": {
+        "mjWRAP_SITE": 96
+      },
+      "n_wrap_geoms": 0,
+      "wrap_geom_types": {},
+      "neq": 28,
+      "eq_types": {
+        "mjEQ_JOINT": 28
+      },
+      "joint_types": {
+        "mjJNT_FREE": 1,
+        "mjJNT_HINGE": 12,
+        "mjJNT_SLIDE": 28
+      },
+      "n_limited_joints": 40,
+      "n_limited_tendons": 0,
+      "geom_types": {
+        "mjGEOM_PLANE": 1,
+        "mjGEOM_MESH": 45,
+        "mjGEOM_CYLINDER": 4,
+        "mjGEOM_CAPSULE": 4,
+        "mjGEOM_ELLIPSOID": 3,
+        "mjGEOM_SPHERE": 8
+      },
+      "n_colliding_geoms": 31,
+      "colliding_geom_types": {
+        "mjGEOM_PLANE": 1,
+        "mjGEOM_CAPSULE": 4,
+        "mjGEOM_ELLIPSOID": 3,
+        "mjGEOM_MESH": 23
+      },
+      "colliding_geoms": [
+        {
+          "name": "terrain",
+          "body": "world",
+          "type": "mjGEOM_PLANE",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0,
+            0.0,
+            0.05
+          ]
+        },
+        {
+          "name": "",
+          "body": "torso",
+          "type": "mjGEOM_CAPSULE",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.08,
+            0.077,
+            0.0
+          ]
+        },
+        {
+          "name": "thorax_coll1",
+          "body": "torso",
+          "type": "mjGEOM_ELLIPSOID",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.26,
+            0.095,
+            0.14
+          ]
+        },
+        {
+          "name": "thorax_coll2",
+          "body": "torso",
+          "type": "mjGEOM_CAPSULE",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.11,
+            0.065,
+            0.0
+          ]
+        },
+        {
+          "name": "thorax_coll3",
+          "body": "torso",
+          "type": "mjGEOM_CAPSULE",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.075,
+            0.145,
+            0.0
+          ]
+        },
+        {
+          "name": "hat_cervical_coll",
+          "body": "neck",
+          "type": "mjGEOM_CAPSULE",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.05,
+            0.04,
+            0.0
+          ]
+        },
+        {
+          "name": "hat_jaw_coll2",
+          "body": "head",
+          "type": "mjGEOM_ELLIPSOID",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.07,
+            0.12,
+            0.065
+          ]
+        },
+        {
+          "name": "hat_skull_coll",
+          "body": "head",
+          "type": "mjGEOM_ELLIPSOID",
+          "contype": 1,
+          "conaffinity": 0,
+          "condim": 3,
+          "size": [
+            0.1,
+            0.1,
+            0.075
+          ]
+        },
+        {
+          "name": "pelvis_geom_1",
+          "body": "pelvis",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0405,
+            0.0471,
+            0.0845
+          ]
+        },
+        {
+          "name": "pelvis_geom_2",
+          "body": "pelvis",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0608,
+            0.0849,
+            0.1146
+          ]
+        },
+        {
+          "name": "pelvis_geom_3",
+          "body": "pelvis",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0608,
+            0.0849,
+            0.1146
+          ]
+        },
+        {
+          "name": "femur_r_geom_1",
+          "body": "femur_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0325,
+            0.0433,
+            0.2292
+          ]
+        },
+        {
+          "name": "tibia_r_geom_1",
+          "body": "tibia_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.029,
+            0.0401,
+            0.2261
+          ]
+        },
+        {
+          "name": "tibia_r_geom_2",
+          "body": "tibia_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0162,
+            0.016,
+            0.1825
+          ]
+        },
+        {
+          "name": "talus_r_geom_1",
+          "body": "talus_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0168,
+            0.0217,
+            0.024
+          ]
+        },
+        {
+          "name": "calcn_r_geom_1",
+          "body": "calcn_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0294,
+            0.0515,
+            0.1014
+          ]
+        },
+        {
+          "name": "toes_r_geom_1",
+          "body": "toes_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.007,
+            0.0395,
+            0.0643
+          ]
+        },
+        {
+          "name": "Hippo_L1_hippo_thigh_r_geom",
+          "body": "Hippo_L1_hippo_thigh_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0428,
+            0.0683,
+            0.1733
+          ]
+        },
+        {
+          "name": "Hippo_L1_hippo_thigh_cuff_r_geom",
+          "body": "Hippo_L1_hippo_thigh_cuff_r",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.024,
+            0.0613,
+            0.0719
+          ]
+        },
+        {
+          "name": "femur_l_geom_1",
+          "body": "femur_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0325,
+            0.0433,
+            0.2292
+          ]
+        },
+        {
+          "name": "tibia_l_geom_1",
+          "body": "tibia_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.029,
+            0.0401,
+            0.2261
+          ]
+        },
+        {
+          "name": "tibia_l_geom_2",
+          "body": "tibia_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0162,
+            0.016,
+            0.1825
+          ]
+        },
+        {
+          "name": "talus_l_geom_1",
+          "body": "talus_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0168,
+            0.0217,
+            0.024
+          ]
+        },
+        {
+          "name": "calcn_l_geom_1",
+          "body": "calcn_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0294,
+            0.0515,
+            0.1014
+          ]
+        },
+        {
+          "name": "toes_l_geom_1",
+          "body": "toes_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.007,
+            0.0395,
+            0.0643
+          ]
+        },
+        {
+          "name": "Hippo_L1_hippo_thigh_l_geom",
+          "body": "Hippo_L1_hippo_thigh_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0428,
+            0.0683,
+            0.1734
+          ]
+        },
+        {
+          "name": "Hippo_L1_hippo_thigh_cuff_l_geom",
+          "body": "Hippo_L1_hippo_thigh_cuff_l",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.024,
+            0.0613,
+            0.0719
+          ]
+        },
+        {
+          "name": "Hippo_L1_hippo_backplate_geom",
+          "body": "Hippo_L1_hippo_backplate",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.044,
+            0.0954,
+            0.1463
+          ]
+        },
+        {
+          "name": "Hippo_L1_hippo_hipshell_geom",
+          "body": "Hippo_L1_hippo_hipshell_lr",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0878,
+            0.1228,
+            0.1802
+          ]
+        },
+        {
+          "name": "Hippo_L1_hippo_waist_bands_geom",
+          "body": "Hippo_L1_hippo_waist_bands",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.093,
+            0.1292,
+            0.1457
+          ]
+        },
+        {
+          "name": "Hippo_L1_hippo_ak10_9_lr_geom",
+          "body": "Hippo_L1_hippo_ak10_9",
+          "type": "mjGEOM_MESH",
+          "contype": 1,
+          "conaffinity": 1,
+          "condim": 3,
+          "size": [
+            0.0397,
+            0.0393,
+            0.2197
+          ]
+        }
+      ],
+      "colliding_mesh_geoms": [
+        {
+          "name": "pelvis_geom_1",
+          "nvert": 192
+        },
+        {
+          "name": "pelvis_geom_2",
+          "nvert": 122
+        },
+        {
+          "name": "pelvis_geom_3",
+          "nvert": 122
+        },
+        {
+          "name": "femur_r_geom_1",
+          "nvert": 456
+        },
+        {
+          "name": "tibia_r_geom_1",
+          "nvert": 186
+        },
+        {
+          "name": "tibia_r_geom_2",
+          "nvert": 122
+        },
+        {
+          "name": "talus_r_geom_1",
+          "nvert": 99
+        },
+        {
+          "name": "calcn_r_geom_1",
+          "nvert": 1000
+        },
+        {
+          "name": "toes_r_geom_1",
+          "nvert": 958
+        },
+        {
+          "name": "Hippo_L1_hippo_thigh_r_geom",
+          "nvert": 86389
+        },
+        {
+          "name": "Hippo_L1_hippo_thigh_cuff_r_geom",
+          "nvert": 2765
+        },
+        {
+          "name": "femur_l_geom_1",
+          "nvert": 456
+        },
+        {
+          "name": "tibia_l_geom_1",
+          "nvert": 186
+        },
+        {
+          "name": "tibia_l_geom_2",
+          "nvert": 122
+        },
+        {
+          "name": "talus_l_geom_1",
+          "nvert": 99
+        },
+        {
+          "name": "calcn_l_geom_1",
+          "nvert": 1000
+        },
+        {
+          "name": "toes_l_geom_1",
+          "nvert": 958
+        },
+        {
+          "name": "Hippo_L1_hippo_thigh_l_geom",
+          "nvert": 86384
+        },
+        {
+          "name": "Hippo_L1_hippo_thigh_cuff_l_geom",
+          "nvert": 2765
+        },
+        {
+          "name": "Hippo_L1_hippo_backplate_geom",
+          "nvert": 7229
+        },
+        {
+          "name": "Hippo_L1_hippo_hipshell_geom",
+          "nvert": 15678
+        },
+        {
+          "name": "Hippo_L1_hippo_waist_bands_geom",
+          "nvert": 4254
+        },
+        {
+          "name": "Hippo_L1_hippo_ak10_9_lr_geom",
+          "nvert": 19039
+        }
+      ],
+      "candidate_collision_pairs_approx": {
+        "mjGEOM_CAPSULE-mjGEOM_PLANE": 4,
+        "mjGEOM_ELLIPSOID-mjGEOM_PLANE": 3,
+        "mjGEOM_MESH-mjGEOM_PLANE": 23,
+        "mjGEOM_CAPSULE-mjGEOM_MESH": 40,
+        "mjGEOM_ELLIPSOID-mjGEOM_MESH": 30,
+        "mjGEOM_MESH-mjGEOM_MESH": 156
+      },
+      "npair": 25,
+      "nexclude": 0,
+      "timestep": 0.002,
+      "substeps_at_50Hz": 10,
+      "integrator": "mjINT_EULER",
+      "solver": "mjSOL_NEWTON",
+      "cone": "mjCONE_PYRAMIDAL",
+      "jacobian": "mjJAC_AUTO",
+      "iterations": 100,
+      "ls_iterations": 50,
+      "tolerance": 1e-08,
+      "noslip_iterations": 0,
+      "ccd_iterations": 35,
+      "disableflags": 0,
+      "enableflags": 0,
+      "gravity": [
+        0.0,
+        0.0,
+        -9.81
+      ],
+      "total_mass_kg": 82.9905,
+      "device_mass_kg": 4.9,
+      "human_mass_kg": 78.0905,
+      "device_bodies": [
+        "Hippo_L1_hippo_thigh_r",
+        "Hippo_L1_hippo_thigh_cuff_r",
+        "Hippo_L1_hippo_thigh_l",
+        "Hippo_L1_hippo_thigh_cuff_l",
+        "Hippo_L1_hippo_backplate",
+        "Hippo_L1_hippo_hipshell_lr",
+        "Hippo_L1_hippo_waist_bands",
+        "Hippo_L1_hippo_ak10_9"
+      ],
+      "muscle_ctrlrange_unique": [
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "keyframe_names": [
+        "stand",
+        "walk_left",
+        "walk_right",
+        "squat",
+        "lunge"
+      ],
+      "initial_state_qpos0": {
+        "root_pos": [
+          0.0,
+          0.0,
+          0.9129
+        ],
+        "pelvis_z": 0.9129,
+        "ncon": 10,
+        "min_contact_dist": -0.00233,
+        "nefc": 68
+      },
+      "initial_state_key0": {
+        "root_pos": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "pelvis_z": 1.0,
+        "ncon": 0,
+        "min_contact_dist": null,
+        "nefc": 28
+      },
+      "key0_minus_qpos0_root_z": 0.08715,
+      "character_passive": {
+        "mode": "passive",
+        "episodes": 1,
+        "episode_s": 1.0,
+        "ncon_mean": 8.622,
+        "ncon_max": 14,
+        "ncon_p95": 13.0,
+        "nefc_mean": 71.86,
+        "nefc_max": 106,
+        "nefc_p95": 100.0,
+        "solver_iter_mean": 1.4,
+        "solver_iter_max": 4,
+        "frac_steps_at_iter_limit": 0.0,
+        "pelvis_z_min": 0.425,
+        "pelvis_z_end_last_episode": 0.425,
+        "time_to_pelvis_below_60pct_s": [
+          0.88
+        ],
+        "top_contact_pairs": {
+          "mjGEOM_PLANE:world | mjGEOM_MESH:toes_r": 1775,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:toes_l": 1757,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_r": 390,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_l": 389
+        },
+        "mujoco_warnings_during": []
+      },
+      "character_random": {
+        "mode": "random",
+        "episodes": 4,
+        "episode_s": 1.0,
+        "ncon_mean": 6.495,
+        "ncon_max": 13,
+        "ncon_p95": 10.0,
+        "nefc_mean": 67.09,
+        "nefc_max": 94,
+        "nefc_p95": 81.0,
+        "solver_iter_mean": 1.78,
+        "solver_iter_max": 7,
+        "frac_steps_at_iter_limit": 0.0,
+        "pelvis_z_min": 0.336,
+        "pelvis_z_end_last_episode": 0.469,
+        "time_to_pelvis_below_60pct_s": [
+          0.9400000000000001,
+          0.96,
+          0.96,
+          0.98
+        ],
+        "top_contact_pairs": {
+          "mjGEOM_PLANE:world | mjGEOM_MESH:toes_r": 4845,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:toes_l": 4781,
+          "mjGEOM_MESH:calcn_r | mjGEOM_MESH:calcn_l": 1563,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_r": 874,
+          "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_l": 671,
+          "mjGEOM_MESH:tibia_r | mjGEOM_MESH:tibia_l": 198,
+          "mjGEOM_MESH:talus_r | mjGEOM_MESH:calcn_l": 57
+        },
+        "mujoco_warnings_during": []
+      },
+      "compose": {
+        "pipeline": "myoassist_utils.compose.compose_env_model('myolegs26', 'Hippo_L1', terrain=None) (flat default ground, feet seated)",
+        "export": "self-contained XML + copied mesh assets; verified: identical fingerprint and bitwise-identical 300-step rollout vs compose string",
+        "xml_sha256": "6a2405b93accde288cc59fb7925163d67ce658c95d05a8d76ca723c251a49bbd",
+        "n_asset_files": 44,
+        "asset_mb": 23.9,
+        "compose_s": 0.84
+      }
+    }
+  },
+  "cpu_native": {
+    "mujoco": "3.14.0 (fresh venv)",
+    "python": "3.12.3",
+    "protocol": "mj_step, 1 thread (OMP etc.=1), nice 10; start qpos0 (seated), smooth random excitation u<-u+0.3*(U(lo,hi)-u) once per 20 ms control step (muscles [0,1], Exo_R/Exo_L [-1,1]), zero-order hold over substeps=round(0.02/0.002)=10; reset to qpos0 every 50 control steps (1 s; random excitation makes the model fall in ~0.9-1.0 s). Stock model flags (MuJoCo 3.14 default: MULTICCD on).",
+    "single_thread_steps_per_s": {
+      "human": 20906.8,
+      "human_plus_hippo": 20441.9
+    },
+    "control_transitions_per_s_single": {
+      "human": 2090.68,
+      "human_plus_hippo": 2044.19
+    },
+    "single_thread_with_multiccd_disabled": {
+      "steps_per_s": {
+        "human": 21658.3,
+        "human_plus_hippo": 21002.5
+      },
+      "control_transitions_per_s": {
+        "human": 2165.83,
+        "human_plus_hippo": 2100.25
+      },
+      "note": "same 1-flag change the Warp runs need; used for the apples-to-apples GPU/CPU ratio"
+    },
+    "timing_window_s": {
+      "human": 20.0002,
+      "human_plus_hippo": 20.0001
+    },
+    "mean_contacts_at_control_steps": {
+      "human": 6.661,
+      "human_plus_hippo": 6.677
+    },
+    "rss_mb_per_env": {
+      "human": {
+        "xml": {
+          "rss_mb_after_1000_steps": 127.32,
+          "pss_mb": 115.85,
+          "uss_mb": 114.97,
+          "rss_mb_after_import_only": 54.34,
+          "rss_mb_after_model_load": 124.2,
+          "rss_mb_after_malloc_trim": 119.38,
+          "mjmodel_buffer_mb": 14.877,
+          "mjdata_buffer_mb": 0.256
+        },
+        "mjb": {
+          "rss_mb_after_1000_steps": 74.2,
+          "pss_mb": 62.87,
+          "uss_mb": 62.0,
+          "rss_mb_after_import_only": 54.32,
+          "rss_mb_after_model_load": 69.86,
+          "rss_mb_after_malloc_trim": 65.48,
+          "mjmodel_buffer_mb": 14.877,
+          "mjdata_buffer_mb": 0.256
+        }
+      },
+      "human_plus_hippo": {
+        "xml": {
+          "rss_mb_after_1000_steps": 559.81,
+          "pss_mb": 548.37,
+          "uss_mb": 547.5,
+          "rss_mb_after_import_only": 54.31,
+          "rss_mb_after_model_load": 562.12,
+          "rss_mb_after_malloc_trim": 551.0,
+          "mjmodel_buffer_mb": 93.139,
+          "mjdata_buffer_mb": 1.119
+        },
+        "mjb": {
+          "rss_mb_after_1000_steps": 153.4,
+          "pss_mb": 142.06,
+          "uss_mb": 141.2,
+          "rss_mb_after_import_only": 54.33,
+          "rss_mb_after_model_load": 148.13,
+          "rss_mb_after_malloc_trim": 143.75,
+          "mjmodel_buffer_mb": 93.139,
+          "mjdata_buffer_mb": 1.119
+        }
+      }
+    },
+    "rss_note": "one fresh process = interpreter + numpy + mujoco + 1 MjModel + 1 MjData. Loading from XML leaves ~400 MB extra resident for human_plus_hippo (the 8 Hippo meshes have 251k vertices / 502k faces; malloc_trim does not release it); loading a precompiled MJB (mj_saveModel) avoids it. Real RL workers add gym/myosuite/torch on top.",
+    "scaling": [
+      {
+        "model": "human_plus_hippo",
+        "n_procs": 1,
+        "duration_s": 30.0,
+        "loaded_from": "mjb",
+        "returncodes": [
+          0
+        ],
+        "n_ok": 1,
+        "max_ready_after_t_start_s": 0.0,
+        "aggregate_steps_per_s": 20698.9,
+        "aggregate_control_transitions_per_s": 2069.9,
+        "per_proc_control_transitions_per_s": {
+          "mean": 2069.89,
+          "min": 2069.89,
+          "max": 2069.89
+        },
+        "per_proc_rss_mb": {
+          "mean": 155.6,
+          "max": 155.62
+        },
+        "per_proc_pss_mb": {
+          "mean": 142.4,
+          "max": 142.37
+        },
+        "per_proc_uss_mb": {
+          "mean": 138.9,
+          "max": 138.95
+        },
+        "loadavg_before": [
+          "1.24",
+          "1.32",
+          "1.20"
+        ],
+        "loadavg_after": [
+          "1.45",
+          "1.37",
+          "1.22"
+        ],
+        "mem_available_mb_before": 24473,
+        "mem_available_mb_mid": 24662,
+        "wall_incl_launch_s": 35.04
+      },
+      {
+        "model": "human_plus_hippo",
+        "n_procs": 8,
+        "duration_s": 30.0,
+        "loaded_from": "mjb",
+        "returncodes": [
+          0
+        ],
+        "n_ok": 8,
+        "max_ready_after_t_start_s": 0.0,
+        "aggregate_steps_per_s": 164809.2,
+        "aggregate_control_transitions_per_s": 16480.9,
+        "per_proc_control_transitions_per_s": {
+          "mean": 2060.12,
+          "min": 2010.05,
+          "max": 2074.75
+        },
+        "per_proc_rss_mb": {
+          "mean": 155.7,
+          "max": 155.72
+        },
+        "per_proc_pss_mb": {
+          "mean": 127.0,
+          "max": 127.12
+        },
+        "per_proc_uss_mb": {
+          "mean": 124.1,
+          "max": 124.11
+        },
+        "loadavg_before": [
+          "1.34",
+          "1.35",
+          "1.22"
+        ],
+        "loadavg_after": [
+          "4.23",
+          "2.05",
+          "1.45"
+        ],
+        "mem_available_mb_before": 24934,
+        "mem_available_mb_mid": 23966,
+        "wall_incl_launch_s": 35.09
+      },
+      {
+        "model": "human_plus_hippo",
+        "n_procs": 16,
+        "duration_s": 30.0,
+        "loaded_from": "mjb",
+        "returncodes": [
+          0
+        ],
+        "n_ok": 16,
+        "max_ready_after_t_start_s": 0.0,
+        "aggregate_steps_per_s": 323763.3,
+        "aggregate_control_transitions_per_s": 32376.3,
+        "per_proc_control_transitions_per_s": {
+          "mean": 2023.52,
+          "min": 2014.04,
+          "max": 2036.34
+        },
+        "per_proc_rss_mb": {
+          "mean": 155.6,
+          "max": 155.88
+        },
+        "per_proc_pss_mb": {
+          "mean": 125.7,
+          "max": 125.97
+        },
+        "per_proc_uss_mb": {
+          "mean": 124.1,
+          "max": 124.36
+        },
+        "loadavg_before": [
+          "4.23",
+          "2.05",
+          "1.45"
+        ],
+        "loadavg_after": [
+          "9.17",
+          "3.48",
+          "1.95"
+        ],
+        "mem_available_mb_before": 22853,
+        "mem_available_mb_mid": 21131,
+        "wall_incl_launch_s": 35.09
+      },
+      {
+        "model": "human_plus_hippo",
+        "n_procs": 32,
+        "duration_s": 30.0,
+        "loaded_from": "mjb",
+        "returncodes": [
+          0
+        ],
+        "n_ok": 32,
+        "max_ready_after_t_start_s": 0.0,
+        "aggregate_steps_per_s": 579458.2,
+        "aggregate_control_transitions_per_s": 57945.8,
+        "per_proc_control_transitions_per_s": {
+          "mean": 1810.81,
+          "min": 1749.3,
+          "max": 1825.13
+        },
+        "per_proc_rss_mb": {
+          "mean": 155.4,
+          "max": 155.95
+        },
+        "per_proc_pss_mb": {
+          "mean": 125.1,
+          "max": 125.22
+        },
+        "per_proc_uss_mb": {
+          "mean": 124.2,
+          "max": 124.35
+        },
+        "loadavg_before": [
+          "8.52",
+          "3.44",
+          "1.95"
+        ],
+        "loadavg_after": [
+          "17.87",
+          "6.24",
+          "2.94"
+        ],
+        "mem_available_mb_before": 23025,
+        "mem_available_mb_mid": 19688,
+        "wall_incl_launch_s": 35.11
+      }
+    ],
+    "scaling_note": "human_plus_hippo, N concurrent single-threaded processes, each loads the MJB (to keep 32 procs at ~5 GB instead of ~18 GB), 30 s synchronized window, nice 10; machine: AMD EPYC 9535 64C/128T, 1 NUMA node; background load avg ~1.2-1.4 before the runs."
+  },
+  "warp": {
+    "supported": false,
+    "supported_with_workaround": true,
+    "workaround": "mjm.opt.disableflags |= mjDSBL_MULTICCD (MJCF: <option><flag multiccd=\"disable\"/></option>). Named in the error text itself. Only changes how many contacts mesh-mesh / box-mesh pairs produce (1 instead of several); foot-plane contacts are unaffected. Applied to BOTH the Warp model and the CPU reference in parity. Alternative from the same error text: zero the 1 mm geom margins (23 of 31 colliding geoms), which would also change foot-ground contact activation, so it was not used.",
+    "errors": {
+      "human_plus_hippo": "Traceback (most recent call last):\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py\", line 167, in try_put\n    m = mjw.put_model(mjm)\n        ^^^^^^^^^^^^^^^^^^\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 693, in put_model\n    _check_margin(f\"geom pair ({geom_name(g1)}, {geom_name(g2)})\", t1, t2, (m1, m2))\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 678, in _check_margin\n    raise NotImplementedError(\nNotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.\n",
+      "human": "Traceback (most recent call last):\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py\", line 167, in try_put\n    m = mjw.put_model(mjm)\n        ^^^^^^^^^^^^^^^^^^\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 693, in put_model\n    _check_margin(f\"geom pair ({geom_name(g1)}, {geom_name(g2)})\", t1, t2, (m1, m2))\n  File \"/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py\", line 678, in _check_margin\n    raise NotImplementedError(\nNotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.\n"
+    },
+    "stock_warnings": {
+      "human_plus_hippo": [
+        "UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs."
+      ],
+      "human": [
+        "UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs."
+      ]
+    },
+    "unsupported_features_found": [
+      "mesh-mesh (and box-mesh) collision pairs with non-zero geom margin while MULTICCD is enabled (MuJoCo 3.14 enables MULTICCD by default; model geoms carry margin=0.001)",
+      "CAPSULE-MESH pairs have no multicontact support under MULTICCD (warning only: at most 1 contact per pair)"
+    ],
+    "everything_else_loaded": "with the flag: 26 muscles (mjDYN_MUSCLE/mjGAIN_MUSCLE, tendon transmission), 26 spatial tendons with 96 site wraps, 28 mjEQ_JOINT polynomial couplings, 28 slide + 12 hinge + 1 free joint, 25 explicit mesh-mesh pairs, 12 sensors, Euler/Newton/pyramidal: all accepted by put_model",
+    "put_model_with_workaround": {
+      "human_plus_hippo": {
+        "supported": true,
+        "put_model_s": 0.037,
+        "geom_pair_type_count": {
+          "PLANE-CAPSULE": 4,
+          "PLANE-ELLIPSOID": 3,
+          "PLANE-MESH": 23,
+          "CAPSULE-MESH": 40,
+          "ELLIPSOID-MESH": 30,
+          "MESH-MESH": 156
+        },
+        "is_sparse": true,
+        "broadphase": "0",
+        "broadphase_filter": "11",
+        "graph_conditional": "True",
+        "run_collision_detection": "True",
+        "warnings": []
+      },
+      "human": {
+        "supported": true,
+        "put_model_s": 0.01,
+        "geom_pair_type_count": {
+          "PLANE-CAPSULE": 4,
+          "PLANE-ELLIPSOID": 3,
+          "PLANE-MESH": 15,
+          "CAPSULE-MESH": 40,
+          "ELLIPSOID-MESH": 30,
+          "MESH-MESH": 76
+        },
+        "is_sparse": true,
+        "broadphase": "0",
+        "broadphase_filter": "11",
+        "graph_conditional": "True",
+        "run_collision_detection": "True",
+        "warnings": []
+      }
+    },
+    "compile_s": {
+      "cold_first_step_jit_s": 62.33,
+      "second_model_first_step_s": 0.01,
+      "note": "cold = empty Warp kernel cache (WARP_CACHE_PATH inside the probe dir); human reused the same kernels. A later process with warm cache reached its first parity step within ~3 s. The mjwarp-testspeed CLI run re-JITed (35.59 s) for its own configuration.",
+      "graph_capture_s_per_nworld": {
+        "256": 0.081,
+        "1024": 0.049,
+        "4096": 0.05,
+        "8192": 0.05
+      }
+    },
+    "per_nworld": {
+      "human_plus_hippo": [
+        {
+          "nworld": 256,
+          "steps_per_s": 255710,
+          "control_transitions_per_s": 25571,
+          "sync_each_ctrl_step_steps_per_s": 256426,
+          "sync_each_ctrl_step_control_transitions_per_s": 25643,
+          "timed_control_steps": 100,
+          "timed_s": 1.001,
+          "gpu_mem_mb_process_steady": 708,
+          "data_array_bytes_mb": 33.2,
+          "put_data_s": 0.025,
+          "graph_capture_s": 0.081,
+          "stats_ncon_per_world_mean": 6.252,
+          "stats_nefc_mean": 66.14,
+          "stats_nefc_max": 107,
+          "stats_solver_iter_mean": 1.84,
+          "stats_solver_iter_max": 6,
+          "overflow_flags": [],
+          "nonfinite_worlds": 0,
+          "realtime_factor_per_world": 1.998
+        },
+        {
+          "nworld": 1024,
+          "steps_per_s": 789460,
+          "control_transitions_per_s": 78946,
+          "sync_each_ctrl_step_steps_per_s": 791154,
+          "sync_each_ctrl_step_control_transitions_per_s": 79115,
+          "timed_control_steps": 100,
+          "timed_s": 1.297,
+          "gpu_mem_mb_process_steady": 1028,
+          "data_array_bytes_mb": 132.9,
+          "put_data_s": 0.081,
+          "graph_capture_s": 0.049,
+          "stats_ncon_per_world_mean": 6.319,
+          "stats_nefc_mean": 66.41,
+          "stats_nefc_max": 114,
+          "stats_solver_iter_mean": 1.85,
+          "stats_solver_iter_max": 8,
+          "overflow_flags": [],
+          "nonfinite_worlds": 0,
+          "realtime_factor_per_world": 1.542
+        },
+        {
+          "nworld": 4096,
+          "steps_per_s": 1894016,
+          "control_transitions_per_s": 189402,
+          "sync_each_ctrl_step_steps_per_s": 1895912,
+          "sync_each_ctrl_step_control_transitions_per_s": 189591,
+          "timed_control_steps": 100,
+          "timed_s": 2.163,
+          "gpu_mem_mb_process_steady": 2180,
+          "data_array_bytes_mb": 531.5,
+          "put_data_s": 0.326,
+          "graph_capture_s": 0.05,
+          "stats_ncon_per_world_mean": 6.321,
+          "stats_nefc_mean": 66.46,
+          "stats_nefc_max": 130,
+          "stats_solver_iter_mean": 1.83,
+          "stats_solver_iter_max": 8,
+          "overflow_flags": [],
+          "nonfinite_worlds": 0,
+          "realtime_factor_per_world": 0.925
+        },
+        {
+          "nworld": 8192,
+          "steps_per_s": 2353437,
+          "control_transitions_per_s": 235344,
+          "sync_each_ctrl_step_steps_per_s": 2349092,
+          "sync_each_ctrl_step_control_transitions_per_s": 234909,
+          "timed_control_steps": 100,
+          "timed_s": 3.481,
+          "gpu_mem_mb_process_steady": 3620,
+          "data_array_bytes_mb": 1062.9,
+          "put_data_s": 0.664,
+          "graph_capture_s": 0.05,
+          "stats_ncon_per_world_mean": 6.312,
+          "stats_nefc_mean": 66.42,
+          "stats_nefc_max": 114,
+          "stats_solver_iter_mean": 1.83,
+          "stats_solver_iter_max": 8,
+          "overflow_flags": [],
+          "nonfinite_worlds": 0,
+          "realtime_factor_per_world": 0.575
+        }
+      ],
+      "human": [
+        {
+          "nworld": 256,
+          "steps_per_s": 273627,
+          "control_transitions_per_s": 27363,
+          "sync_each_ctrl_step_steps_per_s": 272086,
+          "sync_each_ctrl_step_control_transitions_per_s": 27209,
+          "timed_control_steps": 100,
+          "timed_s": 0.936,
+          "gpu_mem_mb_process_steady": 2596,
+          "data_array_bytes_mb": 32.4,
+          "put_data_s": 0.024,
+          "graph_capture_s": 0.05,
+          "stats_ncon_per_world_mean": 6.14,
+          "stats_nefc_mean": 65.79,
+          "stats_nefc_max": 92,
+          "stats_solver_iter_mean": 1.86,
+          "stats_solver_iter_max": 7,
+          "overflow_flags": [],
+          "nonfinite_worlds": 0,
+          "realtime_factor_per_world": 2.138
+        },
+        {
+          "nworld": 1024,
+          "steps_per_s": 853779,
+          "control_transitions_per_s": 85378,
+          "sync_each_ctrl_step_steps_per_s": 847683,
+          "sync_each_ctrl_step_control_transitions_per_s": 84768,
+          "timed_control_steps": 100,
+          "timed_s": 1.199,
+          "gpu_mem_mb_process_steady": 2692,
+          "data_array_bytes_mb": 129.6,
+          "put_data_s": 0.081,
+          "graph_capture_s": 0.051,
+          "stats_ncon_per_world_mean": 6.164,
+          "stats_nefc_mean": 65.85,
+          "stats_nefc_max": 93,
+          "stats_solver_iter_mean": 1.84,
+          "stats_solver_iter_max": 7,
+          "overflow_flags": [],
+          "nonfinite_worlds": 0,
+          "realtime_factor_per_world": 1.668
+        },
+        {
+          "nworld": 4096,
+          "steps_per_s": 1999957,
+          "control_transitions_per_s": 199996,
+          "sync_each_ctrl_step_steps_per_s": 1999736,
+          "sync_each_ctrl_step_control_transitions_per_s": 199974,
+          "timed_control_steps": 100,
+          "timed_s": 2.048,
+          "gpu_mem_mb_process_steady": 3076,
+          "data_array_bytes_mb": 518.6,
+          "put_data_s": 0.329,
+          "graph_capture_s": 0.05,
+          "stats_ncon_per_world_mean": 6.178,
+          "stats_nefc_mean": 65.88,
+          "stats_nefc_max": 104,
+          "stats_solver_iter_mean": 1.84,
+          "stats_solver_iter_max": 7,
+          "overflow_flags": [],
+          "nonfinite_worlds": 0,
+          "realtime_factor_per_world": 0.977
+        },
+        {
+          "nworld": 8192,
+          "steps_per_s": 2464265,
+          "control_transitions_per_s": 246427,
+          "sync_each_ctrl_step_steps_per_s": 2456889,
+          "sync_each_ctrl_step_control_transitions_per_s": 245689,
+          "timed_control_steps": 100,
+          "timed_s": 3.324,
+          "gpu_mem_mb_process_steady": 3588,
+          "data_array_bytes_mb": 1037.2,
+          "put_data_s": 0.687,
+          "graph_capture_s": 0.05,
+          "stats_ncon_per_world_mean": 6.177,
+          "stats_nefc_mean": 65.88,
+          "stats_nefc_max": 106,
+          "stats_solver_iter_mean": 1.84,
+          "stats_solver_iter_max": 8,
+          "overflow_flags": [],
+          "nonfinite_worlds": 0,
+          "realtime_factor_per_world": 0.602
+        }
+      ]
+    },
+    "method": "same protocol as CPU (qpos0 start, smooth random excitation per 20 ms control step generated on-GPU, reset via mjw.reset_data every 50 control steps); one CUDA graph = 10 x mjw.step; timed 100 control steps (1000 physics steps/world) without host sync inside the loop; a second variant syncs the host after every control step (RL-loop-like). nconmax=48/world, njmax=160/world (CPU max observed nefc=106); no overflow flags, no non-finite worlds. Monitor saw no other GPU process during this sweep.",
+    "gpu_mem_mb": {
+      "process_peak": 3620,
+      "process_steady_by_nworld_human_plus_hippo": {
+        "256": 708,
+        "1024": 1028,
+        "4096": 2180,
+        "8192": 3620
+      },
+      "data_arrays_mb_by_nworld_human_plus_hippo": {
+        "256": 33.2,
+        "1024": 132.9,
+        "4096": 531.5,
+        "8192": 1062.9
+      },
+      "note": "process total from nvidia-smi (CUDA context + Warp mempool + graphs); human runs followed hippo runs in the same process, so their process numbers include retained pool memory"
+    },
+    "testspeed_crosscheck": {
+      "cmd": "mjwarp-testspeed human_plus_hippo_nomulticcd.xml --nworld=8192 --nstep=500 --nconmax=48 --njmax=160 --keyframe=-1 --measure_alloc --memory",
+      "total_steps_per_s": "1,392,276",
+      "time_per_step": "718.25 ns",
+      "jit": "35.59 s",
+      "converged_worlds": "8192 / 8192",
+      "caveats": "1 step per graph launch + host sync per step, zero control (passive collapse), and the other aurnab GPU job (93% util, ~1.9 GiB) was active at the check just before it; treat as a conservative lower figure"
+    },
+    "device": {
+      "name": "NVIDIA GeForce RTX 5090",
+      "arch": 120,
+      "total_mem_mb": 32111,
+      "warp": "1.17.0",
+      "mujoco_warp": "3.14.0",
+      "mujoco": "3.14.0",
+      "kernel_cache_dir": "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp-cache/1.17.0",
+      "toolkit_version": "(12, 9)",
+      "driver_version": "(13, 2)",
+      "mempool_release_threshold": 0
+    }
+  },
+  "parity": {
+    "summary": "Yes, they diverge chaotically once contacts are involved, and there is also a systematic contact difference. (1) Systematic: at the identical seated start the contact sets already differ (CPU 10 vs Warp 6 contacts), so Warp-vs-CPU qpos differs by 8.8e-4 after 1 step and 8e-2 after 10 steps, far ahead of any round-off growth. (2) Chaotic: with contacts, tiny differences grow ~8 orders of magnitude in ~75 steps (0.15 s): two Warp worlds given bit-identical inputs start 5e-10 apart (MJWarp is not bitwise deterministic) and reach 1e-2 by step 75; CPU MuJoCo (bitwise deterministic run-to-run) moves 4e-3 by step 100 from a 1e-7 qpos perturbation. After ~100 steps Warp-vs-CPU (5e-2 to 1.2e-1), Warp-vs-Warp (1e-2 to 3e-2) and CPU-vs-perturbed-CPU (1e-3 to 5e-3) are within about an order of magnitude. (3) Without contacts there is no chaotic growth: Warp tracks CPU to 1.9e-4 over 400 steps (float32 drift) and Warp worlds agree to ~2e-6; muscle activations/tendon lengths/muscle forces match to float32 precision. Aggregate statistics (contacts/world, constraint rows, Newton iterations) agree closely. First look, not a verdict: trajectory-level parity is not attainable in this contact-rich regime; distribution-level parity looks plausible but untested.",
+    "setup": {
+      "model": "human_plus_hippo (and human)",
+      "flags": "MULTICCD disabled on both",
+      "nworld": 4,
+      "nsteps": 400,
+      "dt": 0.002,
+      "initial_state": "qpos0 (MyoAssist-seated), qvel=0, act=0; same float32-rounded ctrl trace on both",
+      "control": "400-step trace, smooth random excitation changed every 10 steps (50 Hz), float32-rounded, identical on both"
+    },
+    "human_plus_hippo": {
+      "at_step": {
+        "1": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.0008823,
+              "mean": 7.548e-05
+            },
+            "qvel": {
+              "max": 0.4412,
+              "mean": 0.03859
+            },
+            "act": {
+              "max": 1.341e-08,
+              "mean": 4.331e-09
+            },
+            "actuator_force": {
+              "max": 0.0002222,
+              "mean": 2.157e-05
+            },
+            "ten_length": {
+              "max": 3.243e-08,
+              "mean": 1.719e-08
+            },
+            "muscle_force": {
+              "max": 0.0002222,
+              "mean": 2.322e-05,
+              "cpu_abs_max": 65.06
+            },
+            "exo_force": {
+              "max": 1.192e-07,
+              "mean": 6.706e-08
+            },
+            "ncon": [
+              6,
+              10
+            ],
+            "nefc": [
+              52,
+              68
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 5.927e-05,
+              "mean": 2.34e-06
+            },
+            "qvel": {
+              "max": 0.02964,
+              "mean": 0.001209
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 0.0002841,
+              "mean": 2.684e-05
+            },
+            "ten_length": {
+              "max": 1.311e-07,
+              "mean": 3.482e-08
+            },
+            "muscle_force": {
+              "max": 0.0002841,
+              "mean": 2.89e-05,
+              "cpu_abs_max": 65.06
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              9,
+              10
+            ],
+            "nefc": [
+              66,
+              68
+            ]
+          }
+        },
+        "10": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.08251,
+              "mean": 0.00639
+            },
+            "qvel": {
+              "max": 5.576,
+              "mean": 0.3272
+            },
+            "act": {
+              "max": 1.467e-08,
+              "mean": 4.008e-09
+            },
+            "actuator_force": {
+              "max": 48.32,
+              "mean": 10.32
+            },
+            "ten_length": {
+              "max": 0.002184,
+              "mean": 0.0004911
+            },
+            "muscle_force": {
+              "max": 48.32,
+              "mean": 11.11,
+              "cpu_abs_max": 776.7
+            },
+            "exo_force": {
+              "max": 1.192e-07,
+              "mean": 6.706e-08
+            },
+            "ncon": [
+              14,
+              8
+            ],
+            "nefc": [
+              90,
+              68
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.0002304,
+              "mean": 1.209e-05
+            },
+            "qvel": {
+              "max": 0.01342,
+              "mean": 0.0006624
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 0.2433,
+              "mean": 0.03319
+            },
+            "ten_length": {
+              "max": 5.883e-06,
+              "mean": 1.039e-06
+            },
+            "muscle_force": {
+              "max": 0.2433,
+              "mean": 0.03574,
+              "cpu_abs_max": 776.7
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              8,
+              8
+            ],
+            "nefc": [
+              68,
+              68
+            ]
+          }
+        },
+        "100": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.1161,
+              "mean": 0.01253
+            },
+            "qvel": {
+              "max": 2.059,
+              "mean": 0.1743
+            },
+            "act": {
+              "max": 7.702e-08,
+              "mean": 2.668e-08
+            },
+            "actuator_force": {
+              "max": 208.9,
+              "mean": 33.24
+            },
+            "ten_length": {
+              "max": 0.003457,
+              "mean": 0.00101
+            },
+            "muscle_force": {
+              "max": 208.9,
+              "mean": 35.8,
+              "cpu_abs_max": 2894.0
+            },
+            "exo_force": {
+              "max": 1.192e-07,
+              "mean": 7.451e-08
+            },
+            "ncon": [
+              9,
+              8
+            ],
+            "nefc": [
+              75,
+              72
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.00402,
+              "mean": 0.0002176
+            },
+            "qvel": {
+              "max": 0.02906,
+              "mean": 0.002168
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 2.461,
+              "mean": 0.467
+            },
+            "ten_length": {
+              "max": 3.987e-05,
+              "mean": 1.397e-05
+            },
+            "muscle_force": {
+              "max": 2.461,
+              "mean": 0.503,
+              "cpu_abs_max": 2894.0
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              8,
+              8
+            ],
+            "nefc": [
+              72,
+              72
+            ]
+          }
+        },
+        "400": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.05211,
+              "mean": 0.008963
+            },
+            "qvel": {
+              "max": 1.129,
+              "mean": 0.08306
+            },
+            "act": {
+              "max": 6.717e-08,
+              "mean": 2.453e-08
+            },
+            "actuator_force": {
+              "max": 114.5,
+              "mean": 19.39
+            },
+            "ten_length": {
+              "max": 0.002522,
+              "mean": 0.000766
+            },
+            "muscle_force": {
+              "max": 114.5,
+              "mean": 20.88,
+              "cpu_abs_max": 3427.0
+            },
+            "exo_force": {
+              "max": 7.451e-08,
+              "mean": 7.078e-08
+            },
+            "ncon": [
+              7,
+              5
+            ],
+            "nefc": [
+              70,
+              62
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.001076,
+              "mean": 0.0001589
+            },
+            "qvel": {
+              "max": 0.01842,
+              "mean": 0.001783
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 0.9662,
+              "mean": 0.2609
+            },
+            "ten_length": {
+              "max": 2.693e-05,
+              "mean": 8.735e-06
+            },
+            "muscle_force": {
+              "max": 0.9662,
+              "mean": 0.2809,
+              "cpu_abs_max": 3427.0
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              5,
+              5
+            ],
+            "nefc": [
+              62,
+              62
+            ]
+          }
+        }
+      },
+      "first_step_qpos_diff_above": {
+        "warp_vs_cpu": {
+          "1e-06": 1,
+          "0.0001": 1,
+          "0.01": 3
+        },
+        "cpu_perturbed_vs_cpu": {
+          "1e-06": 1,
+          "0.0001": 2,
+          "0.01": null
+        }
+      },
+      "qpos_maxdiff_series_every10": {
+        "warp_vs_cpu": [
+          0.0825,
+          0.0771,
+          0.147,
+          0.0797,
+          0.045,
+          0.0691,
+          0.0833,
+          0.103,
+          0.109,
+          0.116,
+          0.0941,
+          0.112,
+          0.127,
+          0.112,
+          0.0847,
+          0.0594,
+          0.0689,
+          0.0788,
+          0.0858,
+          0.0862,
+          0.0821,
+          0.0754,
+          0.0661,
+          0.0572,
+          0.0482,
+          0.042,
+          0.042,
+          0.0567,
+          0.0758,
+          0.0849,
+          0.084,
+          0.0735,
+          0.0603,
+          0.0522,
+          0.0445,
+          0.0442,
+          0.0458,
+          0.0461,
+          0.0494,
+          0.0521
+        ],
+        "cpu_perturbed_vs_cpu": [
+          0.00023,
+          0.000308,
+          0.00518,
+          0.00206,
+          0.000427,
+          0.00143,
+          0.00153,
+          0.00298,
+          0.00413,
+          0.00402,
+          0.00335,
+          0.00154,
+          0.00255,
+          0.00362,
+          0.000685,
+          0.000715,
+          0.0012,
+          0.00117,
+          0.000765,
+          0.000596,
+          0.000899,
+          0.00111,
+          0.00138,
+          0.0016,
+          0.00162,
+          0.00264,
+          0.000706,
+          0.00141,
+          0.00199,
+          0.00221,
+          0.00218,
+          0.00212,
+          0.00205,
+          0.00165,
+          0.000867,
+          0.000951,
+          0.00101,
+          0.00101,
+          0.00106,
+          0.00108
+        ]
+      },
+      "ncon_series_every10": {
+        "cpu": [
+          8,
+          9,
+          5,
+          7,
+          6,
+          5,
+          7,
+          8,
+          9,
+          8,
+          7,
+          8,
+          8,
+          7,
+          8,
+          10,
+          8,
+          8,
+          8,
+          8,
+          8,
+          7,
+          7,
+          7,
+          7,
+          5,
+          7,
+          6,
+          6,
+          5,
+          5,
+          5,
+          6,
+          7,
+          7,
+          6,
+          7,
+          6,
+          5,
+          5
+        ],
+        "warp": [
+          14,
+          11,
+          11,
+          11,
+          6,
+          12,
+          12,
+          10,
+          9,
+          9,
+          9,
+          8,
+          9,
+          9,
+          8,
+          8,
+          8,
+          9,
+          9,
+          8,
+          8,
+          8,
+          9,
+          9,
+          8,
+          8,
+          8,
+          7,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          9,
+          8,
+          8,
+          7,
+          7
+        ]
+      },
+      "ncon_first_mismatch_step": 1,
+      "ncon_mismatch_fraction": 0.84,
+      "nefc_max": {
+        "cpu": 85,
+        "warp": 95
+      },
+      "ncon_max": {
+        "cpu": 11,
+        "warp": 15
+      },
+      "warp_cross_world_max_abs_diff": 172.46096801757812,
+      "warp_overflow_flags": []
+    },
+    "human": {
+      "at_step": {
+        "1": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.001346,
+              "mean": 0.0001188
+            },
+            "qvel": {
+              "max": 0.6728,
+              "mean": 0.0607
+            },
+            "act": {
+              "max": 1.341e-08,
+              "mean": 4.331e-09
+            },
+            "actuator_force": {
+              "max": 0.0002222,
+              "mean": 2.098e-05
+            },
+            "ten_length": {
+              "max": 3.243e-08,
+              "mean": 1.662e-08
+            },
+            "muscle_force": {
+              "max": 0.0002222,
+              "mean": 2.098e-05,
+              "cpu_abs_max": 65.06
+            },
+            "ncon": [
+              8,
+              12
+            ],
+            "nefc": [
+              60,
+              76
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 5.65e-05,
+              "mean": 3.253e-06
+            },
+            "qvel": {
+              "max": 0.02825,
+              "mean": 0.0017
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 0.0002841,
+              "mean": 2.89e-05
+            },
+            "ten_length": {
+              "max": 1.311e-07,
+              "mean": 3.482e-08
+            },
+            "muscle_force": {
+              "max": 0.0002841,
+              "mean": 2.89e-05,
+              "cpu_abs_max": 65.06
+            },
+            "ncon": [
+              11,
+              12
+            ],
+            "nefc": [
+              74,
+              76
+            ]
+          }
+        },
+        "10": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.08905,
+              "mean": 0.006442
+            },
+            "qvel": {
+              "max": 4.94,
+              "mean": 0.2992
+            },
+            "act": {
+              "max": 1.467e-08,
+              "mean": 4.008e-09
+            },
+            "actuator_force": {
+              "max": 43.17,
+              "mean": 10.24
+            },
+            "ten_length": {
+              "max": 0.002351,
+              "mean": 0.0005277
+            },
+            "muscle_force": {
+              "max": 43.17,
+              "mean": 10.24,
+              "cpu_abs_max": 776.9
+            },
+            "ncon": [
+              14,
+              8
+            ],
+            "nefc": [
+              90,
+              68
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.00497,
+              "mean": 0.0003982
+            },
+            "qvel": {
+              "max": 0.02947,
+              "mean": 0.00247
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 2.206,
+              "mean": 0.5416
+            },
+            "ten_length": {
+              "max": 0.0001746,
+              "mean": 5.322e-05
+            },
+            "muscle_force": {
+              "max": 2.206,
+              "mean": 0.5416,
+              "cpu_abs_max": 776.9
+            },
+            "ncon": [
+              8,
+              8
+            ],
+            "nefc": [
+              68,
+              68
+            ]
+          }
+        },
+        "100": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.1228,
+              "mean": 0.008813
+            },
+            "qvel": {
+              "max": 1.468,
+              "mean": 0.08825
+            },
+            "act": {
+              "max": 7.002e-08,
+              "mean": 2.432e-08
+            },
+            "actuator_force": {
+              "max": 108.2,
+              "mean": 19.83
+            },
+            "ten_length": {
+              "max": 0.002483,
+              "mean": 0.0007757
+            },
+            "muscle_force": {
+              "max": 108.2,
+              "mean": 19.83,
+              "cpu_abs_max": 4283.0
+            },
+            "ncon": [
+              7,
+              6
+            ],
+            "nefc": [
+              68,
+              64
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.001767,
+              "mean": 0.0001106
+            },
+            "qvel": {
+              "max": 0.1313,
+              "mean": 0.005426
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 1.822,
+              "mean": 0.4889
+            },
+            "ten_length": {
+              "max": 2.768e-05,
+              "mean": 6.909e-06
+            },
+            "muscle_force": {
+              "max": 1.822,
+              "mean": 0.4889,
+              "cpu_abs_max": 4283.0
+            },
+            "ncon": [
+              6,
+              6
+            ],
+            "nefc": [
+              64,
+              64
+            ]
+          }
+        },
+        "400": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.07535,
+              "mean": 0.006931
+            },
+            "qvel": {
+              "max": 1.352,
+              "mean": 0.1002
+            },
+            "act": {
+              "max": 7.454e-08,
+              "mean": 3.127e-08
+            },
+            "actuator_force": {
+              "max": 87.18,
+              "mean": 17.51
+            },
+            "ten_length": {
+              "max": 0.002499,
+              "mean": 0.0004989
+            },
+            "muscle_force": {
+              "max": 87.18,
+              "mean": 17.51,
+              "cpu_abs_max": 3861.0
+            },
+            "ncon": [
+              6,
+              7
+            ],
+            "nefc": [
+              65,
+              70
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 0.0006924,
+              "mean": 4.693e-05
+            },
+            "qvel": {
+              "max": 0.03139,
+              "mean": 0.001665
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 2.298,
+              "mean": 0.4692
+            },
+            "ten_length": {
+              "max": 1.044e-05,
+              "mean": 2.557e-06
+            },
+            "muscle_force": {
+              "max": 2.298,
+              "mean": 0.4692,
+              "cpu_abs_max": 3861.0
+            },
+            "ncon": [
+              7,
+              7
+            ],
+            "nefc": [
+              70,
+              70
+            ]
+          }
+        }
+      },
+      "first_step_qpos_diff_above": {
+        "warp_vs_cpu": {
+          "1e-06": 1,
+          "0.0001": 1,
+          "0.01": 3
+        },
+        "cpu_perturbed_vs_cpu": {
+          "1e-06": 1,
+          "0.0001": 2,
+          "0.01": 78
+        }
+      },
+      "ncon_first_mismatch_step": 1,
+      "ncon_mismatch_fraction": 0.78,
+      "warp_cross_world_max_abs_diff": 583.3776245117188
+    },
+    "control_initial_contacts": {
+      "cpu_ncon": 10,
+      "warp_ncon": 6,
+      "cpu_by_pair_dist": {
+        "terrain|calcn_l_geom_1": [
+          -3e-05
+        ],
+        "terrain|calcn_r_geom_1": [
+          -3e-05
+        ],
+        "terrain|toes_l_geom_1": [
+          -0.00233,
+          -0.00233,
+          0.00153,
+          0.00153
+        ],
+        "terrain|toes_r_geom_1": [
+          -0.00233,
+          -0.00233,
+          0.00153,
+          0.00153
+        ]
+      },
+      "warp_by_pair_dist": {
+        "terrain|calcn_l_geom_1": [
+          -4e-05
+        ],
+        "terrain|calcn_r_geom_1": [
+          -4e-05
+        ],
+        "terrain|toes_l_geom_1": [
+          -0.00233,
+          -0.00233
+        ],
+        "terrain|toes_r_geom_1": [
+          -0.00233,
+          -0.00233
+        ]
+      },
+      "geom_margin_of_contact_geoms": [
+        0.001
+      ]
+    },
+    "control_contacts_disabled_human_plus_hippo": {
+      "at_step": {
+        "1": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 9.982e-09,
+              "mean": 2.856e-10
+            },
+            "qvel": {
+              "max": 2.006e-07,
+              "mean": 3.438e-08
+            },
+            "act": {
+              "max": 1.341e-08,
+              "mean": 4.331e-09
+            },
+            "actuator_force": {
+              "max": 0.0002222,
+              "mean": 2.157e-05
+            },
+            "ten_length": {
+              "max": 3.243e-08,
+              "mean": 1.719e-08
+            },
+            "muscle_force": {
+              "max": 0.0002222,
+              "mean": 2.322e-05,
+              "cpu_abs_max": 65.06
+            },
+            "exo_force": {
+              "max": 1.192e-07,
+              "mean": 6.706e-08
+            },
+            "ncon": [
+              0,
+              0
+            ],
+            "nefc": [
+              28,
+              28
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 2.518e-07,
+              "mean": 6.725e-08
+            },
+            "qvel": {
+              "max": 9.81e-07,
+              "mean": 2.893e-07
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 0.0002841,
+              "mean": 2.684e-05
+            },
+            "ten_length": {
+              "max": 1.311e-07,
+              "mean": 3.482e-08
+            },
+            "muscle_force": {
+              "max": 0.0002841,
+              "mean": 2.89e-05,
+              "cpu_abs_max": 65.06
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              0,
+              0
+            ],
+            "nefc": [
+              30,
+              28
+            ]
+          }
+        },
+        "10": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 8.897e-07,
+              "mean": 1.304e-07
+            },
+            "qvel": {
+              "max": 9.23e-05,
+              "mean": 9.915e-06
+            },
+            "act": {
+              "max": 1.467e-08,
+              "mean": 4.008e-09
+            },
+            "actuator_force": {
+              "max": 0.05893,
+              "mean": 0.004707
+            },
+            "ten_length": {
+              "max": 4.494e-07,
+              "mean": 6.248e-08
+            },
+            "muscle_force": {
+              "max": 0.05893,
+              "mean": 0.005069,
+              "cpu_abs_max": 682.9
+            },
+            "exo_force": {
+              "max": 1.192e-07,
+              "mean": 6.706e-08
+            },
+            "ncon": [
+              0,
+              0
+            ],
+            "nefc": [
+              36,
+              36
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 2.44e-07,
+              "mean": 5.278e-08
+            },
+            "qvel": {
+              "max": 9.952e-06,
+              "mean": 1.586e-06
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 0.002211,
+              "mean": 0.0003171
+            },
+            "ten_length": {
+              "max": 1.019e-07,
+              "mean": 2.51e-08
+            },
+            "muscle_force": {
+              "max": 0.002211,
+              "mean": 0.0003415,
+              "cpu_abs_max": 682.9
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              0,
+              0
+            ],
+            "nefc": [
+              36,
+              36
+            ]
+          }
+        },
+        "100": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 9.754e-05,
+              "mean": 6.232e-06
+            },
+            "qvel": {
+              "max": 0.0007209,
+              "mean": 5.518e-05
+            },
+            "act": {
+              "max": 7.702e-08,
+              "mean": 2.668e-08
+            },
+            "actuator_force": {
+              "max": 0.1076,
+              "mean": 0.01455
+            },
+            "ten_length": {
+              "max": 2.918e-06,
+              "mean": 6.509e-07
+            },
+            "muscle_force": {
+              "max": 0.1076,
+              "mean": 0.01567,
+              "cpu_abs_max": 2904.0
+            },
+            "exo_force": {
+              "max": 1.192e-07,
+              "mean": 7.451e-08
+            },
+            "ncon": [
+              0,
+              0
+            ],
+            "nefc": [
+              39,
+              39
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 1.411e-07,
+              "mean": 1.53e-08
+            },
+            "qvel": {
+              "max": 9.123e-07,
+              "mean": 8.218e-08
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 8.426e-05,
+              "mean": 1.476e-05
+            },
+            "ten_length": {
+              "max": 4.457e-09,
+              "mean": 1.103e-09
+            },
+            "muscle_force": {
+              "max": 8.426e-05,
+              "mean": 1.59e-05,
+              "cpu_abs_max": 2904.0
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              0,
+              0
+            ],
+            "nefc": [
+              39,
+              39
+            ]
+          }
+        },
+        "400": {
+          "warp_f32_vs_cpu_f64": {
+            "qpos": {
+              "max": 0.0001852,
+              "mean": 1.238e-05
+            },
+            "qvel": {
+              "max": 0.0008583,
+              "mean": 6.28e-05
+            },
+            "act": {
+              "max": 6.717e-08,
+              "mean": 2.453e-08
+            },
+            "actuator_force": {
+              "max": 0.1447,
+              "mean": 0.02864
+            },
+            "ten_length": {
+              "max": 5.933e-06,
+              "mean": 1.451e-06
+            },
+            "muscle_force": {
+              "max": 0.1447,
+              "mean": 0.03085,
+              "cpu_abs_max": 3426.0
+            },
+            "exo_force": {
+              "max": 7.451e-08,
+              "mean": 7.078e-08
+            },
+            "ncon": [
+              0,
+              0
+            ],
+            "nefc": [
+              40,
+              40
+            ]
+          },
+          "cpu_perturbed_1e7_vs_cpu": {
+            "qpos": {
+              "max": 9.572e-08,
+              "mean": 8.346e-09
+            },
+            "qvel": {
+              "max": 8.774e-08,
+              "mean": 8.424e-09
+            },
+            "act": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "actuator_force": {
+              "max": 3.708e-05,
+              "mean": 3.287e-06
+            },
+            "ten_length": {
+              "max": 1.097e-09,
+              "mean": 1.457e-10
+            },
+            "muscle_force": {
+              "max": 3.708e-05,
+              "mean": 3.54e-06,
+              "cpu_abs_max": 3426.0
+            },
+            "exo_force": {
+              "max": 0.0,
+              "mean": 0.0
+            },
+            "ncon": [
+              0,
+              0
+            ],
+            "nefc": [
+              40,
+              40
+            ]
+          }
+        }
+      },
+      "first_step_qpos_diff_above": {
+        "warp_vs_cpu": {
+          "1e-06": 11,
+          "0.0001": 102,
+          "0.01": null
+        },
+        "cpu_perturbed_vs_cpu": {
+          "1e-06": null,
+          "0.0001": null,
+          "0.01": null
+        }
+      },
+      "qpos_maxdiff_series_every10": {
+        "warp_vs_cpu": [
+          8.9e-07,
+          2.49e-06,
+          3.4e-06,
+          2.63e-06,
+          6.32e-06,
+          2.32e-05,
+          4.24e-05,
+          6.23e-05,
+          8.15e-05,
+          9.75e-05,
+          0.00011,
+          0.000118,
+          0.000112,
+          0.000115,
+          0.000121,
+          0.00013,
+          0.00014,
+          0.000151,
+          0.000159,
+          0.000165,
+          0.000168,
+          0.000168,
+          0.000169,
+          0.000168,
+          0.000167,
+          0.000164,
+          0.000161,
+          0.000158,
+          0.000156,
+          0.000159,
+          0.000162,
+          0.000166,
+          0.000172,
+          0.000178,
+          0.000183,
+          0.000186,
+          0.000187,
+          0.000188,
+          0.000186,
+          0.000185
+        ],
+        "cpu_perturbed_vs_cpu": [
+          2.44e-07,
+          2.25e-07,
+          1.61e-07,
+          1.6e-07,
+          9.06e-08,
+          7.94e-08,
+          7.75e-08,
+          1.05e-07,
+          1.27e-07,
+          1.41e-07,
+          1.46e-07,
+          1.4e-07,
+          1.01e-07,
+          9.42e-08,
+          8.54e-08,
+          8.87e-08,
+          9.17e-08,
+          9.44e-08,
+          9.68e-08,
+          9.94e-08,
+          1.01e-07,
+          1.02e-07,
+          1.02e-07,
+          1.02e-07,
+          1.01e-07,
+          1.01e-07,
+          9.99e-08,
+          9.94e-08,
+          9.91e-08,
+          9.9e-08,
+          9.88e-08,
+          9.86e-08,
+          9.83e-08,
+          9.8e-08,
+          9.78e-08,
+          9.75e-08,
+          9.71e-08,
+          9.66e-08,
+          9.62e-08,
+          9.57e-08
+        ]
+      }
+    },
+    "control_cpu_effect_of_multiccd_flag": {
+      "human_plus_hippo": {
+        "at_step": {
+          "1": {
+            "qpos_max": 0.0,
+            "qvel_max": 0.0,
+            "ncon_stock_vs_flag": [
+              10,
+              10
+            ]
+          },
+          "10": {
+            "qpos_max": 0.0,
+            "qvel_max": 0.0,
+            "ncon_stock_vs_flag": [
+              8,
+              8
+            ]
+          },
+          "100": {
+            "qpos_max": 0.007048,
+            "qvel_max": 0.273,
+            "ncon_stock_vs_flag": [
+              7,
+              8
+            ]
+          },
+          "400": {
+            "qpos_max": 0.01455,
+            "qvel_max": 0.5727,
+            "ncon_stock_vs_flag": [
+              6,
+              5
+            ]
+          }
+        },
+        "ncon_differs_fraction": 0.422
+      },
+      "margins": {
+        "terrain_geom_margin": 0.001,
+        "terrain_geom_gap": 0.0,
+        "toes_r_margin": 0.001,
+        "calcn_r_margin": 0.001
+      },
+      "human": {
+        "at_step": {
+          "1": {
+            "qpos_max": 0.0,
+            "qvel_max": 0.0,
+            "ncon_stock_vs_flag": [
+              12,
+              12
+            ]
+          },
+          "10": {
+            "qpos_max": 0.0,
+            "qvel_max": 0.0,
+            "ncon_stock_vs_flag": [
+              8,
+              8
+            ]
+          },
+          "100": {
+            "qpos_max": 0.004989,
+            "qvel_max": 0.06099,
+            "ncon_stock_vs_flag": [
+              6,
+              6
+            ]
+          },
+          "400": {
+            "qpos_max": 0.006403,
+            "qvel_max": 0.1485,
+            "ncon_stock_vs_flag": [
+              8,
+              7
+            ]
+          }
+        },
+        "ncon_differs_fraction": 0.295
+      }
+    },
+    "control_determinism": {
+      "A_identical_worlds_with_contacts": {
+        "label": "4 identical worlds, max over worlds 1..3 of |world_k - world_0|",
+        "first_step_qpos_diff_above": {
+          "0.0": 1,
+          "1e-06": 21,
+          "0.0001": 36,
+          "0.01": 75
+        },
+        "qpos_maxdiff_at": {
+          "1": 4.657e-10,
+          "10": 2.98e-08,
+          "100": 0.01031,
+          "400": 0.01193
+        },
+        "force_maxdiff_at": {
+          "1": 0.0,
+          "10": 0.0001221,
+          "100": 26.33,
+          "400": 79.3
+        },
+        "qpos_maxdiff_every10": [
+          2.98e-08,
+          9.46e-07,
+          2.16e-06,
+          0.00195,
+          0.00249,
+          0.00156,
+          0.00554,
+          0.0137,
+          0.0208,
+          0.0103,
+          0.00777,
+          0.00812,
+          0.00768,
+          0.00514,
+          0.00556,
+          0.00477,
+          0.00513,
+          0.00511,
+          0.00495,
+          0.00745,
+          0.00812,
+          0.00731,
+          0.00819,
+          0.00576,
+          0.0054,
+          0.00724,
+          0.0046,
+          0.00336,
+          0.00613,
+          0.00799,
+          0.00737,
+          0.00688,
+          0.00965,
+          0.0101,
+          0.00336,
+          0.0122,
+          0.0149,
+          0.00677,
+          0.00373,
+          0.0119
+        ],
+        "first_step_worlds_ncon_differ": 15,
+        "fraction_steps_ncon_differ": 0.57
+      },
+      "BC_run_to_run_nworld1_with_contacts": {
+        "label": "two separate nworld=1 runs, same inputs",
+        "first_step_qpos_diff_above": {
+          "0.0": 1,
+          "1e-06": 37,
+          "0.0001": 37,
+          "0.01": 75
+        },
+        "qpos_maxdiff_at": {
+          "1": 5.821e-11,
+          "10": 3.725e-09,
+          "100": 0.008605,
+          "400": 0.03105
+        },
+        "force_maxdiff_at": {
+          "1": 0.0,
+          "10": 6.104e-05,
+          "100": 24.15,
+          "400": 12.44
+        },
+        "qpos_maxdiff_every10": [
+          3.73e-09,
+          2.61e-07,
+          1.85e-07,
+          0.000866,
+          0.00157,
+          0.00156,
+          0.00522,
+          0.0137,
+          0.0208,
+          0.00861,
+          0.00388,
+          0.00347,
+          0.00311,
+          0.00722,
+          0.00903,
+          0.00818,
+          0.00633,
+          0.00148,
+          0.00595,
+          0.00883,
+          0.00923,
+          0.00639,
+          0.0128,
+          0.0119,
+          0.00444,
+          0.00347,
+          0.0018,
+          0.0021,
+          0.00248,
+          0.00121,
+          0.002,
+          0.00106,
+          0.000872,
+          0.00275,
+          0.00499,
+          0.00438,
+          0.00399,
+          0.0112,
+          0.0244,
+          0.031
+        ]
+      },
+      "D_identical_worlds_contacts_disabled": {
+        "label": "4 identical worlds, contacts disabled",
+        "first_step_qpos_diff_above": {
+          "0.0": 1,
+          "1e-06": 212,
+          "0.0001": null,
+          "0.01": null
+        },
+        "qpos_maxdiff_at": {
+          "1": 2.474e-10,
+          "10": 8.196e-08,
+          "100": 6.109e-07,
+          "400": 8.941e-07
+        },
+        "force_maxdiff_at": {
+          "1": 0.0,
+          "10": 0.0001602,
+          "100": 0.01562,
+          "400": 0.1919
+        },
+        "qpos_maxdiff_every10": [
+          8.2e-08,
+          1.95e-07,
+          2.04e-07,
+          2.18e-07,
+          3.09e-07,
+          5.59e-07,
+          6.11e-07,
+          6.71e-07,
+          6.71e-07,
+          6.11e-07,
+          6.63e-07,
+          7.15e-07,
+          4.21e-07,
+          2.91e-07,
+          2.24e-07,
+          3.65e-07,
+          6.15e-07,
+          6.38e-07,
+          7.36e-07,
+          8.72e-07,
+          9.54e-07,
+          1.03e-06,
+          8.2e-07,
+          8.05e-07,
+          7.3e-07,
+          7.38e-07,
+          7.15e-07,
+          9.39e-07,
+          1.01e-06,
+          1.07e-06,
+          1.37e-06,
+          1.31e-06,
+          8.64e-07,
+          1.4e-06,
+          1.33e-06,
+          1.01e-06,
+          1.43e-06,
+          1.9e-06,
+          1.41e-06,
+          8.94e-07
+        ]
+      },
+      "E_cpu_run_to_run_max_abs_qpos_diff": 0.0,
+      "gpu_wall_s": 9.9
+    },
+    "aggregate_stats_comparison": {
+      "cpu_random_protocol": {
+        "ncon_mean": 6.495,
+        "nefc_mean": 67.09,
+        "solver_iter_mean": 1.78
+      },
+      "warp_8192_worlds": {
+        "ncon_mean": 6.312,
+        "nefc_mean": 66.42,
+        "solver_iter_mean": 1.83
+      }
+    },
+    "interpretation_notes": [
+      "At the seated initial pose CPU MuJoCo 3.14 returns 4 contacts per toes-plane pair (2 at -2.33 mm, 2 at +1.53 mm; both geoms have margin 1.0 mm) while MJWarp returns only the 2 penetrating ones; calcn-plane: 1 each on both. Constraint rows at step 1: CPU 68 vs Warp 52.",
+      "Contact-free: activation diff ~1e-8, tendon length diff <=6e-6 m, muscle force diff <=0.15 N (forces up to 3.4 kN) over 400 steps.",
+      "MJWarp is NOT bitwise deterministic: identical worlds (and two separate nworld=1 runs) differ from step 1 at ~1e-10; with contacts their contact counts differ in 57% of steps and qpos differs by ~1e-2 after 75 steps; the parity run's warp_cross_world_max_abs_diff (max over qpos/qvel/act/forces/tendon lengths and all 400 steps) is in muscle-force newtons. CPU MuJoCo repeated runs are bitwise identical."
+    ]
+  },
+  "disk_before_after": {
+    "before": "/dev/nvme0n1p2  915G  790G   80G  91% /",
+    "probe_peak_size": "849M",
+    "after": null
+  },
+  "cleanup_confirmed": null,
+  "notes": [
+    "Stock models do NOT load in mujoco-warp 3.14.0 (exact error in warp.errors); a single option flag (MULTICCD off) makes them load and run.",
+    "Throughput: human_plus_hippo reaches 2.35M physics steps/s = 235k control transitions/s at nworld=8192 (3.6 GB GPU); the Hippo device costs ~5-8% vs the bare human on GPU (4.5% at nworld=8192) and ~2-3% on CPU.",
+    "Parity: trajectory-level agreement is not attainable with contacts (chaotic growth from round-off; MJWarp is not bitwise deterministic even run-to-run; plus a different contact set from step 1). Contact-free dynamics (muscles, spatial tendons, joint couplings) match to float32 precision. See parity.summary.",
+    "CPU: ~20.4-21.0k steps/s per thread (~2.0-2.1k transitions/s); 32 processes give 57.9k transitions/s (87% per-process efficiency).",
+    "Memory: human_plus_hippo loaded from XML costs ~560 MB RSS per process (93 MB MjModel, mostly the 8 high-res Hippo meshes, plus ~400 MB retained from compilation); loading a precompiled MJB brings it to ~153 MB.",
+    "Composed keyframes are not seated: human_plus_hippo key 'stand' has root z=1.000 while the MyoAssist-seated qpos0 has z=0.913, so resetting to key 0 (what myoassist_leg_base does) starts the model ~8.7 cm above the ground. All runs here start from qpos0.",
+    "The composed myolegs26 human has nkey=0; MyoAssist's leg env asserts nkey>0, so the bare human cannot be used there as-is (compose + Hippo adds 5 keyframes).",
+    "No <option> element in the composed XML: Euler, Newton (100 it, ls 50, tol 1e-8), pyramidal cone, dt=0.002 s.",
+    "Random excitation makes the model fall in ~0.9-1.0 s; workload per step ~6.3-6.7 contacts, ~66 constraint rows, ~1.8 Newton iterations (CPU and Warp agree).",
+    "Nothing was written outside the probe dir: ~/.cache, ~/.nv, ~/.local/share and ~ top level unchanged (CUDA_CACHE_PATH, WARP_CACHE_PATH, XDG_CACHE_HOME, UV_CACHE_DIR, TMPDIR, PYTHONPYCACHEPREFIX all pointed inside it; PYTHONDONTWRITEBYTECODE=1 for the sprint venv). One .pyc in the sprint venv (dm_control/_render/__pycache__/glfw_renderer.cpython-312.pyc) was rewritten at 18:02:03 by another user of that venv; the probe's only use of it ended at 17:57:34 and a check right after showed zero changes; the probe never imports dm_control. /tmp/pytest-of-aurnab belongs to the other project's pytest run.",
+    "mjwarp-testspeed --clear_warp_cache would rmtree ~/.nv/ComputeCache (shared); it was not used."
+  ],
+  "estimates": {
+    "label": "ESTIMATES - extrapolated from the measurements above; physics stepping only",
+    "pipeline_control_transitions": 547000000,
+    "cpu_48_threads": {
+      "hours": 1.75,
+      "assumption": "48 single-threaded processes each keep the measured 32-process rate (1811 transitions/s/proc, -12.5% vs 1 proc) -> 86,919/s. Not measured beyond 32 processes.",
+      "hours_at_measured_32_procs": 2.62,
+      "ram": "48 x 153 MB (MJB-loaded) = 7.2 GB fits 12 GB; 48 x 560 MB (XML-loaded) = 26.2 GB does not (only ~21 XML-loaded envs fit) -> load the MJB or decimate the Hippo meshes"
+    },
+    "gpu_rtx5090": {
+      "hours": 0.65,
+      "basis": "nworld=8192 measured 235,344/s (human_plus_hippo, MULTICCD disabled, GPU otherwise idle)",
+      "hours_nworld_4096": 0.8,
+      "hours_testspeed_basis": 1.09,
+      "requires": "the 1-flag MULTICCD workaround; accept the contact-level parity gap vs CPU MuJoCo"
+    },
+    "speedup": {
+      "gpu8192_vs_1_cpu_thread_same_flags": 112.1,
+      "gpu8192_vs_32_cpu_procs_measured": 4.06,
+      "gpu8192_vs_48_cpu_procs_estimated": 2.71
+    },
+    "excludes": "policy inference, observation/reward code, env wrappers (myosuite/gym), learner updates, host-device transfers to the learner, and GPU/CPU sharing with other jobs",
+    "timestep_caveat": "uses the model XML timestep 0.002 s (10 substeps per 50 Hz transition). MyoAssist's RL env overrides opt.timestep = 1/physics_sim_framerate (1000 Hz in code comments, 1200 Hz in the sprint's PPO smoke config): 20-24 substeps per transition, i.e. roughly 2-2.4x the hours above if cost per physics step is unchanged"
+  }
+}

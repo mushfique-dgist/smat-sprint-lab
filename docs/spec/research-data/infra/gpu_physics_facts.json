@@ -1,0 +1,376 @@
+{
+  "checked_on": "2026-09-23. GitHub API, PyPI JSON API and arXiv export API queried on this date; the two readthedocs pages were fetched at 10:48 UTC (HTTP Date header). The MJWarp page reported Last-Modified 2026-09-22 09:28:20 GMT and the MJX page 2026-09-19 09:03:40 GMT. Snapshot only: re-check before relying on it.",
+  "versions": {
+    "mujoco": {
+      "version": "3.14.0",
+      "released": "2026-09-22 (PyPI upload 2026-09-22T17:30:04Z)",
+      "source_url": "https://pypi.org/project/mujoco/3.14.0/",
+      "note": "Version used by the 2026-09-23 GPU probe (C:/Users/Mushfique/Desktop/projects/smat-sprint-autoresearch-handoff/research-data/probe/results_2026-09-23/warp_support.json, device.mujoco)."
+    },
+    "mujoco-warp": {
+      "version": "3.14.0",
+      "released": "2026-09-22 (PyPI 2026-09-22T17:29:28Z; GitHub tag v3.14.0 = 88af9cc, 'Bump MuJoCo Warp to v3.14.0 (#1686)')",
+      "source_url": "https://pypi.org/project/mujoco-warp/3.14.0/",
+      "note": "main HEAD on the check date: 838a17c (2026-09-23T10:40:49Z, 'Apply model overrides when loading binary models (#1685)'). Used by the probe."
+    },
+    "mujoco-mjx": {
+      "version": "3.14.0",
+      "released": "2026-09-22 (PyPI 2026-09-22T17:32:31Z)",
+      "source_url": "https://pypi.org/project/mujoco-mjx/3.14.0/"
+    },
+    "warp-lang": {
+      "version": "1.17.0",
+      "released": "2026-08-31 (PyPI 2026-08-31T05:52:29Z)",
+      "source_url": "https://pypi.org/project/warp-lang/1.17.0/",
+      "note": "Used by the probe."
+    },
+    "mujoco (version mjlab pins)": {
+      "version": "3.11.0",
+      "released": "2026-07-28 (PyPI 2026-07-28T01:22:20Z; mujoco-warp 3.11.0 same day)",
+      "source_url": "https://pypi.org/project/mujoco/3.11.0/",
+      "note": "mjlab main and 1.6.0 require mujoco~=3.11.0 and mujoco-warp~=3.11.0, three minor versions behind the probe stack."
+    },
+    "mjlab": {
+      "version": "1.6.0 (latest release); main HEAD c2e1e06 still declares 1.6.0",
+      "released": "PyPI 2026-08-09T00:23:40Z; GitHub release v1.6.0 2026-08-09 (tag 0fb8a68); HEAD c2e1e06 committed 2026-09-21T14:17:49Z",
+      "source_url": "https://pypi.org/project/mjlab/1.6.0/",
+      "note": "HEAD pyproject: 'mujoco-warp~=3.11.0', 'mujoco~=3.11.0', 'rsl-rl-lib==5.5.1', 'warp-lang>=1.14.0', 'torch>=2.7.0', requires-python '>=3.10,<3.14' (https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/pyproject.toml). The PyPI 1.6.0 metadata pins rsl-rl-lib==5.4.2."
+    },
+    "rsl-rl-lib": {
+      "version": "5.5.1",
+      "released": "2026-09-09 (PyPI 2026-09-09T11:28:50Z); 5.4.2 was 2026-07-15",
+      "source_url": "https://pypi.org/project/rsl-rl-lib/5.5.1/",
+      "note": "GitHub tag v5.5.1 = 857de61."
+    },
+    "myosuite": {
+      "version": "2.12.2 (PyPI); git branch 'mjx' HEAD f38091b (2026-04-22)",
+      "released": "2026-05-06 (PyPI)",
+      "source_url": "https://pypi.org/project/myosuite/2.12.2/"
+    },
+    "myo_sim": {
+      "version": "0.2.3 (main 93b0ca8, 'v0.2.3 release (#134)')",
+      "released": "2026-09-16 (commit date)",
+      "source_url": "https://github.com/MyoHub/myo_sim",
+      "note": "The probe composed its model with myo_sim 0.2.2 (C:/Users/Mushfique/Desktop/projects/smat-sprint-autoresearch-handoff/research-data/probe/results_2026-09-23/compose_report.json)."
+    },
+    "MyoHub/mjlab_myosuite": {
+      "version": "no releases; main 625640d (2026-02-05), dev dadba1c (2026-02-20), refactor_code 2a9dae3 (2026-02-13), minimal_myoleg ba8b043 (2026-03-06, last push)",
+      "released": "n/a",
+      "source_url": "https://github.com/MyoHub/mjlab_myosuite"
+    },
+    "musclemimic": {
+      "version": "0.1.1 (pyproject) at 5d4c8af",
+      "released": "HEAD commit 2026-07-08; tag 'preprint' points at 5d4c8af; GitHub release 'preprint' published 2026-09-21 with 0 assets",
+      "source_url": "https://github.com/amathislab/musclemimic"
+    }
+  },
+  "feature_support_notes": [
+    {
+      "feature": "Overall MuJoCo feature coverage (MuJoCo Warp)",
+      "note": "The README lists only four exceptions: the IMPLICITFAST midpoint integrator feature, the PGS and noslip solvers, PLUGIN actuators and sensors, and flex (experimental). Muscles, spatial tendons, joint equality and mesh collision are not listed as exceptions.",
+      "quote": "MuJoCo Warp supports the same features as MuJoCo with the following exceptions: Integrator: IMPLICITFAST midpoint integrator feature is not supported; Solver: PGS and noslip not yet supported; Actuator / Sensors: PLUGIN types not yet supported; Flex: experimental",
+      "source_url": "https://github.com/google-deepmind/mujoco_warp#mujoco-api-compatibility (README last changed in 33817dd, 2026-08-19)"
+    },
+    {
+      "feature": "How unsupported features fail",
+      "note": "put_model raises instead of silently degrading. At v3.14.0 it checks the actuator dyn/gain/bias types, equality, geom, sensor and wrap types, integrator, cone and solver, and the enable/disable flags against MJWarp's own enums. It also rejects noslip and body, actuator and sensor plugins.",
+      "quote": "MJWarp will raise an exception if asked to copy to device an mjModel with field values referencing unsupported features.",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjwarp/index.html (Feature Parity); code https://github.com/google-deepmind/mujoco_warp/blob/88af9cc682d42e2e925daa0bae25f53277999f7b/mujoco_warp/_src/io.py#L245-L288"
+    },
+    {
+      "feature": "Muscle actuators",
+      "note": "Supported. mujoco_warp v3.14.0 enums include MUSCLE for DynType, GainType and BiasType. MJX-JAX also lists MUSCLE. The probe measured contact-free muscle activations, tendon lengths and muscle forces matching CPU to float32 precision (C:/Users/Mushfique/Desktop/projects/smat-sprint-autoresearch-handoff/research-data/probe/results_2026-09-23/gpu_probe_2026-09-23.json, parity).",
+      "quote": "MJX parity table, Actuator Dynamics / Gain / Bias: MJX-Warp 'All'; MJX-JAX 'NONE, INTEGRATOR, FILTER, FILTEREXACT, MUSCLE' / 'FIXED, AFFINE, MUSCLE' / 'NONE, AFFINE, MUSCLE'",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjx.html (Feature Parity); https://github.com/google-deepmind/mujoco_warp/blob/88af9cc682d42e2e925daa0bae25f53277999f7b/mujoco_warp/_src/types.py"
+    },
+    {
+      "feature": "Spatial tendons with site wraps",
+      "note": "Supported. WrapType at v3.14.0 is JOINT, PULLEY, SITE, SPHERE, CYLINDER. Our composed model has 26 spatial tendons with 96 wraps (C:/Users/Mushfique/Desktop/projects/smat-sprint-autoresearch-handoff/research-data/probe/results_2026-09-23/compose_report.json).",
+      "quote": "Tendon Wrapping: MJX-Warp 'All', MJX-JAX 'JOINT, SITE, PULLEY, SPHERE, CYLINDER'; Tendons: MJX-Warp 'All', MJX-JAX 'Fixed, Spatial'",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjx.html (Feature Parity); https://github.com/google-deepmind/mujoco_warp/blob/88af9cc682d42e2e925daa0bae25f53277999f7b/mujoco_warp/_src/types.py"
+    },
+    {
+      "feature": "Joint equality with polycoef (OpenSim-style knee couplings)",
+      "note": "Supported. EqType JOINT exists. The kernel _equality_joint (constraint.py:541) evaluates the quartic polynomial by Horner's method (lines 633-635). The composed model has 28 joint equalities (C:/Users/Mushfique/Desktop/projects/smat-sprint-autoresearch-handoff/research-data/probe/results_2026-09-23/compose_report.json, neq 28).",
+      "quote": "rhs = data[0] + dif * (data[1] + dif * (data[2] + dif * (data[3] + dif * data[4])))",
+      "source_url": "https://github.com/google-deepmind/mujoco_warp/blob/88af9cc682d42e2e925daa0bae25f53277999f7b/mujoco_warp/_src/constraint.py#L541 ; https://mujoco.readthedocs.io/en/latest/mjx.html (Equality: MJX-Warp 'All', MJX-JAX 'CONNECT, WELD, JOINT, TENDON')"
+    },
+    {
+      "feature": "Mesh collisions",
+      "note": "Supported in MJX-Warp and MJWarp. The documented differences are a PLANE<>MESH contact cap of 4 (MuJoCo: 3) and extra CCD memory. Our model has 156 mesh-mesh, 40 capsule-mesh, 30 ellipsoid-mesh and 23 plane-mesh geom-pair types (C:/Users/Mushfique/Desktop/projects/smat-sprint-autoresearch-handoff/research-data/probe/results_2026-09-23/warp_support.json, geom_pair_type_count).",
+      "quote": "MJX-Warp also fully supports mesh collisions. ... PLANE<>MESH: 4 versus 3 ... multiccd requires more memory than CCD.",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjx.html (Performance Tuning) ; https://mujoco.readthedocs.io/en/latest/mjwarp/index.html (Memory; Maximum number of contacts per collider)"
+    },
+    {
+      "feature": "Geom margins with MULTICCD",
+      "note": "Not supported. At v3.14.0 MULTICCD is a disable bit, so it is on unless disabled. A non-zero margin on a BOX-MESH or MESH-MESH pair with MULTICCD on raises NotImplementedError. The docs page does not state this; the code and the probe do. The probe hit it on (pelvis_geom_1, tibia_r_geom_1) with margin 0.001 and passed after disabling MULTICCD (C:/Users/Mushfique/Desktop/projects/smat-sprint-autoresearch-handoff/research-data/probe/results_2026-09-23/warp_support.json). MJWarp also warns that CCD pairs without multicontact support (the probe saw CAPSULE-MESH) generate at most 1 contact.",
+      "quote": "has non-zero margin ({margin}) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.",
+      "source_url": "https://github.com/google-deepmind/mujoco_warp/blob/88af9cc682d42e2e925daa0bae25f53277999f7b/mujoco_warp/_src/io.py#L634-L682"
+    },
+    {
+      "feature": "Sensors: JOINTLIMITFRC and TOUCH",
+      "note": "Both are in mujoco_warp's SensorType at v3.14.0, and MJX-Warp supports 'All except PLUGIN'. MJX-JAX lists TOUCH but not JOINTLIMITFRC, so the pure-JAX backend is not an option for a model that uses JOINTLIMITFRC.",
+      "quote": "Sensors: MJX-Warp 'All except PLUGIN'; MJX-JAX 'See notes below' (list includes TOUCH, JOINTACTFRC, ACTUATORFRC; no JOINTLIMITFRC)",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjx.html (Feature Parity, note [2]); https://github.com/google-deepmind/mujoco_warp/blob/88af9cc682d42e2e925daa0bae25f53277999f7b/mujoco_warp/_src/types.py"
+    },
+    {
+      "feature": "Collision-sensor contact reporting",
+      "note": "MJWarp stores collision-sensor data in the contact buffer. Contact counts therefore include sensor geom pairs that are not touching, and nconmax sizing must allow for them.",
+      "quote": "1 contact will be reported for each unique geom pair that contributes to any collision sensor, even if this geom pair is not in collision.",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjwarp/index.html (FAQ: Why are contacts reported when there are no collisions?)"
+    },
+    {
+      "feature": "Determinism",
+      "note": "Not deterministic on GPU. Deterministic results need the CPU device. Tracked in mujoco_warp#562, open and last updated 2026-08-27. mjlab repeats this: runs are 'not ... perfectly reproducible even when setting a seed' (https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/docs/source/faq.rst). A third-party comment on #562 (2026-08-27; unverified by us) reports that Warp's deterministic modes (Warp >= 1.15) fail at codegen in mujoco_warp 3.11 because _sensor_tactile mixes atomic max and add on one array. The probe independently found MJWarp not bitwise deterministic run to run.",
+      "quote": "Is MJWarp on GPU deterministic? No. There may be ordering or small numerical differences between results computed by different executions of the same code. ... Set device to CPU with wp.set_device(\"cpu\") for deterministic results.",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjwarp/index.html (FAQ) ; https://github.com/google-deepmind/mujoco_warp/issues/562"
+    },
+    {
+      "feature": "Floating point",
+      "note": "MJWarp computes in float32 where MuJoCo uses float64 by default, so solver, collision and small-friction behaviour can differ.",
+      "quote": "MJWarp utilizes floats in contrast to MuJoCo's default double representation for mjtNum. Solver settings, including iterations, collision detection, and small friction values may be sensitive to differences in floating point representation.",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjwarp/index.html (FAQ: Why are numerical results from MJWarp and MuJoCo different?)"
+    },
+    {
+      "feature": "Jacobian format / high-DoF models",
+      "note": "A dense Jacobian raises ValueError for nv > 60. myolegs26+Hippo has nv 46, so either format works; larger bodies (MyoSkeleton, full body) need sparse. myosuite_mjlab forces sparse for MyoLeg 'to avoid a reshape ValueError for models with many tendons' (https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/src/myosuite_mjlab/tasks/velocity/myoleg/robot_cfg.py#L56-L58). The probe's supported configuration reported is_sparse true.",
+      "quote": "Dense is unsupported for nv > {nv_max} (nv = {mjm.nv}).  [nv_max = 60]",
+      "source_url": "https://github.com/google-deepmind/mujoco_warp/blob/88af9cc682d42e2e925daa0bae25f53277999f7b/mujoco_warp/_src/io.py#L307-L310 ; https://mujoco.readthedocs.io/en/latest/mjwarp/index.html (Sparse Jacobians ... For high-DoF scenes (n_v > 60), sparsity enables simulations that are unsupported in dense mode)"
+    },
+    {
+      "feature": "Contact/constraint buffers (nconmax, njmax)",
+      "note": "Pass these to make_data/put_data; the XML size/ fields are not parsed. Set them as small as possible without overflowing, found by trial with mjwarp-testspeed --measure_alloc. Constraints per world are a hard cap. Probe stats at 8192 worlds: about 6.3 contacts and 66 constraint rows per world on average, max 114 rows (C:/Users/Mushfique/Desktop/projects/smat-sprint-autoresearch-handoff/research-data/probe/results_2026-09-23/gpu_probe_2026-09-23.json).",
+      "quote": "Values for nconmax and njmax are not parsed from size/nconmax and size/njmax ... the number of constraints per world is strictly limited by njmax.",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjwarp/index.html (Batch sizes; Performance Tuning)"
+    },
+    {
+      "feature": "Recommended practice: CUDA graph capture",
+      "note": "Capture the step function once and relaunch the graph.",
+      "quote": "it is recommended to capture the operations that comprise the function as a CUDA graph ... will typically be significantly faster compared to calling the function directly.",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjwarp/index.html (Graph capture)"
+    },
+    {
+      "feature": "Recommended practice: solver iterations",
+      "note": "Tune nconmax and njmax first. Solver iterations matter less in MJWarp, which exits early once all worlds converge (unlike MJX-JAX).",
+      "quote": "Reducing MJWarp's settings Option.iterations and/or Option.ls_iterations limits may improve performance and should be secondary considerations after tuning nconmax / naconmax and njmax.",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjwarp/index.html (Solver iterations)"
+    },
+    {
+      "feature": "mjlab: XML <option> is ignored",
+      "note": "mjlab builds scenes with MjSpec.attach(), which drops a child entity's <option>. Timestep, integrator, jacobian and flags such as MULTICCD must be set via MujocoCfg (fields: timestep, integrator 'euler'|'implicitfast', cone, jacobian, solver, iterations, ls_iterations, ccd_iterations, disableflags, enableflags; flag names come from mujoco's mjtDisableBit/mjtEnableBit with the prefix removed, lower-cased).",
+      "quote": "If you set simulation options like <flag contact=\"disable\"/> in your entity XML, they will be silently ignored ... use MujocoCfg in your task's Python config",
+      "source_url": "https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/docs/source/faq.rst ; https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/src/mjlab/sim/sim.py#L85-L152"
+    },
+    {
+      "feature": "MJX (JAX API) with the Warp backend",
+      "note": "MJX runs MJWarp through mjx.put_model(..., impl='warp'). MJX-Warp has no autodiff. MuscleMimic uses this path.",
+      "quote": "MJX-Warp uses MuJoCo Warp, the most fully-featured implementation of MuJoCo for hardware accelerated devices ... MJX-Warp does not support automatic differentiation",
+      "source_url": "https://mujoco.readthedocs.io/en/latest/mjx.html (MJX-Warp)"
+    }
+  ],
+  "mjlab_facts": {
+    "repository": {
+      "url": "https://github.com/mujocolab/mjlab",
+      "licence": "Apache-2.0",
+      "created": "2025-06-10",
+      "stars_on_check_date": 3123,
+      "head": "c2e1e06400e309b6897a536693fe5d2aa772c5b2 (2026-09-21, 'Judge the terrain curriculum against the distance the episode commanded (#1188)')",
+      "latest_release": "v1.6.0, 2026-08-09 (tag 0fb8a68)",
+      "source_url": "https://github.com/mujocolab/mjlab"
+    },
+    "paper": {
+      "arxiv_id": "2601.22074",
+      "version": "v2, 2026-02-25 (v1 2026-01-29)",
+      "title": "mjlab: A Lightweight Framework for GPU-Accelerated Robot Learning",
+      "authors": "Zakka, Liao, Yi, Le Lay, Sreenath, Abbeel",
+      "quote": "mjlab adopts the manager-based API introduced by Isaac Lab ... and pairs it with MuJoCo Warp ... for GPU-accelerated physics",
+      "source_url": "https://arxiv.org/abs/2601.22074"
+    },
+    "dependency_pins": {
+      "value": "HEAD: mujoco~=3.11.0, mujoco-warp~=3.11.0, rsl-rl-lib==5.5.1, warp-lang>=1.14.0, torch>=2.7.0, python >=3.10,<3.14. PyPI 1.6.0: same physics pins, rsl-rl-lib==5.4.2. The 1.6.0 changelog: 'Upgraded to MuJoCo and MuJoCo Warp 3.11.'",
+      "source_url": "https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/pyproject.toml ; https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/docs/source/changelog.rst"
+    },
+    "compatibility_with_probe_stack": "Unverified. The probe validated mujoco/mujoco-warp 3.14.0 with warp-lang 1.17.0. mjlab's '~=3.11.0' excludes 3.14, so use either a 3.11 venv (and re-run the probe checks) or a uv override (untested).",
+    "rl_trainer": {
+      "value": "RSL-RL on-policy PPO through RslRlVecEnvWrapper and OnPolicyRunner, with multi-GPU via torchrunx.",
+      "quote": "mjlab uses RSL-RL for on-policy reinforcement learning. The integration has three parts: a task registry ..., a VecEnv wrapper ..., and a set of configuration dataclasses",
+      "source_url": "https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/docs/source/training/rsl_rl.rst"
+    },
+    "environment_definition": {
+      "value": "A task pairs a ManagerBasedRlEnvCfg with an RslRlOnPolicyRunnerCfg, registered by register_mjlab_task(task_id, env_cfg, play_env_cfg, rl_cfg, runner_cls). Term configs are plain instances in typed dicts (dict[str, RewardTermCfg], ...), and variants are made by copying and mutating a config. Control step = sim.mujoco.timestep x decimation.",
+      "quote": "Observation, reward, event, and other term configurations are held in typed dictionaries (dict[str, RewardTermCfg], etc.) rather than in bespoke dataclass subclasses.",
+      "source_url": "https://arxiv.org/abs/2601.22074 (Sec. 7) ; https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/docs/source/training/rsl_rl.rst ; https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/src/mjlab/envs/manager_based_rl_env.py#L59-L67"
+    },
+    "managers": {
+      "value": "action, observation, reward, termination, event, command, curriculum, metrics and recorder managers (src/mjlab/managers/*.py). The action manager splits one policy output tensor into per-term slices and keeps the last two actions.",
+      "quote": "The action manager receives the policy's output tensor, splits it according to the registered action terms, and routes each slice to the appropriate entity's actuators.",
+      "source_url": "https://arxiv.org/abs/2601.22074 (Sec. 5)"
+    },
+    "rewards": {
+      "value": "RewardTermCfg(func, weight, params). The manager returns the weighted sum times the control step dt by default (ManagerBasedRlEnvCfg.scale_rewards_by_dt = True). A port of SMAT, whose terms already carry an explicit dt, must not scale twice.",
+      "quote": "When scale_by_dt=True (default): reward_buf (returned by compute()) = raw_value * weight * dt",
+      "source_url": "https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/src/mjlab/managers/reward_manager.py#L34-L44 ; https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/src/mjlab/envs/manager_based_rl_env.py#L157"
+    },
+    "observations": {
+      "value": "Observation groups (default obs_groups {'actor': ('actor',), 'critic': ('critic',)}), each with its own clip/scale/noise/delay/history pipeline. This gives asymmetric actor-critic and fits SMAT's 18-D exo observation with 3-step history.",
+      "quote": "raw values are optionally clipped, scaled, corrupted with noise, delayed by a configurable number of control steps, and concatenated with a history buffer. Multiple observation groups (e.g., policy and critic) can coexist",
+      "source_url": "https://arxiv.org/abs/2601.22074 (Sec. 5) ; https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/src/mjlab/rl/config.py#L92-L94"
+    },
+    "curricula": {
+      "value": "Curriculum terms run at reset and can change reward weights, command ranges, terrain level or action scale. myosuite_mjlab has an action_scale_curriculum stepping an action term's scale by env.common_step_counter.",
+      "quote": "The curriculum manager adjusts training conditions based on policy performance. Examples include scaling reward term weights, widening command velocity ranges, or advancing robots to harder terrain rows",
+      "source_url": "https://arxiv.org/abs/2601.22074 (Sec. 5) ; https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/src/myosuite_mjlab/mdp/curriculums.py"
+    },
+    "actuators_and_muscles": {
+      "value": "XmlActuatorCfg wraps XML actuators and auto-detects position/velocity/motor/muscle. One config targets one transmission namespace (joint or tendon), so muscles on tendons and exo motors on joints need two configs. XmlMuscleActuatorCfg was merged into XmlActuatorCfg in 1.3.0 (2026-04-14). BuiltinMuscleActuatorCfg exists. Action terms at HEAD include JointEffortActionCfg and TendonEffortActionCfg. Actuator delay is configured inline on ActuatorCfg (1.3.0).",
+      "quote": "XmlPositionActuatorCfg, XmlVelocityActuatorCfg, XmlMotorActuatorCfg, and XmlMuscleActuatorCfg are replaced by a single XmlActuatorCfg that auto detects the actuator type from XML.",
+      "source_url": "https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/docs/source/changelog.rst (1.3.0, Changed) ; https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/src/mjlab/actuator/xml_actuator.py ; https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/src/mjlab/envs/mdp/actions/actions.py#L202-L315"
+    },
+    "sim_options": "MujocoCfg: timestep (default 0.002), integrator 'euler'|'implicitfast', impratio, cone, jacobian 'auto'|'dense'|'sparse', solver 'newton'|'cg'|'pgs', iterations 100, ls_iterations 50, ccd_iterations 50, disableflags/enableflags (OR-ed into the model). SimulationCfg adds nconmax, njmax and broadphase settings, plus a NaN guard. Source: https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/src/mjlab/sim/sim.py#L98-L186",
+    "determinism": {
+      "quote": "MuJoCo Warp does not yet guarantee determinism ... Until determinism is implemented upstream, mjlab training runs will not be perfectly reproducible even when setting a seed.",
+      "source_url": "https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/docs/source/faq.rst"
+    },
+    "two_actor_shared_critic_ppo_with_freezing": {
+      "assessment": "Feasible without forking mjlab or rsl_rl. Our effort estimate is a few hundred lines (judgement, not measured): a custom model class, a PPO subclass and a small stage runner.",
+      "evidence": [
+        "rsl_rl 5.5.1 resolves class names from strings of the form 'module.path:Attr' (utils.resolve_callable), so a custom actor model or algorithm plugs in by name: https://github.com/leggedrobotics/rsl_rl/blob/857de6165c5fd479726ec8ac5c9303a497766f30/rsl_rl/utils/utils.py#L99-L170",
+        "PPO.construct_algorithm builds actor_class(obs, obs_groups, 'actor', env.num_actions, **cfg) and one critic_class(obs, obs_groups, 'critic', 1, ...). A custom actor therefore sees the whole observation TensorDict and can route a 'human' group and an 'exo' group to two sub-networks, while the critic stays single (shared critic): https://github.com/leggedrobotics/rsl_rl/blob/857de6165c5fd479726ec8ac5c9303a497766f30/rsl_rl/algorithms/ppo.py#L427-L463",
+        "There is one Adam optimiser over actor+critic parameters with one learning rate (ppo.py:101), adapted by KL under schedule='adaptive' (ppo.py:254-266). Per-actor learning rates (SMAT: 5e-5 then 3e-5) or SB3-style target-KL early stopping need a PPO subclass: https://github.com/leggedrobotics/rsl_rl/blob/857de6165c5fd479726ec8ac5c9303a497766f30/rsl_rl/algorithms/ppo.py",
+        "Observation normalisers of actor and critic are updated on every environment step (ppo.py:329-330). A frozen human actor must override update_normalization, or its normaliser keeps drifting while its weights are frozen: https://github.com/leggedrobotics/rsl_rl/blob/857de6165c5fd479726ec8ac5c9303a497766f30/rsl_rl/algorithms/ppo.py#L329-L330",
+        "mjlab's action manager slices the concatenated [26 muscles | 2 exo] output into action terms, so the env side needs no changes (mjlab paper Sec. 5)."
+      ]
+    },
+    "useful_extras": "1.3.0 added ManagerBasedRlEnvCfg.auto_reset (False returns the true terminal observation, for custom loops). The NaN guard captures states for replay (docs/source/debugging/nan_guard.rst). Terrain curricula and a ray-cast height sensor are included; UniExo used the height sensor. Source: https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/docs/source/changelog.rst",
+    "myosuite_listing": {
+      "quote": "MyoHub/mjlab_myosuite - Musculoskeletal simulation integration with MyoSuite.",
+      "source_url": "https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/docs/source/research.rst",
+      "note": "Neither UniExo nor SMAT is listed on mjlab's research page."
+    }
+  },
+  "mjlab_myosuite_facts": {
+    "repository": {
+      "url": "https://github.com/MyoHub/mjlab_myosuite",
+      "licence": "Apache-2.0 (LICENSE file, 11352 bytes)",
+      "created": "2025-11-04",
+      "last_push": "2026-03-06T00:27:08Z",
+      "stars_forks_on_check_date": "31 / 4",
+      "status_quote": "This project is currently in an early prototype stage. ... breaking changes are likely as we iterate.",
+      "source_url": "https://github.com/MyoHub/mjlab_myosuite"
+    },
+    "history": "The first commit on main is mjlab's 'Initial public release' (a61e0ff, Kevin Zakka, 2025-09-29), so the repo started from mjlab's history. The GitHub API reports 280 commits on main. MyoSuite work by Vittorio Caggiano starts 2025-11-04 ('myosuite wrappers', 407f7d1).",
+    "branches": {
+      "main": "625640d 2026-02-05 'Dev (#5)'",
+      "dev": "dadba1c 2026-02-20 'Refactor code (#7)'",
+      "refactor_code": "2a9dae3 2026-02-13 'use mjwarp'",
+      "minimal_myoleg": "ba8b043 2026-03-06 'fix dependencies'"
+    },
+    "design_main_dev": {
+      "value": "A wrapper, not a native port. It adapts MyoSuite Gym environments (standard CPU MyoSuite, or the MyoSuite 'mjx' branch for GPU) to mjlab's rsl_rl training and registers them as 'Mjlab-MyoSuite-<env>'. The README marks tracking tasks 'not yet fully implemented'.",
+      "quote": "Integration package for using MyoSuite environments with mjlab's training infrastructure. ... MJX/Warp Support: Compatible with both standard MyoSuite and mjx/warp GPU-accelerated versions",
+      "source_url": "https://github.com/MyoHub/mjlab_myosuite/blob/dadba1ce497edf650b7ffcf136b716cbc6e46832/README.md"
+    },
+    "design_minimal_myoleg": {
+      "value": "A standalone package 'myosuite_mjlab' with native mjlab tasks: MjlabMyoSuite-Velocity-Flat-MyoLeg, -Velocity-Flat-MyoSkeleton, -Standing-Flat-MyoSkeleton, -Velocity-Flat-MyoLegsTorso and -Balance-Flat-MyoLegsTorso. Every task is velocity-command or balance; none is imitation, and none has a device.",
+      "quote": "Registers musculoskeletal velocity, standing, and balance tasks using public mjlab APIs plus a small in-repo MDP extension (myosuite_mjlab.mdp) for tendon/synergy observations and curricula.",
+      "source_url": "https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/README.md"
+    },
+    "how_muscles_are_handled": {
+      "value": "MuJoCo's own XML muscle actuators are kept. The MyoLeg entity uses XmlMuscleActuatorCfg(transmission_type=TENDON, target_names_expr=('.*_tendon',)), actions go through TendonEffortActionCfg (scale 1.0), and the spec is forced to a sparse Jacobian. The actor observes tendon length and velocity, actuator (muscle) force and whole-body CoM. For MyoLegsTorso, SynergyTendonEffortAction expands 104 synergies to 290 tendons with a fixed map. Rewards are mjlab velocity-task terms plus a phase-based 'cyclic_hip_flexion_penalty'. PPO: actor/critic (512, 256, 128) ELU, 32 steps/env, 5 epochs, lr 1e-3 adaptive, 30k iterations.",
+      "source_url": "https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/src/myosuite_mjlab/tasks/velocity/myoleg/robot_cfg.py ; https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/src/myosuite_mjlab/tasks/velocity/myoleg/env_cfgs.py ; https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/src/myosuite_mjlab/tasks/velocity/myoleg/rl_cfg.py ; https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/src/myosuite_mjlab/mdp/actions/synergy_tendon.py"
+    },
+    "pins_and_lock": {
+      "value": "pyproject requires-python ==3.11.*; uv override 'mujoco>=3.4.0,<3.5' with the comment '# Pin to 3.4.x so MjData layout matches mujoco-warp (3.5.x changed flexedge fields)'; myosuite from git rev 'mjx'. uv.lock: mjlab 1.0.0, mujoco 3.4.1.dev868098126, mujoco-warp 0.0.2, rsl-rl-lib 3.1.0, warp-lang 1.13.0.dev20260225, myosuite 2.11.6 (mjx @ 71b0ae8), torch 2.10.0.",
+      "source_url": "https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/pyproject.toml ; https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/uv.lock"
+    },
+    "staleness_against_current_mjlab": [
+      "XmlMuscleActuatorCfg, imported by robot_cfg.py, was replaced by XmlActuatorCfg in mjlab 1.3.0 (https://github.com/mujocolab/mjlab/blob/c2e1e06400e309b6897a536693fe5d2aa772c5b2/docs/source/changelog.rst).",
+      "mjlab 1.6.0 requires explicit contype, conaffinity, condim and priority in CollisionCfg; MYOLEG_COLLISION sets no priority (changelog 1.6.0 'Breaking API changes').",
+      "RslRlStepAdapter and adapt_agent_cfg_for_rsl_rl exist only to bridge rsl_rl>=4 API changes, a sign of trainer churn (https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/src/myosuite_mjlab/rl/step_adapter.py).",
+      "The asset resolver looks for simhive/myo_sim/leg/myolegs_mjlab.xml or leg/myolegs.xml. myo_sim main (v0.2.3, 2026-09-16) uses a myo_sim/models/... layout, and a tree search found no top-level myolegs.xml; the MYOSUITE_MJLAB_MYOLEG_XML override exists."
+    ],
+    "tests": {
+      "value": "The 'parity' tests regex-compare reward weights and stds in env_cfgs.py source text against the mjlab fork Vittorio-Caggiano/mjlab@myoskeleton (b38e605, 2026-02-26, which holds src/mjlab/tasks/velocity/config/{myoleg,myolegtorso,myoskeleton}). They also compare zero-action rewards from 4 CPU envs. There is no physics parity test against CPU MuJoCo.",
+      "source_url": "https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/tests/test_myosuite_mjlab_reference_parity.py ; https://github.com/MyoHub/mjlab_myosuite/blob/ba8b043cbfaeb4a65b8bda7096be9f89e8c3a41b/tests/training_parity_runner.py ; https://github.com/Vittorio-Caggiano/mjlab/tree/myoskeleton"
+    },
+    "fitz_yuan_fork": {
+      "value": "An unmodified fork. Fitz-Yuan/mjlab_myosuite was created 2026-07-23, its four branch heads have the same SHAs as upstream, and compare main...Fitz-Yuan:main returns status 'identical', ahead_by 0, behind_by 0. The owner account's homepage repository is described as \"Yifei's Homepage\", and it hosts SMAT-Exo and a SMAT project page, so it very probably belongs to the SMAT/UniExo first author. The profile has no name field, so this is an inference.",
+      "source_url": "https://github.com/MyoHub/mjlab_myosuite/compare/main...Fitz-Yuan:mjlab_myosuite:main ; https://github.com/Fitz-Yuan"
+    },
+    "relevance": "It shows that MyoSuite muscle models run as native mjlab entities (tendon-transmission XML muscles and tendon-effort actions). It offers nothing for exoskeletons, imitation or myolegs26, and it is pinned to a stack far older than mjlab 1.6.0 or the probe's MuJoCo 3.14. Use it as a pattern, not a dependency."
+  },
+  "musclemimic_facts": {
+    "paper": {
+      "arxiv_id": "2603.25544",
+      "version": "v1 only (2026-03-26), 33 pages",
+      "pages_read": "1-6, 15-23, 28-29 (Read tool)",
+      "source_url": "https://arxiv.org/abs/2603.25544"
+    },
+    "gpu_stack": {
+      "value": "JAX, extending LocoMuJoCo, with native MuJoCo Warp support through MJX (mjx.put_model(..., impl='warp')) and an optional pure-JAX MJX backend for reduced-contact setups. Pins: mujoco==3.4.0, mujoco-mjx==3.4.0, warp-lang==1.10.0, jax==0.7.2, flax==0.12.0, python>=3.11. Training requires Linux and an NVIDIA GPU (README).",
+      "quote": "We implemented MuscleMimic as a JAX-based framework extending LocoMuJoCo with three major additions: ... native MuJoCo Warp support for GPU-accelerated simulation with flexible collision support ... An optional MJX backend is available for reduced contact configurations. (p.15-16)",
+      "source_url": "https://arxiv.org/abs/2603.25544 ; https://github.com/amathislab/musclemimic/blob/5d4c8af12784f44bd2bb276e71db9cda6c9712fc/pyproject.toml ; https://github.com/amathislab/musclemimic/blob/5d4c8af12784f44bd2bb276e71db9cda6c9712fc/musclemimic/core/mujoco_mjx.py#L82-L102"
+    },
+    "throughput": {
+      "value": "End-to-end training steps/s (Fig. 2, one H100 80GB plus a Xeon Platinum 8570, 50 steps per rollout, 32 minibatches) by number of envs: 16: 174; 32: 345; 64: 663; 128: 1,263; 256: 2,248; 512: 3,870; 1,024: 6,105; 2,048: 8,939; 4,096: 11,582; 8,192: 13,593. The text rounds the last to 1.3e4 SPS, and 1e9 steps take about 20 h.",
+      "quote": "at n = 8,192, the system sustains 1.3 x 10^4 SPS ... one billion environment steps are completed in approximately 20 hours on a single GPU. (p.3)",
+      "source_url": "https://arxiv.org/abs/2603.25544"
+    },
+    "models": "MyoFullBody: free root, 123 joints (1 free, 112 hinge, 10 slide), 51 equality constraints, 72 DoF, 416 muscles (354 without fingers), 17 mimic sites, full self-collision. MyoBimanualArm: fixed base, 76 joints, 126 muscles. There is no 26- or 80-muscle leg model and no exoskeleton (Table 1 p.2; App. C p.23).",
+    "training_recipe_released_fullbody_checkpoint": "Table 8 (p.28): 8,192 envs; horizon 1,000; 15.87e9 steps; MuJoCo Warp backend. Actor and critic are [2048, 4096, 4096, 4096, 4096, 4096, 2048, 1024, 512] SiLU with LayerNorm and gated residual blocks (gate init -2.0). lr 4e-4 annealed linearly to 4e-5; 50 rollout steps; 32 minibatches of 12,800; gamma 0.99; lambda 0.95; clip 0.2; value clip 0.2; max grad norm 1.0; 1 epoch; initial std 3.0, learnable; entropy 0; value coef 0.5. Reward weights: site pos 0.6, joint pos 0.1, root vel 0.1, site orientation 0.01, site vel 0.1, joint vel 0.1. Termination: 0.5 m mean site deviation and 0.5 m root deviation. Optimiser: Muon for 2D weights, Adam for 1D (p.17).",
+    "on_policy_findings": "Single-epoch updates (E=1) beat E=3 and E=10 asymptotically, and KL spiked above 1e10 for E=10 (Fig. 3, p.3-4). Larger minibatches gave higher return and stabler std (Fig. 4). 8-step rollouts performed worst and 50-step matched 20-step (App. A, Tables 5-6, p.19-20).",
+    "cpu_gpu_evaluation_parity": {
+      "value": "The same policies were evaluated in MuJoCo (CPU) and MuJoCo Warp (GPU). Baseline success rate 80.76 +/- 5.13 % (CPU) vs 82.20 +/- 8.02 % (GPU), and the top three ablation configurations agree. This is a published precedent for a statistical CPU-vs-GPU parity gate. Fig. 14's legend says 'MJX / GPU' although the text says MuJoCo Warp.",
+      "quote": "The performance metrics results are consistent across both simulators' backends, and the top three ablation configurations remain the same. (p.20)",
+      "source_url": "https://arxiv.org/abs/2603.25544"
+    },
+    "code_and_checkpoints": {
+      "value": "Code: github.com/amathislab/musclemimic, Apache-2.0, HEAD 5d4c8af (2026-07-08). Checkpoints on Hugging Face in Orbax/JAX format (train_state/_METADATA, _sharding), not gated: amathislab/mm-fullbody-base (modified 2026-09-11), mm-bimanual-v0 (2026-02-26), mm-10m-2 (2026-05-11). Datasets: amathislab/musclemimic-retargeted and musclemimic-bimanual-retargeted; the demo_dataset is gated.",
+      "quote": "Model checkpoints, datasets, SMPL-family assets, and other third-party software may be licensed separately; review each provider's terms before use.",
+      "source_url": "https://github.com/amathislab/musclemimic/blob/5d4c8af12784f44bd2bb276e71db9cda6c9712fc/README.md ; https://huggingface.co/amathislab/mm-fullbody-base"
+    },
+    "tests": "tests/unit/test_warp_backend.py checks Warp-backend reset, step and autoreset plumbing with exact equality. It is not a physics-parity test (https://github.com/amathislab/musclemimic/blob/5d4c8af12784f44bd2bb276e71db9cda6c9712fc/tests/unit/test_warp_backend.py).",
+    "what_it_offers_our_reconstruction": [
+      "A measured GPU recipe for muscle-driven PPO at 8192 envs to borrow for the sprint runner: E=1, large minibatches, high initial std, big residual MLPs, Muon.",
+      "GMR-Fit/Mocap-Body retargeting from AMASS/SMPL and C3D, retargeted KINESIS/AMASS locomotion clips including running, and the tendon-jump and joint-limit screening metrics for reference motions (Table 4, p.15).",
+      "A CPU-vs-GPU evaluation protocol with seeds (Tables 5-6) to reuse as a parity gate.",
+      "Not offered: PyTorch/rsl_rl code, exoskeleton co-adaptation, myolegs26 or MyoLeg-80, or a MuJoCo 3.14 stack. It pins 3.4.0 and would need its own venv."
+    ]
+  },
+  "uniexo_facts": {
+    "record": {
+      "arxiv_id": "2609.19690",
+      "version": "v1, submitted 2026-09-17T04:38:34Z; the only version on the check date",
+      "authors": "Yifei Yuan, Jakob Wolf, Ghaith Androwis, Xianlian Zhou (NJIT; Androwis also Kessler Foundation)",
+      "pdf": "C:/Users/MUSHFI~1/AppData/Local/Temp/claude/c--Users-Mushfique-Desktop-projects/98326455-222b-41ff-8450-755f0ce3ca50/scratchpad/pdfs/2609.19690.pdf (9 pages, md5 d12edac72954a412cbd71b92a5e4d5d1), read in full",
+      "source_url": "https://arxiv.org/abs/2609.19690"
+    },
+    "body_model": "MyoLeg from MyoSuite: 80 musculotendon units, rigid upper body, OpenSim knee with polynomial-constrained auxiliary coordinates. The exo is modelled from CAD: belt rigidly tied to the pelvis, flexion axes coaxial with the hips, thigh cuffs on compliant sliding constraints, and 'an additional actuator group' (p.2 II-A).",
+    "simulator_and_trainer": "MuJoCo Warp with mjlab; rsl_rl PPO; one NVIDIA RTX PRO 6000 Blackwell; 8192 envs for the human, 2048 for co-adaptation; physics 300 Hz, policy 100 Hz; '3.7 x 10^4 environment steps per second including the learning update' (p.2).",
+    "tasks_and_speeds": "Walk, turn, run and backward walk. Data: 920 clips, 81.1 min at 100 Hz. Walk, turn and backward come from AMASS; run comes from LAFAN1 via LocoMuJoCo's MyoSkeleton retargeting (Table I, p.3). Hardware: treadmill at 0.76, 1.25 and 1.74 m/s walking and 2.25 m/s jogging; overground route walk, turn right, run, stop, backward, stand (p.5, p.7).",
+    "human_reward": "sum_k w_k exp(-alpha_k e_k^2), with (w, alpha) = body position (0.5, 200), body velocity (0.05, 5), joint angle (0.4, 20), joint velocity (0.05, 1). Plus 0.1 exp(-3(theta_x^2+theta_y^2)) + 0.05 exp(-0.05(||a||_1+||a||_2)) + 0.2 exp(-5||v_hat^xy - v^xy||^2); the last term is used only in fine-tuning. Termination at 0.3 m mean pelvis-referenced deviation (Eqs. 1-5, p.3).",
+    "exo_reward": "r_exo = 1.0 sum_j (0.3 tau_j w_j - 0.15 tau_j^2) + 3.0 exp(-0.025|tau_muscle|) + 1.0 exp(-4 a_hip) - 4.0 ||tau_t - tau_(t-1)||^2 (Eq. 9, p.5). It is added to the human reward during co-adaptation.",
+    "smat_power_terms_recur": "Yes, with the same coefficients. SMAT Stage 4 uses alpha = 0.3 and beta = 0.15 (SMAT arXiv:2603.07618 p.4 Eq. 5). UniExo drops SMAT's saturation term lambda_s max(0,|u|-0.8)^2 (lambda_s = 2.0), prints no dt, weights the term 1.0 instead of 4.0, and makes net-moment offload (weight 3.0) 'the main objective'. SMAT source text: sail-lab-application-kb/2603.07618v1.pdf, printed p.4.",
+    "architecture": "Experts: 2048-1536-1024-1024-512-512 MLP with LayerNorm and SiLU for actor and critic. Unified policy: encoder 1024-512 giving mean and std of z in R^32, with z_(t-1) as an extra input; decoder with the expert layer sizes. Observations: 1357 = proprioception 471 + reference 886, plus a 117-value height scan for the unified policy (p.3).",
+    "ppo": "8192 x 50 steps per iteration, 10 epochs, 4 minibatches, lr 5e-5 adaptive to KL 0.01, gamma 0.99, lambda 0.95, clip 0.2, entropy 0 (p.3).",
+    "training_cost": "Each expert: 2.9-4.9e9 env steps, 21.7-36.9 h. Unified fine-tuning: 8000 iterations, 26.7 h. Co-adaptation budget not reported.",
+    "distillation": "DAgger with an MSE action loss plus a KL prior pulling the latent toward N(0.95 z_(t-1), (1-0.95^2) I) (lambda_KL 0.001), on 30-step sequences. beta = 1 in round 0 and 0 afterwards; 4x8192x30 pairs appended per round; 3 rounds. PPO fine-tuning follows on 827 clips + 600 stitched transition sequences (Eq. 7, p.4).",
+    "exo_initialisation": "Stage 1: a 256-128 SiLU MLP regresses the 6 Hz-filtered sagittal hip moment, normalised by the skill's peak, from a 300 ms, 100 Hz window of both hips' angle and velocity plus each leg's mean |omega| (122 inputs). It runs per leg with shared weights. Inputs are domain-randomised: time warp about 30%, scale/offset, 15 ms inter-leg shift, 0.35 rad/s stance velocity bump, noise. pi_e is initialised from this predictor (p.4 IV-A).",
+    "co_adaptation": "'Both policies are actors that share one critic and one PPO update as in [15]' (SMAT). tau_exo = tau_max clip(M_hat, -1, 1), then a 6 Hz low-pass; tau_max = 15 N m in training (Eq. 8, p.5).",
+    "human_study": "IRB 2305033091R003. Six participants (23.3 +/- 3.3 yr, 176 +/- 4 cm, 77.5 +/- 9.3 kg) at 4 treadmill speeds with and without ('zero') assistance. One participant did the multi-skill route 5 times. Device: 4.23 kg; MyActuator X8-25 (25 N m peak); Raspberry Pi 5 at 100 Hz; 3 LPMS-B2 IMUs over BLE; One Euro filter (p.5).",
+    "metrics": "Simulation eta+ (Table III, p.6), Stage 1 -> Stage 2: walk 82.9 -> 94.4, turn 79.7 -> 95.3, backward 57.1 -> 82.3, run 81.8 -> 94.0 %. Hardware: positive work 96.2 +/- 2.1 % across speeds; 94/96/98/90 % across skills on the route; peak torques 10.2-14.1 N m (p.7).",
+    "not_measured": "No metabolic cost (stated, p.7). No EMG or joint moments on participants. No hardware baseline controller (no velocity-proportional, phase-based or biological-moment controller) and no no-device condition. No explicit torque-rate limit, actuator model or latency in simulation: 'rate limit', 'slew', 'latency' and 'seed' do not occur in the text, and only the Eq. 8 6 Hz low-pass and the smoothness penalty appear. No seeds or variance for simulation results. eta+ uses the commanded torque, not measured torque (p.5).",
+    "code_status": "Not released. p.2: 'The code will be made publicly available.' No UniExo repository by the authors on GitHub (repository search 'uniexo', 2026-09-23). github.com/Fitz-Yuan/SMAT-Exo contains only a README: 'Code for SMAT ... (IROS 2026). Code coming soon' (af659e6, 2026-07-15)."
+  },
+  "open_questions": [
+    "Does mjlab (1.6.0 or HEAD c2e1e06, pinned mujoco/mujoco-warp ~=3.11.0) run with mujoco and mujoco-warp 3.14.0 under a uv override, or must the probe's support, throughput and parity checks be re-run on 3.11.x? Untested.",
+    "Is MULTICCD a disable bit in mujoco 3.11 as it is in 3.14 (mujoco_warp types.DisableBit.MULTICCD), so that mjlab's MujocoCfg(disableflags=('multiccd',)) is valid there? Check mujoco.mjtDisableBit in the installed version.",
+    "Does the MyoAssist-composed human+Hippo_L1 XML load as one mjlab entity (MjSpec.attach name prefixing, keyframes, the 28 joint equalities, sensors, the 5 keys), and which transmission do Exo_R/Exo_L use, so the right actuator/action configs can be chosen?",
+    "Do Warp's deterministic modes (wp.config.deterministic, Warp >= 1.15) now work with mujoco_warp 3.14.0 / warp-lang 1.17.0? The 2026-08-27 comment on mujoco_warp#562 reports codegen failure on 3.11 / 1.16. Unverified by us.",
+    "UniExo items needed for a faithful GPU port are unreported: whether the exo is attached while the human policies train, co-adaptation iterations and hyperparameters, critic inputs and size, omega normalisation constant, how tau_net is computed, and which 22 hip muscles are used.",
+    "Will the UniExo or SMAT code be released? Re-check github.com/Fitz-Yuan (SMAT-Exo) before building anything that could be copied.",
+    "What equivalence margins should the statistical parity gates use, given the probe's systematic CPU-vs-Warp contact-set difference at the seated start (10 vs 6 contacts)? Pre-register them before comparing.",
+    "Where does the 80-muscle MyoLeg live in myo_sim v0.2.3's new models/ layout, and does it pass mujoco_warp 3.14 put_model with MULTICCD disabled? Untested.",
+    "How short can per-env rollouts be when many envs are used to match SMAT's 65,536-transition batch? MuscleMimic found 8-step rollouts clearly worse than 20-50."
+  ]
+}
