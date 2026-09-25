@@ -64,4 +64,3 @@ with tempfile.TemporaryDirectory() as tmp:
             except ValueError: pass
             else: raise AssertionError("invalid end accepted")
 print("PASS bootstrap, arm gate, duplicate refusal, 20 restart ticks, need hold")
-
