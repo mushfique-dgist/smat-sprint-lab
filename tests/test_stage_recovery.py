@@ -33,6 +33,7 @@ with tempfile.TemporaryDirectory() as tmp:
         service.tick()
         service.tick()
     assert len(made)==1 and made[0]["title"]=="Start SMAT Sprint bot, part 2"
+    assert made[0]["blocks_build"] is False
     saved=json.loads((needs/(nid+".json")).read_text())
     assert saved["status"]=="resolved"
     assert saved["resolution"]["detail"]=="encrypted token staged and bot identity checked"

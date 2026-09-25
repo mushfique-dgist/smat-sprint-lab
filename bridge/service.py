@@ -100,7 +100,7 @@ def tick():
             for nid in rejected:
                 create({"code":"build","kind":"phone","title":"Encrypted drop could not be used",
                         "what":"The encrypted issue for need "+nid[-4:]+" did not pass the lab checks.",
-                        "why":"It was deleted from the private repository. No token was installed.",
+                        "why":"No token was installed. GitHub deletion is retried until it succeeds.",
                         "steps_phone":["Open the latest drop link from your phone need and submit a fresh encrypted issue."],
                         "steps_pc":[],"blocking":[],"check":None,"reply":"none",
                         "blocks_build":False,"created_by":"bridge","expires_at":None,
@@ -131,7 +131,7 @@ def tick():
                                        "Tap Start, or send /start. Do not paste the token into chat."],
                         "steps_pc":[],"blocking":["full phone bot connection"],
                         "check":{"id":"bot_owner_verified","args":{}},"reply":"done",
-                        "blocks_build":True,"created_by":"bridge","expires_at":None,
+                        "blocks_build":False,"created_by":"bridge","expires_at":None,
                         "deadline":None,"consequential":False,"skippable":False})
         except Exception:
             print("staged bot processing failed",file=sys.stderr)
