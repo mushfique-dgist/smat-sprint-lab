@@ -1,0 +1,25 @@
+[    1.9s] put_model human_plus_hippo stock {"supported": false, "put_model_s": 0.126, "warnings": ["UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs."]} Traceback (most recent call last):
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py", line 167, in try_put
+    m = mjw.put_model(mjm)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 693, in put_model
+    _check_margin(f"geom pair ({geom_name(g1)}, {geom_name(g2)})", t1, t2, (m1, m2))
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 678, in _check_margin
+    raise NotImplementedError(
+NotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.
+
+[    1.9s] put_model human_plus_hippo workaround_disable_multiccd {"supported": true, "put_model_s": 0.043, "geom_pair_type_count": {"PLANE-CAPSULE": 4, "PLANE-ELLIPSOID": 3, "PLANE-MESH": 23, "CAPSULE-MESH": 40, "ELLIPSOID-MESH": 30, "MESH-MESH": 156}, "is_sparse": true, "broadphase": "0", "broadphase_filter": "11", "graph_conditional": "True", "run_collision_detection": "True", "warnings": []} 
+[    1.9s] put_model human stock {"supported": false, "put_model_s": 0.003, "warnings": ["UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs."]} Traceback (most recent call last):
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py", line 167, in try_put
+    m = mjw.put_model(mjm)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 693, in put_model
+    _check_margin(f"geom pair ({geom_name(g1)}, {geom_name(g2)})", t1, t2, (m1, m2))
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 678, in _check_margin
+    raise NotImplementedError(
+NotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.
+
+[    1.9s] put_model human workaround_disable_multiccd {"supported": true, "put_model_s": 0.011, "geom_pair_type_count": {"PLANE-CAPSULE": 4, "PLANE-ELLIPSOID": 3, "PLANE-MESH": 15, "CAPSULE-MESH": 40, "ELLIPSOID-MESH": 30, "MESH-MESH": 76}, "is_sparse": true, "broadphase": "0", "broadphase_filter": "11", "graph_conditional": "True", "run_collision_detection": "True", "warnings": []} 
+[   64.7s] first_step human_plus_hippo {"first_step_s_incl_jit": 62.33, "second_step_s": 0.0064, "reset_data_first_call_s": 0.46, "finite_after_step": true} 
+[   64.7s] first_step human {"first_step_s_incl_jit": 0.01, "second_step_s": 0.0052, "reset_data_first_call_s": 0.0, "finite_after_step": true} 
+[   64.7s] done support gpu_wall_s 64.7 peak_mem_mb 606

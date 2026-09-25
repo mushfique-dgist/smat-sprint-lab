@@ -1,0 +1,24 @@
+Warp DeprecationWarning: warp.config.quiet is deprecated; use warp.config.log_level = warp.LOG_WARNING to suppress the init banner.
+/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py:663: UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs.
+  warnings.warn(
+[    2.3s] put_model human_plus_hippo {"supported": false, "put_model_s": 0.133} Traceback (most recent call last):
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py", line 166, in load_models
+    m = mjw.put_model(mjm)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 693, in put_model
+    _check_margin(f"geom pair ({geom_name(g1)}, {geom_name(g2)})", t1, t2, (m1, m2))
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 678, in _check_margin
+    raise NotImplementedError(
+NotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.
+
+[    2.4s] put_model human {"supported": false, "put_model_s": 0.003} Traceback (most recent call last):
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py", line 166, in load_models
+    m = mjw.put_model(mjm)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 693, in put_model
+    _check_margin(f"geom pair ({geom_name(g1)}, {geom_name(g2)})", t1, t2, (m1, m2))
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 678, in _check_margin
+    raise NotImplementedError(
+NotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.
+
+[    2.4s] done support gpu_wall_s 2.4 peak_mem_mb 498

@@ -1,0 +1,282 @@
+# SMAT sprint GPU feasibility probe, sail-gpu01, 2026-09-23 (KST). Raw logs, in run order.
+
+===== compose.log =====
+human {"msk": "myolegs26", "device": null, "compose_s": 0.381, "xml": "/home/aurnab/.cache/smatsprint-probe-2026-09-23/model/human.xml", "xml_sha256": "fff6f2f97433c93ac7cb6cf13ddc197580a751407fbf68f4a7bba1607e34d569", "export": {"n_file_attrs": 37, "n_asset_files": 36, "asset_bytes": 2630224, "stripped_compiler_dirs": []}, "fingerprint": {"nq": 47, "nv": 46, "nu": 26, "na": 26, "nbody": 38, "njnt": 41, "ngeom": 57, "nmesh": 37, "nmeshvert": 26951, "ntendon": 26, "nwrap": 96, "neq": 28, "nkey": 0, "timestep": 0.002, "total_mass": 78.09046847904195}, "fingerprint_matches_compose_string": true, "max_body_mass_diff": 0.0, "max_qpos_diff_300_steps_vs_compose_string": 0.0, "body_names_hippo": []}
+human_plus_hippo {"msk": "myolegs26", "device": "Hippo_L1", "compose_s": 0.84, "xml": "/home/aurnab/.cache/smatsprint-probe-2026-09-23/model/human_plus_hippo.xml", "xml_sha256": "6a2405b93accde288cc59fb7925163d67ce658c95d05a8d76ca723c251a49bbd", "export": {"n_file_attrs": 45, "n_asset_files": 44, "asset_bytes": 25091896, "stripped_compiler_dirs": []}, "fingerprint": {"nq": 47, "nv": 46, "nu": 28, "na": 26, "nbody": 46, "njnt": 41, "ngeom": 65, "nmesh": 45, "nmeshvert": 251454, "ntendon": 26, "nwrap": 96, "neq": 28, "nkey": 5, "timestep": 0.002, "total_mass": 82.99046847904194}, "fingerprint_matches_compose_string": true, "max_body_mass_diff": 0.0, "max_qpos_diff_300_steps_vs_compose_string": 0.0, "body_names_hippo": []}
+OK compose done
+
+===== stats.log =====
+human {"xml": "/home/aurnab/.cache/smatsprint-probe-2026-09-23/model/human.xml", "nq": 47, "nv": 46, "nu": 26, "na": 26, "nbody": 38, "njnt": 41, "ngeom": 57, "nsite": 784, "nmesh": 37, "nmeshvert": 26951, "nmeshface": 52924, "nkey": 0, "nsensor": 12, "n_muscles": 26, "n_nonmuscle_actuators": 0, "nonmuscle_actuators": [], "actuator_dyntypes": {"mjDYN_MUSCLE": 26}, "actuator_gaintypes": {"mjGAIN_MUSCLE": 26}, "actuator_trntypes": {"mjTRN_TENDON": 26}, "ntendon": 26, "n_tendons_fixed": 0, "n_tendons_spatial": 26, "nwrap": 96, "wrap_types": {"mjWRAP_SITE": 96}, "n_wrap_geoms": 0, "wrap_geom_types": {}, "neq": 28, "eq_types": {"mjEQ_JOINT": 28}, "joint_types": {"mjJNT_FREE": 1, "mjJNT_HINGE": 12, "mjJNT_SLIDE": 28}, "n_limited_joints": 40, "n_limited_tendons": 0, "geom_types": {"mjGEOM_PLANE": 1, "mjGEOM_MESH": 37, "mjGEOM_CYLINDER": 4, "mjGEOM_CAPSULE": 4, "mjGEOM_ELLIPSOID": 3, "mjGEOM_SPHERE": 8}, "n_colliding_geoms": 23, "colliding_geom_types": {"mjGEOM_PLANE": 1, "mjGEOM_CAPSULE": 4, "mjGEOM_ELLIPSOID": 3, "mjGEOM_MESH": 15}, "colliding_mesh_geoms": [{"name": "pelvis_geom_1", "nvert": 192}, {"name": "pelvis_geom_2", "nvert": 122}, {"name": "pelvis_geom_3", "nvert": 122}, {"name": "femur_r_geom_1", "nvert": 456}, {"name": "tibia_r_geom_1", "nvert": 186}, {"name": "tibia_r_geom_2", "nvert": 122}, {"name": "talus_r_geom_1", "nvert": 99}, {"name": "calcn_r_geom_1", "nvert": 1000}, {"name": "toes_r_geom_1", "nvert": 958}, {"name": "femur_l_geom_1", "nvert": 456}, {"name": "tibia_l_geom_1", "nvert": 186}, {"name": "tibia_l_geom_2", "nvert": 122}, {"name": "talus_l_geom_1", "nvert": 99}, {"name": "calcn_l_geom_1", "nvert": 1000}, {"name": "toes_l_geom_1", "nvert": 958}], "candidate_collision_pairs_approx": {"mjGEOM_CAPSULE-mjGEOM_PLANE": 4, "mjGEOM_ELLIPSOID-mjGEOM_PLANE": 3, "mjGEOM_MESH-mjGEOM_PLANE": 15, "mjGEOM_CAPSULE-mjGEOM_MESH": 40, "mjGEOM_ELLIPSOID-mjGEOM_MESH": 30, "mjGEOM_MESH-mjGEOM_MESH": 76}, "npair": 25, "nexclude": 0, "timestep": 0.002, "substeps_at_50Hz": 10, "integrator": "mjINT_EULER", "solver": "mjSOL_NEWTON", "cone": "mjCONE_PYRAMIDAL", "jacobian": "mjJAC_AUTO", "iterations": 100, "ls_iterations": 50, "tolerance": 1e-08, "noslip_iterations": 0, "ccd_iterations": 35, "disableflags": 0, "enableflags": 0, "gravity": [0.0, 0.0, -9.81], "total_mass_kg": 78.0905, "device_mass_kg": 0.0, "human_mass_kg": 78.0905, "device_bodies": [], "muscle_ctrlrange_unique": [[0.0, 1.0]], "keyframe_names": [], "initial_state_qpos0": {"root_pos": [0.0, 0.0, 0.9102], "pelvis_z": 0.9102, "ncon": 12, "min_contact_dist": -0.005, "nefc": 76}, "character_passive": {"mode": "passive", "episodes": 1, "episode_s": 1.0, "ncon_mean": 8.572, "ncon_max": 12, "ncon_p95": 10.0, "nefc_mean": 69.65, "nefc_max": 80, "nefc_p95": 76.0, "solver_iter_mean": 1.29, "solver_iter_max": 4, "frac_steps_at_iter_limit": 0.0, "pelvis_z_min": 0.605, "pelvis_z_end_last_episode": 0.605, "time_to_pelvis_below_60pct_s": [null], "top_contact_pairs": {"mjGEOM_PLANE:world | mjGEOM_MESH:toes_r": 1802, "mjGEOM_PLANE:world | mjGEOM_MESH:toes_l": 1754, "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_r": 365, "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_l": 365}, "mujoco_warnings_during": []}, "character_random": {"mode": "random", "episodes": 4, "episode_s": 1.0, "ncon_mean": 6.459, "ncon_max": 12, "ncon_p95": 10.0, "nefc_mean": 66.64, "nefc_max": 89, "nefc_p95": 79.0, "solver_iter_mean": 1.77, "solver_iter_max": 6, "frac_steps_at_iter_limit": 0.0, "pelvis_z_min": 0.19, "pelvis_z_end_last_episode": 0.19, "time_to_pelvis_below_60pct_s": [1.0, 0.96, 0.98, 0.9], "top_contact_pairs": {"mjGEOM_PLANE:world | mjGEOM_MESH:toes_l": 4872, "mjGEOM_PLANE:world | mjGEOM_MESH:toes_r": 4829, "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_r": 964, "mjGEOM_MESH:calcn_r | mjGEOM_MESH:calcn_l": 822, "mjGEOM_MESH:tibia_r | mjGEOM_MESH:tibia_l": 726, "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_l": 650, "mjGEOM_MESH:talus_r | mjGEOM_MESH:calcn_l": 55}, "mujoco_warnings_during": []}}
+human_plus_hippo {"xml": "/home/aurnab/.cache/smatsprint-probe-2026-09-23/model/human_plus_hippo.xml", "nq": 47, "nv": 46, "nu": 28, "na": 26, "nbody": 46, "njnt": 41, "ngeom": 65, "nsite": 784, "nmesh": 45, "nmeshvert": 251454, "nmeshface": 502144, "nkey": 5, "nsensor": 12, "n_muscles": 26, "n_nonmuscle_actuators": 2, "nonmuscle_actuators": [{"name": "Exo_R", "dyn": "mjDYN_NONE", "gain": "mjGAIN_FIXED", "gainprm0": 100.0, "ctrlrange": [-1.0, 1.0], "joint": "hip_flexion_r"}, {"name": "Exo_L", "dyn": "mjDYN_NONE", "gain": "mjGAIN_FIXED", "gainprm0": 100.0, "ctrlrange": [-1.0, 1.0], "joint": "hip_flexion_l"}], "actuator_dyntypes": {"mjDYN_MUSCLE": 26, "mjDYN_NONE": 2}, "actuator_gaintypes": {"mjGAIN_MUSCLE": 26, "mjGAIN_FIXED": 2}, "actuator_trntypes": {"mjTRN_TENDON": 26, "mjTRN_JOINT": 2}, "ntendon": 26, "n_tendons_fixed": 0, "n_tendons_spatial": 26, "nwrap": 96, "wrap_types": {"mjWRAP_SITE": 96}, "n_wrap_geoms": 0, "wrap_geom_types": {}, "neq": 28, "eq_types": {"mjEQ_JOINT": 28}, "joint_types": {"mjJNT_FREE": 1, "mjJNT_HINGE": 12, "mjJNT_SLIDE": 28}, "n_limited_joints": 40, "n_limited_tendons": 0, "geom_types": {"mjGEOM_PLANE": 1, "mjGEOM_MESH": 45, "mjGEOM_CYLINDER": 4, "mjGEOM_CAPSULE": 4, "mjGEOM_ELLIPSOID": 3, "mjGEOM_SPHERE": 8}, "n_colliding_geoms": 31, "colliding_geom_types": {"mjGEOM_PLANE": 1, "mjGEOM_CAPSULE": 4, "mjGEOM_ELLIPSOID": 3, "mjGEOM_MESH": 23}, "colliding_mesh_geoms": [{"name": "pelvis_geom_1", "nvert": 192}, {"name": "pelvis_geom_2", "nvert": 122}, {"name": "pelvis_geom_3", "nvert": 122}, {"name": "femur_r_geom_1", "nvert": 456}, {"name": "tibia_r_geom_1", "nvert": 186}, {"name": "tibia_r_geom_2", "nvert": 122}, {"name": "talus_r_geom_1", "nvert": 99}, {"name": "calcn_r_geom_1", "nvert": 1000}, {"name": "toes_r_geom_1", "nvert": 958}, {"name": "Hippo_L1_hippo_thigh_r_geom", "nvert": 86389}, {"name": "Hippo_L1_hippo_thigh_cuff_r_geom", "nvert": 2765}, {"name": "femur_l_geom_1", "nvert": 456}, {"name": "tibia_l_geom_1", "nvert": 186}, {"name": "tibia_l_geom_2", "nvert": 122}, {"name": "talus_l_geom_1", "nvert": 99}, {"name": "calcn_l_geom_1", "nvert": 1000}, {"name": "toes_l_geom_1", "nvert": 958}, {"name": "Hippo_L1_hippo_thigh_l_geom", "nvert": 86384}, {"name": "Hippo_L1_hippo_thigh_cuff_l_geom", "nvert": 2765}, {"name": "Hippo_L1_hippo_backplate_geom", "nvert": 7229}, {"name": "Hippo_L1_hippo_hipshell_geom", "nvert": 15678}, {"name": "Hippo_L1_hippo_waist_bands_geom", "nvert": 4254}, {"name": "Hippo_L1_hippo_ak10_9_lr_geom", "nvert": 19039}], "candidate_collision_pairs_approx": {"mjGEOM_CAPSULE-mjGEOM_PLANE": 4, "mjGEOM_ELLIPSOID-mjGEOM_PLANE": 3, "mjGEOM_MESH-mjGEOM_PLANE": 23, "mjGEOM_CAPSULE-mjGEOM_MESH": 40, "mjGEOM_ELLIPSOID-mjGEOM_MESH": 30, "mjGEOM_MESH-mjGEOM_MESH": 156}, "npair": 25, "nexclude": 0, "timestep": 0.002, "substeps_at_50Hz": 10, "integrator": "mjINT_EULER", "solver": "mjSOL_NEWTON", "cone": "mjCONE_PYRAMIDAL", "jacobian": "mjJAC_AUTO", "iterations": 100, "ls_iterations": 50, "tolerance": 1e-08, "noslip_iterations": 0, "ccd_iterations": 35, "disableflags": 0, "enableflags": 0, "gravity": [0.0, 0.0, -9.81], "total_mass_kg": 82.9905, "device_mass_kg": 4.9, "human_mass_kg": 78.0905, "device_bodies": ["Hippo_L1_hippo_thigh_r", "Hippo_L1_hippo_thigh_cuff_r", "Hippo_L1_hippo_thigh_l", "Hippo_L1_hippo_thigh_cuff_l", "Hippo_L1_hippo_backplate", "Hippo_L1_hippo_hipshell_lr", "Hippo_L1_hippo_waist_bands", "Hippo_L1_hippo_ak10_9"], "muscle_ctrlrange_unique": [[0.0, 1.0]], "keyframe_names": ["stand", "walk_left", "walk_right", "squat", "lunge"], "initial_state_qpos0": {"root_pos": [0.0, 0.0, 0.9129], "pelvis_z": 0.9129, "ncon": 10, "min_contact_dist": -0.00233, "nefc": 68}, "initial_state_key0": {"root_pos": [0.0, 0.0, 1.0], "pelvis_z": 1.0, "ncon": 0, "min_contact_dist": null, "nefc": 28}, "key0_minus_qpos0_root_z": 0.08715, "character_passive": {"mode": "passive", "episodes": 1, "episode_s": 1.0, "ncon_mean": 8.622, "ncon_max": 14, "ncon_p95": 13.0, "nefc_mean": 71.86, "nefc_max": 106, "nefc_p95": 100.0, "solver_iter_mean": 1.4, "solver_iter_max": 4, "frac_steps_at_iter_limit": 0.0, "pelvis_z_min": 0.425, "pelvis_z_end_last_episode": 0.425, "time_to_pelvis_below_60pct_s": [0.88], "top_contact_pairs": {"mjGEOM_PLANE:world | mjGEOM_MESH:toes_r": 1775, "mjGEOM_PLANE:world | mjGEOM_MESH:toes_l": 1757, "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_r": 390, "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_l": 389}, "mujoco_warnings_during": []}, "character_random": {"mode": "random", "episodes": 4, "episode_s": 1.0, "ncon_mean": 6.495, "ncon_max": 13, "ncon_p95": 10.0, "nefc_mean": 67.09, "nefc_max": 94, "nefc_p95": 81.0, "solver_iter_mean": 1.78, "solver_iter_max": 7, "frac_steps_at_iter_limit": 0.0, "pelvis_z_min": 0.336, "pelvis_z_end_last_episode": 0.469, "time_to_pelvis_below_60pct_s": [0.9400000000000001, 0.96, 0.96, 0.98], "top_contact_pairs": {"mjGEOM_PLANE:world | mjGEOM_MESH:toes_r": 4845, "mjGEOM_PLANE:world | mjGEOM_MESH:toes_l": 4781, "mjGEOM_MESH:calcn_r | mjGEOM_MESH:calcn_l": 1563, "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_r": 874, "mjGEOM_PLANE:world | mjGEOM_MESH:calcn_l": 671, "mjGEOM_MESH:tibia_r | mjGEOM_MESH:tibia_l": 198, "mjGEOM_MESH:talus_r | mjGEOM_MESH:calcn_l": 57}, "mujoco_warnings_during": []}}
+OK stats done
+
+===== cpu_rss.jsonl =====
+{"model": "human", "loaded_from": "xml", "before_mujoco_import": {"VmHWM": 31.34, "VmRSS": 31.34, "RssAnon": 18.22, "RssFile": 13.12, "RssShmem": 0.0, "Pss": 23.32, "USS": 22.64}, "after_import": {"VmHWM": 54.34, "VmRSS": 54.34, "RssAnon": 30.19, "RssFile": 24.16, "RssShmem": 0.0, "Pss": 46.05, "USS": 45.34}, "after_mjmodel": {"VmHWM": 124.2, "VmRSS": 124.2, "RssAnon": 97.19, "RssFile": 27.01, "RssShmem": 0.0, "Pss": 115.75, "USS": 115.03}, "after_malloc_trim": {"VmHWM": 119.38, "VmRSS": 119.38, "RssAnon": 92.38, "RssFile": 27.01, "RssShmem": 0.0, "Pss": 110.94, "USS": 110.21}, "after_mjdata": {"VmHWM": 120.77, "VmRSS": 120.77, "RssAnon": 93.7, "RssFile": 27.07, "RssShmem": 0.0, "Pss": 112.32, "USS": 111.6}, "after_1000_steps": {"VmHWM": 127.32, "VmRSS": 127.32, "RssAnon": 94.95, "RssFile": 32.37, "RssShmem": 0.0, "Pss": 115.85, "USS": 114.97}, "mjmodel_plus_mjdata_rss_delta_mb": 72.98, "mjdata_nbytes_mb": 0.256, "mjmodel_nbytes_mb": 14.877}
+{"model": "human", "loaded_from": "mjb", "before_mujoco_import": {"VmHWM": 31.52, "VmRSS": 31.52, "RssAnon": 18.43, "RssFile": 13.1, "RssShmem": 0.0, "Pss": 23.53, "USS": 22.85}, "after_import": {"VmHWM": 54.32, "VmRSS": 54.32, "RssAnon": 30.18, "RssFile": 24.13, "RssShmem": 0.0, "Pss": 46.01, "USS": 45.3}, "after_mjmodel": {"VmHWM": 82.6, "VmRSS": 69.86, "RssAnon": 45.06, "RssFile": 24.79, "RssShmem": 0.0, "Pss": 61.55, "USS": 60.84}, "after_malloc_trim": {"VmHWM": 82.6, "VmRSS": 65.48, "RssAnon": 40.68, "RssFile": 24.79, "RssShmem": 0.0, "Pss": 57.17, "USS": 56.46}, "after_mjdata": {"VmHWM": 82.6, "VmRSS": 66.95, "RssAnon": 41.97, "RssFile": 24.98, "RssShmem": 0.0, "Pss": 58.64, "USS": 57.93}, "after_1000_steps": {"VmHWM": 82.6, "VmRSS": 74.2, "RssAnon": 43.28, "RssFile": 30.92, "RssShmem": 0.0, "Pss": 62.87, "USS": 62.0}, "mjmodel_plus_mjdata_rss_delta_mb": 19.88, "mjdata_nbytes_mb": 0.256, "mjmodel_nbytes_mb": 14.877}
+{"model": "human_plus_hippo", "loaded_from": "xml", "before_mujoco_import": {"VmHWM": 31.3, "VmRSS": 31.3, "RssAnon": 18.19, "RssFile": 13.11, "RssShmem": 0.0, "Pss": 23.3, "USS": 22.61}, "after_import": {"VmHWM": 54.31, "VmRSS": 54.31, "RssAnon": 30.18, "RssFile": 24.13, "RssShmem": 0.0, "Pss": 46.02, "USS": 45.31}, "after_mjmodel": {"VmHWM": 562.12, "VmRSS": 562.12, "RssAnon": 535.15, "RssFile": 26.97, "RssShmem": 0.0, "Pss": 553.71, "USS": 553.0}, "after_malloc_trim": {"VmHWM": 551.0, "VmRSS": 551.0, "RssAnon": 524.02, "RssFile": 26.97, "RssShmem": 0.0, "Pss": 542.58, "USS": 541.87}, "after_mjdata": {"VmHWM": 553.27, "VmRSS": 553.27, "RssAnon": 526.24, "RssFile": 27.04, "RssShmem": 0.0, "Pss": 544.86, "USS": 544.14}, "after_1000_steps": {"VmHWM": 559.81, "VmRSS": 559.81, "RssAnon": 527.43, "RssFile": 32.38, "RssShmem": 0.0, "Pss": 548.37, "USS": 547.5}, "mjmodel_plus_mjdata_rss_delta_mb": 505.5, "mjdata_nbytes_mb": 1.119, "mjmodel_nbytes_mb": 93.139}
+{"model": "human_plus_hippo", "loaded_from": "mjb", "before_mujoco_import": {"VmHWM": 31.34, "VmRSS": 31.27, "RssAnon": 18.17, "RssFile": 13.11, "RssShmem": 0.0, "Pss": 23.28, "USS": 22.59}, "after_import": {"VmHWM": 54.33, "VmRSS": 54.33, "RssAnon": 30.19, "RssFile": 24.14, "RssShmem": 0.0, "Pss": 46.05, "USS": 45.34}, "after_mjmodel": {"VmHWM": 239.62, "VmRSS": 148.13, "RssAnon": 123.33, "RssFile": 24.8, "RssShmem": 0.0, "Pss": 139.85, "USS": 139.14}, "after_malloc_trim": {"VmHWM": 239.62, "VmRSS": 143.75, "RssAnon": 118.95, "RssFile": 24.8, "RssShmem": 0.0, "Pss": 135.48, "USS": 134.77}, "after_mjdata": {"VmHWM": 239.62, "VmRSS": 146.12, "RssAnon": 121.13, "RssFile": 24.99, "RssShmem": 0.0, "Pss": 137.84, "USS": 137.13}, "after_1000_steps": {"VmHWM": 239.62, "VmRSS": 153.4, "RssAnon": 122.39, "RssFile": 31.01, "RssShmem": 0.0, "Pss": 142.06, "USS": 141.2}, "mjmodel_plus_mjdata_rss_delta_mb": 99.07, "mjdata_nbytes_mb": 1.119, "mjmodel_nbytes_mb": 93.139}
+
+===== cpu_single.jsonl =====
+{"physics_steps": 418140, "control_steps": 41814, "elapsed_s": 20.0002, "substeps": 10, "steps_per_s": 20906.8, "control_transitions_per_s": 2090.68, "realtime_factor": 41.814, "mean_ncon_at_control_steps": 6.661, "warnings": {}, "model": "human", "mem": {"VmHWM": 129.89, "VmRSS": 129.89, "RssAnon": 96.93, "RssFile": 32.95, "RssShmem": 0.0, "Pss": 118.34, "USS": 117.45}, "threads": "1"}
+{"physics_steps": 408840, "control_steps": 40884, "elapsed_s": 20.0001, "substeps": 10, "steps_per_s": 20441.9, "control_transitions_per_s": 2044.19, "realtime_factor": 40.884, "mean_ncon_at_control_steps": 6.677, "warnings": {}, "model": "human_plus_hippo", "mem": {"VmHWM": 568.65, "VmRSS": 568.65, "RssAnon": 535.5, "RssFile": 33.16, "RssShmem": 0.0, "Pss": 557.26, "USS": 556.2}, "threads": "1"}
+
+===== scale.log =====
+{"model": "human_plus_hippo", "n_procs": 1, "duration_s": 30.0, "loaded_from": "mjb", "returncodes": [0], "n_ok": 1, "max_ready_after_t_start_s": 0.0, "aggregate_steps_per_s": 20698.9, "aggregate_control_transitions_per_s": 2069.9, "per_proc_control_transitions_per_s": {"mean": 2069.89, "min": 2069.89, "max": 2069.89}, "per_proc_rss_mb": {"mean": 155.6, "max": 155.62}, "per_proc_pss_mb": {"mean": 142.4, "max": 142.37}, "per_proc_uss_mb": {"mean": 138.9, "max": 138.95}, "loadavg_before": ["1.24", "1.32", "1.20"], "loadavg_after": ["1.45", "1.37", "1.22"], "mem_available_mb_before": 24473, "mem_available_mb_mid": 24662, "wall_incl_launch_s": 35.04, "worker_errors": []}
+{"model": "human_plus_hippo", "n_procs": 8, "duration_s": 30.0, "loaded_from": "mjb", "returncodes": [0], "n_ok": 8, "max_ready_after_t_start_s": 0.0, "aggregate_steps_per_s": 164809.2, "aggregate_control_transitions_per_s": 16480.9, "per_proc_control_transitions_per_s": {"mean": 2060.12, "min": 2010.05, "max": 2074.75}, "per_proc_rss_mb": {"mean": 155.7, "max": 155.72}, "per_proc_pss_mb": {"mean": 127.0, "max": 127.12}, "per_proc_uss_mb": {"mean": 124.1, "max": 124.11}, "loadavg_before": ["1.34", "1.35", "1.22"], "loadavg_after": ["4.23", "2.05", "1.45"], "mem_available_mb_before": 24934, "mem_available_mb_mid": 23966, "wall_incl_launch_s": 35.09, "worker_errors": []}
+{"model": "human_plus_hippo", "n_procs": 16, "duration_s": 30.0, "loaded_from": "mjb", "returncodes": [0], "n_ok": 16, "max_ready_after_t_start_s": 0.0, "aggregate_steps_per_s": 323763.3, "aggregate_control_transitions_per_s": 32376.3, "per_proc_control_transitions_per_s": {"mean": 2023.52, "min": 2014.04, "max": 2036.34}, "per_proc_rss_mb": {"mean": 155.6, "max": 155.88}, "per_proc_pss_mb": {"mean": 125.7, "max": 125.97}, "per_proc_uss_mb": {"mean": 124.1, "max": 124.36}, "loadavg_before": ["4.23", "2.05", "1.45"], "loadavg_after": ["9.17", "3.48", "1.95"], "mem_available_mb_before": 22853, "mem_available_mb_mid": 21131, "wall_incl_launch_s": 35.09, "worker_errors": []}
+{"model": "human_plus_hippo", "n_procs": 32, "duration_s": 30.0, "loaded_from": "mjb", "returncodes": [0], "n_ok": 32, "max_ready_after_t_start_s": 0.0, "aggregate_steps_per_s": 579458.2, "aggregate_control_transitions_per_s": 57945.8, "per_proc_control_transitions_per_s": {"mean": 1810.81, "min": 1749.3, "max": 1825.13}, "per_proc_rss_mb": {"mean": 155.4, "max": 155.95}, "per_proc_pss_mb": {"mean": 125.1, "max": 125.22}, "per_proc_uss_mb": {"mean": 124.2, "max": 124.35}, "loadavg_before": ["8.52", "3.44", "1.95"], "loadavg_after": ["17.87", "6.24", "2.94"], "mem_available_mb_before": 23025, "mem_available_mb_mid": 19688, "wall_incl_launch_s": 35.11, "worker_errors": []}
+
+===== gpu_check_1.txt =====
+gpu_check 2026-09-23T18:13:26+09:00
+NVIDIA GeForce RTX 5090, 1957 MiB, 32607 MiB, 90 %
+pid=1451014 used_mib=1934 user=aurnab
+GPU_RULE: OK
+
+===== warp_support.log =====
+Warp DeprecationWarning: warp.config.quiet is deprecated; use warp.config.log_level = warp.LOG_WARNING to suppress the init banner.
+/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py:663: UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs.
+  warnings.warn(
+[    2.3s] put_model human_plus_hippo {"supported": false, "put_model_s": 0.133} Traceback (most recent call last):
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py", line 166, in load_models
+    m = mjw.put_model(mjm)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 693, in put_model
+    _check_margin(f"geom pair ({geom_name(g1)}, {geom_name(g2)})", t1, t2, (m1, m2))
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 678, in _check_margin
+    raise NotImplementedError(
+NotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.
+
+[    2.4s] put_model human {"supported": false, "put_model_s": 0.003} Traceback (most recent call last):
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py", line 166, in load_models
+    m = mjw.put_model(mjm)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 693, in put_model
+    _check_margin(f"geom pair ({geom_name(g1)}, {geom_name(g2)})", t1, t2, (m1, m2))
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 678, in _check_margin
+    raise NotImplementedError(
+NotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.
+
+[    2.4s] done support gpu_wall_s 2.4 peak_mem_mb 498
+
+===== gpu_check_2.txt =====
+gpu_check 2026-09-23T18:14:53+09:00
+NVIDIA GeForce RTX 5090, 1957 MiB, 32607 MiB, 90 %
+pid=1456982 used_mib=1934 user=aurnab
+GPU_RULE: OK
+
+===== warp_support2.log =====
+[    1.9s] put_model human_plus_hippo stock {"supported": false, "put_model_s": 0.126, "warnings": ["UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs."]} Traceback (most recent call last):
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py", line 167, in try_put
+    m = mjw.put_model(mjm)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 693, in put_model
+    _check_margin(f"geom pair ({geom_name(g1)}, {geom_name(g2)})", t1, t2, (m1, m2))
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 678, in _check_margin
+    raise NotImplementedError(
+NotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.
+
+[    1.9s] put_model human_plus_hippo workaround_disable_multiccd {"supported": true, "put_model_s": 0.043, "geom_pair_type_count": {"PLANE-CAPSULE": 4, "PLANE-ELLIPSOID": 3, "PLANE-MESH": 23, "CAPSULE-MESH": 40, "ELLIPSOID-MESH": 30, "MESH-MESH": 156}, "is_sparse": true, "broadphase": "0", "broadphase_filter": "11", "graph_conditional": "True", "run_collision_detection": "True", "warnings": []} 
+[    1.9s] put_model human stock {"supported": false, "put_model_s": 0.003, "warnings": ["UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs."]} Traceback (most recent call last):
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py", line 167, in try_put
+    m = mjw.put_model(mjm)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 693, in put_model
+    _check_margin(f"geom pair ({geom_name(g1)}, {geom_name(g2)})", t1, t2, (m1, m2))
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 678, in _check_margin
+    raise NotImplementedError(
+NotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.
+
+[    1.9s] put_model human workaround_disable_multiccd {"supported": true, "put_model_s": 0.011, "geom_pair_type_count": {"PLANE-CAPSULE": 4, "PLANE-ELLIPSOID": 3, "PLANE-MESH": 15, "CAPSULE-MESH": 40, "ELLIPSOID-MESH": 30, "MESH-MESH": 76}, "is_sparse": true, "broadphase": "0", "broadphase_filter": "11", "graph_conditional": "True", "run_collision_detection": "True", "warnings": []} 
+[   64.7s] first_step human_plus_hippo {"first_step_s_incl_jit": 62.33, "second_step_s": 0.0064, "reset_data_first_call_s": 0.46, "finite_after_step": true} 
+[   64.7s] first_step human {"first_step_s_incl_jit": 0.01, "second_step_s": 0.0052, "reset_data_first_call_s": 0.0, "finite_after_step": true} 
+[   64.7s] done support gpu_wall_s 64.7 peak_mem_mb 606
+
+===== gpu_background_before_main.csv =====
+2026/09/23 18:16:41.648, 0 %, 15 MiB
+2026/09/23 18:16:42.150, 0 %, 15 MiB
+2026/09/23 18:16:42.650, 0 %, 15 MiB
+2026/09/23 18:16:43.150, 0 %, 15 MiB
+2026/09/23 18:16:43.651, 0 %, 15 MiB
+2026/09/23 18:16:44.151, 0 %, 15 MiB
+2026/09/23 18:16:44.651, 0 %, 15 MiB
+2026/09/23 18:16:45.151, 0 %, 15 MiB
+2026/09/23 18:16:45.651, 0 %, 15 MiB
+2026/09/23 18:16:46.151, 0 %, 15 MiB
+2026/09/23 18:16:46.651, 0 %, 15 MiB
+2026/09/23 18:16:47.152, 0 %, 15 MiB
+2026/09/23 18:16:47.652, 0 %, 15 MiB
+2026/09/23 18:16:48.152, 0 %, 15 MiB
+2026/09/23 18:16:48.652, 0 %, 15 MiB
+2026/09/23 18:16:49.152, 0 %, 15 MiB
+2026/09/23 18:16:49.653, 0 %, 15 MiB
+2026/09/23 18:16:50.153, 0 %, 15 MiB
+2026/09/23 18:16:50.653, 0 %, 15 MiB
+2026/09/23 18:16:51.153, 0 %, 15 MiB
+
+===== gpu_check_3.txt =====
+gpu_check 2026-09-23T18:17:00+09:00
+NVIDIA GeForce RTX 5090, 15 MiB, 32607 MiB, 0 %
+GPU_RULE: OK
+
+===== warp_main.log =====
+[    1.8s] put_model human_plus_hippo stock {"supported": false, "put_model_s": 0.067, "warnings": ["UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs."]} Traceback (most recent call last):
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py", line 167, in try_put
+    m = mjw.put_model(mjm)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 693, in put_model
+    _check_margin(f"geom pair ({geom_name(g1)}, {geom_name(g2)})", t1, t2, (m1, m2))
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 678, in _check_margin
+    raise NotImplementedError(
+NotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.
+
+[    1.8s] put_model human_plus_hippo workaround_disable_multiccd {"supported": true, "put_model_s": 0.037, "geom_pair_type_count": {"PLANE-CAPSULE": 4, "PLANE-ELLIPSOID": 3, "PLANE-MESH": 23, "CAPSULE-MESH": 40, "ELLIPSOID-MESH": 30, "MESH-MESH": 156}, "is_sparse": true, "broadphase": "0", "broadphase_filter": "11", "graph_conditional": "True", "run_collision_detection": "True", "warnings": []} 
+[    1.9s] put_model human stock {"supported": false, "put_model_s": 0.003, "warnings": ["UserWarning: MULTICCD is enabled, but the scene contains CCD pairs without multicontact support: [('CAPSULE', 'MESH')]. At most 1 contact will be generated for these pairs."]} Traceback (most recent call last):
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp_probe.py", line 167, in try_put
+    m = mjw.put_model(mjm)
+        ^^^^^^^^^^^^^^^^^^
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 693, in put_model
+    _check_margin(f"geom pair ({geom_name(g1)}, {geom_name(g2)})", t1, t2, (m1, m2))
+  File "/home/aurnab/.cache/smatsprint-probe-2026-09-23/venv/lib/python3.12/site-packages/mujoco_warp/_src/io.py", line 678, in _check_margin
+    raise NotImplementedError(
+NotImplementedError: geom pair (pelvis_geom_1, tibia_r_geom_1) has non-zero margin ((0.001, 0.001)) with MULTICCD enabled. Set margin to 0 or disable MULTICCD.
+
+[    1.9s] put_model human workaround_disable_multiccd {"supported": true, "put_model_s": 0.01, "geom_pair_type_count": {"PLANE-CAPSULE": 4, "PLANE-ELLIPSOID": 3, "PLANE-MESH": 15, "CAPSULE-MESH": 40, "ELLIPSOID-MESH": 30, "MESH-MESH": 76}, "is_sparse": true, "broadphase": "0", "broadphase_filter": "11", "graph_conditional": "True", "run_collision_detection": "True", "warnings": []} 
+[    4.8s] parity human_plus_hippo 3.0s {"1": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 0.0008823, "mean": 7.548e-05}, "qvel": {"max": 0.4412, "mean": 0.03859}, "act": {"max": 1.341e-08, "mean": 4.331e-09}, "actuator_force": {"max": 0.0002222, "mean": 2.157e-05}, "ten_length": {"max": 3.243e-08, "mean": 1.719e-08}, "muscle_force": {"max": 0.0002222, "mean": 2.322e-05, "cpu_abs_max": 65.06}, "exo_force": {"max": 1.192e-07, "mean": 6.706e-08}, "ncon": [6, 10], "nefc": [52, 68]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 5.927e-05, "mean": 2.34e-06}, "qvel": {"max": 0.02964, "mean": 0.001209}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 0.0002841, "mean": 2.684e-05}, "ten_length": {"max": 1.311e-07, "mean": 3.482e-08}, "muscle_force": {"max": 0.0002841, "mean": 2.89e-05, "cpu_abs_max": 65.06}, "exo_force": {"max": 0.0, "mean": 0.0}, "ncon": [9, 10], "nefc": [66, 68]}}, "10": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 0.08251, "mean": 0.00639}, "qvel": {"max": 5.576, "mean": 0.3272}, "act": {"max": 1.467e-08, "mean": 4.008e-09}, "actuator_force": {"max": 48.32, "mean": 10.32}, "ten_length": {"max": 0.002184, "mean": 0.0004911}, "muscle_force": {"max": 48.32, "mean": 11.11, "cpu_abs_max": 776.7}, "exo_force": {"max": 1.192e-07, "mean": 6.706e-08}, "ncon": [14, 8], "nefc": [90, 68]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 0.0002304, "mean": 1.209e-05}, "qvel": {"max": 0.01342, "mean": 0.0006624}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 0.2433, "mean": 0.03319}, "ten_length": {"max": 5.883e-06, "mean": 1.039e-06}, "muscle_force": {"max": 0.2433, "mean": 0.03574, "cpu_abs_max": 776.7}, "exo_force": {"max": 0.0, "mean": 0.0}, "ncon": [8, 8], "nefc": [68, 68]}}, "100": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 0.1161, "mean": 0.01253}, "qvel": {"max": 2.059, "mean": 0.1743}, "act": {"max": 7.702e-08, "mean": 2.668e-08}, "actuator_force": {"max": 208.9, "mean": 33.24}, "ten_length": {"max": 0.003457, "mean": 0.00101}, "muscle_force": {"max": 208.9, "mean": 35.8, "cpu_abs_max": 2894.0}, "exo_force": {"max": 1.192e-07, "mean": 7.451e-08}, "ncon": [9, 8], "nefc": [75, 72]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 0.00402, "mean": 0.0002176}, "qvel": {"max": 0.02906, "mean": 0.002168}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 2.461, "mean": 0.467}, "ten_length": {"max": 3.987e-05, "mean": 1.397e-05}, "muscle_force": {"max": 2.461, "mean": 0.503, "cpu_abs_max": 2894.0}, "exo_force": {"max": 0.0, "mean": 0.0}, "ncon": [8, 8], "nefc": [72, 72]}}, "400": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 0.05211, "mean": 0.008963}, "qvel": {"max": 1.129, "mean": 0.08306}, "act": {"max": 6.717e-08, "mean": 2.453e-08}, "actuator_force": {"max": 114.5, "mean": 19.39}, "ten_length": {"max": 0.002522, "mean": 0.000766}, "muscle_force": {"max": 114.5, "mean": 20.88, "cpu_abs_max": 3427.0}, "exo_force": {"max": 7.451e-08, "mean": 7.078e-08}, "ncon": [7, 5], "nefc": [70, 62]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 0.001076, "mean": 0.0001589}, "qvel": {"max": 0.01842, "mean": 0.001783}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 0.9662, "mean": 0.2609}, "ten_length": {"max": 2.693e-05, "mean": 8.735e-06}, "muscle_force": {"max": 0.9662, "mean": 0.2809, "cpu_abs_max": 3427.0}, "exo_force": {"max": 0.0, "mean": 0.0}, "ncon": [5, 5], "nefc": [62, 62]}}}
+[    7.2s] parity human 2.4s {"1": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 0.001346, "mean": 0.0001188}, "qvel": {"max": 0.6728, "mean": 0.0607}, "act": {"max": 1.341e-08, "mean": 4.331e-09}, "actuator_force": {"max": 0.0002222, "mean": 2.098e-05}, "ten_length": {"max": 3.243e-08, "mean": 1.662e-08}, "muscle_force": {"max": 0.0002222, "mean": 2.098e-05, "cpu_abs_max": 65.06}, "ncon": [8, 12], "nefc": [60, 76]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 5.65e-05, "mean": 3.253e-06}, "qvel": {"max": 0.02825, "mean": 0.0017}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 0.0002841, "mean": 2.89e-05}, "ten_length": {"max": 1.311e-07, "mean": 3.482e-08}, "muscle_force": {"max": 0.0002841, "mean": 2.89e-05, "cpu_abs_max": 65.06}, "ncon": [11, 12], "nefc": [74, 76]}}, "10": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 0.08905, "mean": 0.006442}, "qvel": {"max": 4.94, "mean": 0.2992}, "act": {"max": 1.467e-08, "mean": 4.008e-09}, "actuator_force": {"max": 43.17, "mean": 10.24}, "ten_length": {"max": 0.002351, "mean": 0.0005277}, "muscle_force": {"max": 43.17, "mean": 10.24, "cpu_abs_max": 776.9}, "ncon": [14, 8], "nefc": [90, 68]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 0.00497, "mean": 0.0003982}, "qvel": {"max": 0.02947, "mean": 0.00247}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 2.206, "mean": 0.5416}, "ten_length": {"max": 0.0001746, "mean": 5.322e-05}, "muscle_force": {"max": 2.206, "mean": 0.5416, "cpu_abs_max": 776.9}, "ncon": [8, 8], "nefc": [68, 68]}}, "100": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 0.1228, "mean": 0.008813}, "qvel": {"max": 1.468, "mean": 0.08825}, "act": {"max": 7.002e-08, "mean": 2.432e-08}, "actuator_force": {"max": 108.2, "mean": 19.83}, "ten_length": {"max": 0.002483, "mean": 0.0007757}, "muscle_force": {"max": 108.2, "mean": 19.83, "cpu_abs_max": 4283.0}, "ncon": [7, 6], "nefc": [68, 64]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 0.001767, "mean": 0.0001106}, "qvel": {"max": 0.1313, "mean": 0.005426}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 1.822, "mean": 0.4889}, "ten_length": {"max": 2.768e-05, "mean": 6.909e-06}, "muscle_force": {"max": 1.822, "mean": 0.4889, "cpu_abs_max": 4283.0}, "ncon": [6, 6], "nefc": [64, 64]}}, "400": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 0.07535, "mean": 0.006931}, "qvel": {"max": 1.352, "mean": 0.1002}, "act": {"max": 7.454e-08, "mean": 3.127e-08}, "actuator_force": {"max": 87.18, "mean": 17.51}, "ten_length": {"max": 0.002499, "mean": 0.0004989}, "muscle_force": {"max": 87.18, "mean": 17.51, "cpu_abs_max": 3861.0}, "ncon": [6, 7], "nefc": [65, 70]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 0.0006924, "mean": 4.693e-05}, "qvel": {"max": 0.03139, "mean": 0.001665}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 2.298, "mean": 0.4692}, "ten_length": {"max": 1.044e-05, "mean": 2.557e-06}, "muscle_force": {"max": 2.298, "mean": 0.4692, "cpu_abs_max": 3861.0}, "ncon": [7, 7], "nefc": [70, 70]}}}
+[    9.9s] throughput {"model": "human_plus_hippo", "nworld": 256, "substeps": 10, "nconmax": 48, "njmax": 160, "put_data_s": 0.025, "data_array_bytes_mb": 33.2, "graph_capture_s": 0.081, "timed_control_steps": 100, "timed_s": 1.001, "steps_per_s": 255710, "control_transitions_per_s": 25571, "realtime_factor_per_world": 1.998, "gpu_mem_mb_process_steady": 708, "stats_ncon_per_world_mean": 6.252, "stats_nefc_mean": 66.14, "stats_nefc_max": 107, "stats_solver_iter_mean": 1.84, "stats_solver_iter_max": 6, "overflow_flags": [], "nonfinite_worlds": 0, "sync_each_ctrl_step_steps_per_s": 256426, "sync_each_ctrl_step_control_transitions_per_s": 25643, "gpu_mem_mb_process_peak_so_far": 708, "wall_s": 2.7}
+[   12.9s] throughput {"model": "human_plus_hippo", "nworld": 1024, "substeps": 10, "nconmax": 48, "njmax": 160, "put_data_s": 0.081, "data_array_bytes_mb": 132.9, "graph_capture_s": 0.049, "timed_control_steps": 100, "timed_s": 1.297, "steps_per_s": 789460, "control_transitions_per_s": 78946, "realtime_factor_per_world": 1.542, "gpu_mem_mb_process_steady": 1028, "stats_ncon_per_world_mean": 6.319, "stats_nefc_mean": 66.41, "stats_nefc_max": 114, "stats_solver_iter_mean": 1.85, "stats_solver_iter_max": 8, "overflow_flags": [], "nonfinite_worlds": 0, "sync_each_ctrl_step_steps_per_s": 791154, "sync_each_ctrl_step_control_transitions_per_s": 79115, "gpu_mem_mb_process_peak_so_far": 1028, "wall_s": 3.1}
+[   18.1s] throughput {"model": "human_plus_hippo", "nworld": 4096, "substeps": 10, "nconmax": 48, "njmax": 160, "put_data_s": 0.326, "data_array_bytes_mb": 531.5, "graph_capture_s": 0.05, "timed_control_steps": 100, "timed_s": 2.163, "steps_per_s": 1894016, "control_transitions_per_s": 189402, "realtime_factor_per_world": 0.925, "gpu_mem_mb_process_steady": 2180, "stats_ncon_per_world_mean": 6.321, "stats_nefc_mean": 66.46, "stats_nefc_max": 130, "stats_solver_iter_mean": 1.83, "stats_solver_iter_max": 8, "overflow_flags": [], "nonfinite_worlds": 0, "sync_each_ctrl_step_steps_per_s": 1895912, "sync_each_ctrl_step_control_transitions_per_s": 189591, "gpu_mem_mb_process_peak_so_far": 2180, "wall_s": 5.1}
+[   26.3s] throughput {"model": "human_plus_hippo", "nworld": 8192, "substeps": 10, "nconmax": 48, "njmax": 160, "put_data_s": 0.664, "data_array_bytes_mb": 1062.9, "graph_capture_s": 0.05, "timed_control_steps": 100, "timed_s": 3.481, "steps_per_s": 2353437, "control_transitions_per_s": 235344, "realtime_factor_per_world": 0.575, "gpu_mem_mb_process_steady": 3620, "stats_ncon_per_world_mean": 6.312, "stats_nefc_mean": 66.42, "stats_nefc_max": 114, "stats_solver_iter_mean": 1.83, "stats_solver_iter_max": 8, "overflow_flags": [], "nonfinite_worlds": 0, "sync_each_ctrl_step_steps_per_s": 2349092, "sync_each_ctrl_step_control_transitions_per_s": 234909, "gpu_mem_mb_process_peak_so_far": 3620, "wall_s": 8.3}
+[   28.6s] throughput {"model": "human", "nworld": 256, "substeps": 10, "nconmax": 48, "njmax": 160, "put_data_s": 0.024, "data_array_bytes_mb": 32.4, "graph_capture_s": 0.05, "timed_control_steps": 100, "timed_s": 0.936, "steps_per_s": 273627, "control_transitions_per_s": 27363, "realtime_factor_per_world": 2.138, "gpu_mem_mb_process_steady": 2596, "stats_ncon_per_world_mean": 6.14, "stats_nefc_mean": 65.79, "stats_nefc_max": 92, "stats_solver_iter_mean": 1.86, "stats_solver_iter_max": 7, "overflow_flags": [], "nonfinite_worlds": 0, "sync_each_ctrl_step_steps_per_s": 272086, "sync_each_ctrl_step_control_transitions_per_s": 27209, "gpu_mem_mb_process_peak_so_far": 3620, "wall_s": 2.2}
+[   31.4s] throughput {"model": "human", "nworld": 1024, "substeps": 10, "nconmax": 48, "njmax": 160, "put_data_s": 0.081, "data_array_bytes_mb": 129.6, "graph_capture_s": 0.051, "timed_control_steps": 100, "timed_s": 1.199, "steps_per_s": 853779, "control_transitions_per_s": 85378, "realtime_factor_per_world": 1.668, "gpu_mem_mb_process_steady": 2692, "stats_ncon_per_world_mean": 6.164, "stats_nefc_mean": 65.85, "stats_nefc_max": 93, "stats_solver_iter_mean": 1.84, "stats_solver_iter_max": 7, "overflow_flags": [], "nonfinite_worlds": 0, "sync_each_ctrl_step_steps_per_s": 847683, "sync_each_ctrl_step_control_transitions_per_s": 84768, "gpu_mem_mb_process_peak_so_far": 3620, "wall_s": 2.9}
+[   36.3s] throughput {"model": "human", "nworld": 4096, "substeps": 10, "nconmax": 48, "njmax": 160, "put_data_s": 0.329, "data_array_bytes_mb": 518.6, "graph_capture_s": 0.05, "timed_control_steps": 100, "timed_s": 2.048, "steps_per_s": 1999957, "control_transitions_per_s": 199996, "realtime_factor_per_world": 0.977, "gpu_mem_mb_process_steady": 3076, "stats_ncon_per_world_mean": 6.178, "stats_nefc_mean": 65.88, "stats_nefc_max": 104, "stats_solver_iter_mean": 1.84, "stats_solver_iter_max": 7, "overflow_flags": [], "nonfinite_worlds": 0, "sync_each_ctrl_step_steps_per_s": 1999736, "sync_each_ctrl_step_control_transitions_per_s": 199974, "gpu_mem_mb_process_peak_so_far": 3620, "wall_s": 4.9}
+[   44.3s] throughput {"model": "human", "nworld": 8192, "substeps": 10, "nconmax": 48, "njmax": 160, "put_data_s": 0.687, "data_array_bytes_mb": 1037.2, "graph_capture_s": 0.05, "timed_control_steps": 100, "timed_s": 3.324, "steps_per_s": 2464265, "control_transitions_per_s": 246427, "realtime_factor_per_world": 0.602, "gpu_mem_mb_process_steady": 3588, "stats_ncon_per_world_mean": 6.177, "stats_nefc_mean": 65.88, "stats_nefc_max": 106, "stats_solver_iter_mean": 1.84, "stats_solver_iter_max": 8, "overflow_flags": [], "nonfinite_worlds": 0, "sync_each_ctrl_step_steps_per_s": 2456889, "sync_each_ctrl_step_control_transitions_per_s": 245689, "gpu_mem_mb_process_peak_so_far": 3620, "wall_s": 8.0}
+[   44.3s] done main gpu_wall_s 44.3 peak_mem_mb 3620
+
+===== gpu_check_4.txt =====
+gpu_check 2026-09-23T18:19:20+09:00
+NVIDIA GeForce RTX 5090, 1959 MiB, 32607 MiB, 93 %
+pid=1462505 used_mib=1936 user=aurnab
+GPU_RULE: OK
+
+===== warp_parity2.log =====
+initial contacts cpu 10 {"terrain|calcn_l_geom_1": [-3e-05], "terrain|calcn_r_geom_1": [-3e-05], "terrain|toes_l_geom_1": [-0.00233, -0.00233, 0.00153, 0.00153], "terrain|toes_r_geom_1": [-0.00233, -0.00233, 0.00153, 0.00153]}
+initial contacts warp 6 {"terrain|calcn_l_geom_1": [-4e-05], "terrain|calcn_r_geom_1": [-4e-05], "terrain|toes_l_geom_1": [-0.00233, -0.00233], "terrain|toes_r_geom_1": [-0.00233, -0.00233]}
+parity contacts disabled {"1": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 9.982e-09, "mean": 2.856e-10}, "qvel": {"max": 2.006e-07, "mean": 3.438e-08}, "act": {"max": 1.341e-08, "mean": 4.331e-09}, "actuator_force": {"max": 0.0002222, "mean": 2.157e-05}, "ten_length": {"max": 3.243e-08, "mean": 1.719e-08}, "muscle_force": {"max": 0.0002222, "mean": 2.322e-05, "cpu_abs_max": 65.06}, "exo_force": {"max": 1.192e-07, "mean": 6.706e-08}, "ncon": [0, 0], "nefc": [28, 28]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 2.518e-07, "mean": 6.725e-08}, "qvel": {"max": 9.81e-07, "mean": 2.893e-07}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 0.0002841, "mean": 2.684e-05}, "ten_length": {"max": 1.311e-07, "mean": 3.482e-08}, "muscle_force": {"max": 0.0002841, "mean": 2.89e-05, "cpu_abs_max": 65.06}, "exo_force": {"max": 0.0, "mean": 0.0}, "ncon": [0, 0], "nefc": [30, 28]}}, "10": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 8.897e-07, "mean": 1.304e-07}, "qvel": {"max": 9.23e-05, "mean": 9.915e-06}, "act": {"max": 1.467e-08, "mean": 4.008e-09}, "actuator_force": {"max": 0.05893, "mean": 0.004707}, "ten_length": {"max": 4.494e-07, "mean": 6.248e-08}, "muscle_force": {"max": 0.05893, "mean": 0.005069, "cpu_abs_max": 682.9}, "exo_force": {"max": 1.192e-07, "mean": 6.706e-08}, "ncon": [0, 0], "nefc": [36, 36]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 2.44e-07, "mean": 5.278e-08}, "qvel": {"max": 9.952e-06, "mean": 1.586e-06}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 0.002211, "mean": 0.0003171}, "ten_length": {"max": 1.019e-07, "mean": 2.51e-08}, "muscle_force": {"max": 0.002211, "mean": 0.0003415, "cpu_abs_max": 682.9}, "exo_force": {"max": 0.0, "mean": 0.0}, "ncon": [0, 0], "nefc": [36, 36]}}, "100": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 9.754e-05, "mean": 6.232e-06}, "qvel": {"max": 0.0007209, "mean": 5.518e-05}, "act": {"max": 7.702e-08, "mean": 2.668e-08}, "actuator_force": {"max": 0.1076, "mean": 0.01455}, "ten_length": {"max": 2.918e-06, "mean": 6.509e-07}, "muscle_force": {"max": 0.1076, "mean": 0.01567, "cpu_abs_max": 2904.0}, "exo_force": {"max": 1.192e-07, "mean": 7.451e-08}, "ncon": [0, 0], "nefc": [39, 39]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 1.411e-07, "mean": 1.53e-08}, "qvel": {"max": 9.123e-07, "mean": 8.218e-08}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 8.426e-05, "mean": 1.476e-05}, "ten_length": {"max": 4.457e-09, "mean": 1.103e-09}, "muscle_force": {"max": 8.426e-05, "mean": 1.59e-05, "cpu_abs_max": 2904.0}, "exo_force": {"max": 0.0, "mean": 0.0}, "ncon": [0, 0], "nefc": [39, 39]}}, "400": {"warp_f32_vs_cpu_f64": {"qpos": {"max": 0.0001852, "mean": 1.238e-05}, "qvel": {"max": 0.0008583, "mean": 6.28e-05}, "act": {"max": 6.717e-08, "mean": 2.453e-08}, "actuator_force": {"max": 0.1447, "mean": 0.02864}, "ten_length": {"max": 5.933e-06, "mean": 1.451e-06}, "muscle_force": {"max": 0.1447, "mean": 0.03085, "cpu_abs_max": 3426.0}, "exo_force": {"max": 7.451e-08, "mean": 7.078e-08}, "ncon": [0, 0], "nefc": [40, 40]}, "cpu_perturbed_1e7_vs_cpu": {"qpos": {"max": 9.572e-08, "mean": 8.346e-09}, "qvel": {"max": 8.774e-08, "mean": 8.424e-09}, "act": {"max": 0.0, "mean": 0.0}, "actuator_force": {"max": 3.708e-05, "mean": 3.287e-06}, "ten_length": {"max": 1.097e-09, "mean": 1.457e-10}, "muscle_force": {"max": 3.708e-05, "mean": 3.54e-06, "cpu_abs_max": 3426.0}, "exo_force": {"max": 0.0, "mean": 0.0}, "ncon": [0, 0], "nefc": [40, 40]}}}
+first_above {"warp_vs_cpu": {"1e-06": 11, "0.0001": 102, "0.01": null}, "cpu_perturbed_vs_cpu": {"1e-06": null, "0.0001": null, "0.01": null}}
+done gpu_wall_s 5.5
+
+===== gpu_check_5.txt =====
+gpu_check 2026-09-23T18:19:27+09:00
+NVIDIA GeForce RTX 5090, 1959 MiB, 32607 MiB, 93 %
+pid=1462505 used_mib=1936 user=aurnab
+GPU_RULE: OK
+
+===== testspeed_hippo_8192.log =====
+Warp UserWarning: Kernel cache artifacts from a previous Warp version were found in '/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp-cache'. These will be ignored. You can safely delete them.
+Loading model from: /home/aurnab/.cache/smatsprint-probe-2026-09-23/model/human_plus_hippo_nomulticcd.xml...
+
+Model
+  nq: 47 nv: 46 nu: 28 nbody: 46 ngeom: 65
+Option
+  integrator: EULER
+  cone: PYRAMIDAL
+  solver: NEWTON iterations: 100 ls_iterations: 50
+  is_sparse: True
+  broadphase: NXN broadphase_filter: PLANE|SPHERE|OBB
+Data
+  nworld: 8192 naconmax: 393216 njmax: 160
+Rolling out 500 steps at dt = 0.002...
+
+Summary for 8192 parallel rollouts
+
+Total JIT time: 35.59 s
+Total simulation time: 2.94 s
+Total steps per second: 1,392,276
+Total realtime factor: 2,784.55 x
+Total time per step: 718.25 ns
+Total converged worlds: 8192 / 8192
+
+nacon alloc:
+
+mean     std      min    max   
+-------------------------------
+  90112  19999.2  49152  131072
+76677.1  16446.1  32768   98304
+62356.8  17071.8  32768   81920
+58140.7  11930.3  32768   80586
+62148.2   5061.5  47706   65536
+  54394  6838.89  35436   65536
+70841.6  8461.36  53639   89159
+59522.3  13120.1  32768   79102
+66557.1  8006.58  41075   73728
+70096.7  3390.24  65487   73728
+
+nefc alloc:
+
+mean   std      min  max
+------------------------
+73.56  9.61906   52   92
+65.88  8.49856   44   78
+ 58.4  9.32952   36   68
+68.06   6.7362   52   78
+74.52  2.66263   68   78
+69.92  4.62532   60   78
+ 79.5  7.62168   60   90
+74.82  14.4592   56   96
+74.26  9.16692   56   83
+84.16   2.0036   78   86
+
+Model memory 14.76 MiB (0.05% of device memory):
+ (no field >= 1% of total memory)
+Data memory 1062.91 MiB (3.31% of device memory):
+ site_xpos: 73.50 MiB (0.23%)
+ site_xmat: 220.50 MiB (0.69%)
+ qLD: 66.12 MiB (0.21%)
+ efc.J_colind: 113.00 MiB (0.35%)
+ efc.J: 113.00 MiB (0.35%)
+Other memory: 2378.33 MiB (7.41% of device memory)
+Total memory: 3456.00 MiB (10.76% of device memory)
+
+===== cpu_flag_effect.log =====
+human_plus_hippo {"at_step": {"1": {"qpos_max": 0.0, "qvel_max": 0.0, "ncon_stock_vs_flag": [10, 10]}, "10": {"qpos_max": 0.0, "qvel_max": 0.0, "ncon_stock_vs_flag": [8, 8]}, "100": {"qpos_max": 0.007048, "qvel_max": 0.273, "ncon_stock_vs_flag": [7, 8]}, "400": {"qpos_max": 0.01455, "qvel_max": 0.5727, "ncon_stock_vs_flag": [6, 5]}}, "ncon_differs_fraction": 0.422}
+human {"at_step": {"1": {"qpos_max": 0.0, "qvel_max": 0.0, "ncon_stock_vs_flag": [12, 12]}, "10": {"qpos_max": 0.0, "qvel_max": 0.0, "ncon_stock_vs_flag": [8, 8]}, "100": {"qpos_max": 0.004989, "qvel_max": 0.06099, "ncon_stock_vs_flag": [6, 6]}, "400": {"qpos_max": 0.006403, "qvel_max": 0.1485, "ncon_stock_vs_flag": [8, 7]}}, "ncon_differs_fraction": 0.295}
+{"terrain_geom_margin": 0.001, "terrain_geom_gap": 0.0, "toes_r_margin": 0.001, "calcn_r_margin": 0.001}
+
+===== cpu_single_nomulticcd.jsonl =====
+{"physics_steps": 324880, "control_steps": 32488, "elapsed_s": 15.0002, "substeps": 10, "steps_per_s": 21658.3, "control_transitions_per_s": 2165.83, "realtime_factor": 43.317, "mean_ncon_at_control_steps": 6.303, "warnings": {}, "model": "human", "mem": {"VmHWM": 129.9, "VmRSS": 129.9, "RssAnon": 96.95, "RssFile": 32.95, "RssShmem": 0.0, "Pss": 118.99, "USS": 117.53}, "threads": "1", "disableflags": 524288}
+{"physics_steps": 315040, "control_steps": 31504, "elapsed_s": 15.0001, "substeps": 10, "steps_per_s": 21002.5, "control_transitions_per_s": 2100.25, "realtime_factor": 42.005, "mean_ncon_at_control_steps": 6.322, "warnings": {}, "model": "human_plus_hippo", "mem": {"VmHWM": 568.56, "VmRSS": 568.56, "RssAnon": 535.52, "RssFile": 33.04, "RssShmem": 0.0, "Pss": 557.2, "USS": 556.12}, "threads": "1", "disableflags": 524288}
+
+===== gpu_check_6.txt =====
+gpu_check 2026-09-23T18:33:09+09:00
+NVIDIA GeForce RTX 5090, 15 MiB, 32607 MiB, 0 %
+GPU_RULE: OK
+
+===== warp_determinism.log =====
+Warp UserWarning: Kernel cache artifacts from a previous Warp version were found in '/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp-cache'. These will be ignored. You can safely delete them.
+A_identical_worlds_with_contacts {"label": "4 identical worlds, max over worlds 1..3 of |world_k - world_0|", "first_step_qpos_diff_above": {"0.0": 1, "1e-06": 21, "0.0001": 36, "0.01": 75}, "qpos_maxdiff_at": {"1": 4.657e-10, "10": 2.98e-08, "100": 0.01031, "400": 0.01193}, "force_maxdiff_at": {"1": 0.0, "10": 0.0001221, "100": 26.33, "400": 79.3}, "qpos_maxdiff_every10": [2.98e-08, 9.46e-07, 2.16e-06, 0.00195, 0.00249, 0.00156, 0.00554, 0.0137, 0.0208, 0.0103, 0.00777, 0.00812, 0.00768, 0.00514, 0.00556, 0.00477, 0.00513, 0.00511, 0.00495, 0.00745, 0.00812, 0.00731, 0.00819, 0.00576, 0.0054, 0.00724, 0.0046, 0.00336, 0.00613, 0.00799, 0.00737, 0.00688, 0.00965, 0.0101, 0.00336, 0.0122, 0.0149, 0.00677, 0.00373, 0.0119], "first_step_worlds_ncon_differ": 15, "fraction_steps_ncon_differ": 0.57}
+BC_run_to_run_nworld1_with_contacts {"label": "two separate nworld=1 runs, same inputs", "first_step_qpos_diff_above": {"0.0": 1, "1e-06": 37, "0.0001": 37, "0.01": 75}, "qpos_maxdiff_at": {"1": 5.821e-11, "10": 3.725e-09, "100": 0.008605, "400": 0.03105}, "force_maxdiff_at": {"1": 0.0, "10": 6.104e-05, "100": 24.15, "400": 12.44}, "qpos_maxdiff_every10": [3.73e-09, 2.61e-07, 1.85e-07, 0.000866, 0.00157, 0.00156, 0.00522, 0.0137, 0.0208, 0.00861, 0.00388, 0.00347, 0.00311, 0.00722, 0.00903, 0.00818, 0.00633, 0.00148, 0.00595, 0.00883, 0.00923, 0.00639, 0.0128, 0.0119, 0.00444, 0.00347, 0.0018, 0.0021, 0.00248, 0.00121, 0.002, 0.00106, 0.000872, 0.00275, 0.00499, 0.00438, 0.00399, 0.0112, 0.0244, 0.031]}
+D_identical_worlds_contacts_disabled {"label": "4 identical worlds, contacts disabled", "first_step_qpos_diff_above": {"0.0": 1, "1e-06": 212, "0.0001": null, "0.01": null}, "qpos_maxdiff_at": {"1": 2.474e-10, "10": 8.196e-08, "100": 6.109e-07, "400": 8.941e-07}, "force_maxdiff_at": {"1": 0.0, "10": 0.0001602, "100": 0.01562, "400": 0.1919}, "qpos_maxdiff_every10": [8.2e-08, 1.95e-07, 2.04e-07, 2.18e-07, 3.09e-07, 5.59e-07, 6.11e-07, 6.71e-07, 6.71e-07, 6.11e-07, 6.63e-07, 7.15e-07, 4.21e-07, 2.91e-07, 2.24e-07, 3.65e-07, 6.15e-07, 6.38e-07, 7.36e-07, 8.72e-07, 9.54e-07, 1.03e-06, 8.2e-07, 8.05e-07, 7.3e-07, 7.38e-07, 7.15e-07, 9.39e-07, 1.01e-06, 1.07e-06, 1.37e-06, 1.31e-06, 8.64e-07, 1.4e-06, 1.33e-06, 1.01e-06, 1.43e-06, 1.9e-06, 1.41e-06, 8.94e-07]}
+E_cpu_run_to_run_max_abs_qpos_diff 0.0
+gpu_wall_s 9.9
+
+===== pip_list.txt =====
+Using Python 3.12.3 environment at: venv
+Package           Version
+----------------- --------
+absl-py           2.5.0
+etils             1.14.0
+fsspec            2026.9.0
+glfw              2.10.2
+mujoco            3.14.0
+mujoco-warp       3.14.0
+numpy             2.5.3
+pyopengl          3.1.10
+typing-extensions 4.16.0
+warp-lang         1.17.0
+websockets        17.1
+zipp              4.1.0
+
+===== disk_before.txt =====
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  915G  790G   80G  91% /

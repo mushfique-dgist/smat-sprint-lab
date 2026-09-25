@@ -1,0 +1,64 @@
+Warp UserWarning: Kernel cache artifacts from a previous Warp version were found in '/home/aurnab/.cache/smatsprint-probe-2026-09-23/warp-cache'. These will be ignored. You can safely delete them.
+Loading model from: /home/aurnab/.cache/smatsprint-probe-2026-09-23/model/human_plus_hippo_nomulticcd.xml...
+
+Model
+  nq: 47 nv: 46 nu: 28 nbody: 46 ngeom: 65
+Option
+  integrator: EULER
+  cone: PYRAMIDAL
+  solver: NEWTON iterations: 100 ls_iterations: 50
+  is_sparse: True
+  broadphase: NXN broadphase_filter: PLANE|SPHERE|OBB
+Data
+  nworld: 8192 naconmax: 393216 njmax: 160
+Rolling out 500 steps at dt = 0.002...
+
+Summary for 8192 parallel rollouts
+
+Total JIT time: 35.59 s
+Total simulation time: 2.94 s
+Total steps per second: 1,392,276
+Total realtime factor: 2,784.55 x
+Total time per step: 718.25 ns
+Total converged worlds: 8192 / 8192
+
+nacon alloc:
+
+mean     std      min    max   
+-------------------------------
+  90112  19999.2  49152  131072
+76677.1  16446.1  32768   98304
+62356.8  17071.8  32768   81920
+58140.7  11930.3  32768   80586
+62148.2   5061.5  47706   65536
+  54394  6838.89  35436   65536
+70841.6  8461.36  53639   89159
+59522.3  13120.1  32768   79102
+66557.1  8006.58  41075   73728
+70096.7  3390.24  65487   73728
+
+nefc alloc:
+
+mean   std      min  max
+------------------------
+73.56  9.61906   52   92
+65.88  8.49856   44   78
+ 58.4  9.32952   36   68
+68.06   6.7362   52   78
+74.52  2.66263   68   78
+69.92  4.62532   60   78
+ 79.5  7.62168   60   90
+74.82  14.4592   56   96
+74.26  9.16692   56   83
+84.16   2.0036   78   86
+
+Model memory 14.76 MiB (0.05% of device memory):
+ (no field >= 1% of total memory)
+Data memory 1062.91 MiB (3.31% of device memory):
+ site_xpos: 73.50 MiB (0.23%)
+ site_xmat: 220.50 MiB (0.69%)
+ qLD: 66.12 MiB (0.21%)
+ efc.J_colind: 113.00 MiB (0.35%)
+ efc.J: 113.00 MiB (0.35%)
+Other memory: 2378.33 MiB (7.41% of device memory)
+Total memory: 3456.00 MiB (10.76% of device memory)
