@@ -27,7 +27,7 @@ def validate(s):
     if not isinstance(s.get("steps_phone"),list) or len(s["steps_phone"])>8 or any(not isinstance(x,str) or len(x)>300 for x in s["steps_phone"]): raise ValueError("steps")
     if not isinstance(s.get("blocking"),list): raise ValueError("blocking")
     check=s.get("check")
-    if check is not None and (not isinstance(check,dict) or check.get("id") not in ("none","gh_auth") or check.get("args",{})!={}): raise ValueError("check")
+    if check is not None and (not isinstance(check,dict) or check.get("id") not in ("none","gh_auth","bot_owner_verified") or check.get("args",{})!={}): raise ValueError("check")
     if s.get("reissue") is not None: raise ValueError("reissue not installed")
     if s.get("code") not in ("build",): raise ValueError("code")
 

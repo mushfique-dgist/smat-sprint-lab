@@ -13,7 +13,15 @@ Separate sibling project `smat-sprint`, private repository `mushfique-dgist/smat
 - Server Codex CLI is 0.155.0-alpha.16.4 (handoff probed 0.153.4); `codex exec --help` still lists builder-mode bypass, auto-review, profile, JSON and output flags. Exact behavior still requires canaries.
 - Old sprint venv torch 2.14.0+cu130 saw the RTX 5090 from this shell and a transient user unit. A 64x64 MuJoCo EGL frame rendered. Bubblewrap with a broad /dev test bind ran that same canary. The final build jail's narrower mounts and secrecy checks remain to be tested.
 - A transient scope accepted `BindsTo=` and `After=` under user systemd 255. systemd-oomd is active; full unit-specific OOM score checks remain.
-- Remaining prerequisite probe: headless Chromium from this project's cache and final build-jail CUDA matmul; run detached if over ten minutes.
+- Headless Chromium loaded the local drop page and cross-checked a sealed box against PyNaCl; a bad fingerprint was refused. Pages returned HTTP 200 for the shell and drop assets. GPU work is deferred because another autoresearch is using the GPU; the final build-jail CUDA matmul remains open.
+
+## M0 implementation status
+- Private repository created and main pushed with a programme-only Ed25519 deploy key. GitHub's published Ed25519 host fingerprint matched the pinned known-host entry. gh-pages is an orphan branch with only the public shell; Pages reports gh-pages as its source and serves the files.
+- A send-only needs bridge and CLI are running as a user service. Need 1 closed by gh_auth; need 2 (BotFather) was delivered through the configured Gmail fallback. Telegram delivery remains unverified.
+- The encrypted drop shell passed a real-browser/PyNaCl round trip and deterministic cross-implementation vector. Private issue intake, owner association, duplicate skip, bot getMe and /start validation passed against fakes. Real token delivery remains pending.
+- The launcher accepts a fixed operation registry. A jailed repo_access request succeeded; an unregistered shell request was refused. Registered push and unit paths still need tests. The service currently runs from the dev tree; a release worktree has not been cut.
+- A CPU-only bubblewrap jail passed foreign-directory, secret canary, process, user-bus, no-GPU, read-only state and writable-spool canaries. It has not yet run Codex or a push canary. Builder mode 1 is the intended mode; no unattended wrapper is armed.
+- The full bot receive path exists but remains gated in send-only mode until the remaining fake-backend tests pass. The named-operation launcher and wrapper still need their full Part N.11 matrices.
 
 ## Order and acceptance
 1. M0: need store, typed templates, send-only bridge and fallback, secret drop, own bot, strict owner validation, jail, named-operation launcher and wrapper. Use the fake Bot API and crash tests in Part N.11 before trusting full mode. The bridge failure above must be visible and have a working phone fallback.

@@ -3,6 +3,8 @@ import fcntl, json, os, subprocess, sys, time
 from datetime import datetime, timezone
 from smatsprint.needs import NEEDS, ROOT, atomic_json, validate
 from ops.fallback import dgist_send
+from smatsprint.needs import create
+from bridge import drop, full
 
 GH="/home/aurnab/.local/share/smatsprint/bin/gh"
 def now(): return datetime.now(timezone.utc).isoformat()
@@ -33,10 +35,19 @@ def message(n):
     return text
 def send(n):
     text=message(n)
-    try:
-        dgist_send.send_telegram(text); channel="dgist"
-    except Exception:
-        dgist_send.send_email("SMAT-Sprint: action needed on your phone",text); channel="gmail"
+    mode=json.loads(full.MODE.read_text()).get("mode","send_only") if full.MODE.exists() else "send_only"
+    if mode=="full":
+        try:
+            mid,nonce=full.send_need(n,text)
+            n["telegram"]["message_ids"].append(mid)
+            n["telegram"]["nonce"]=nonce
+            channel="programme_bot"
+        except Exception:
+            dgist_send.send_email("SMAT-Sprint: action needed on your phone",text); channel="gmail"
+    else:
+        try: dgist_send.send_telegram(text); channel="dgist"
+        except Exception:
+            dgist_send.send_email("SMAT-Sprint: action needed on your phone",text); channel="gmail"
     n["telegram"]["last_sent_at"]=now()
     n["telegram"]["sent_count"]+=1
     n["telegram"]["channel"]=channel
@@ -60,12 +71,18 @@ def process(req):
     if req["op"]=="cancel":
         n["status"]="cancelled"
         n["resolution"]={"how":"cancel","at":now(),"detail":req.get("reason","")}
+    elif req["op"]=="set_drop_kind":
+        if n["title"]!="Create SMAT Sprint bot, part 1" or req.get("drop_kind")!="telegram-bot-token": raise ValueError("wrong need")
+        n["drop_kind"]="telegram-bot-token"
     elif req["op"]=="check_now":
         if not n.get("check"): raise ValueError("no check")
         n["next_check_at"]=now()
     else: raise ValueError("unknown operation")
     n["version"]+=1; save(n,req["op"])
+last_issue_check=0
+
 def tick():
+    global last_issue_check
     for p in sorted((NEEDS/"requests").glob("*.json")):
         try:
             process(json.loads(p.read_text(encoding="utf8")))
@@ -73,29 +90,70 @@ def tick():
         except Exception as e:
             p.replace(NEEDS/"rejected"/p.name)
             print("need request rejected: "+type(e).__name__,file=sys.stderr)
+    if time.time()-last_issue_check>=60:
+        last_issue_check=time.time()
+        try:
+            for nid in drop.consume_issues():
+                p=NEEDS/(nid+".json")
+                n=json.loads(p.read_text(encoding="utf8"))
+                if n["status"]=="open":
+                    n["status"]="resolved"
+                    n["resolution"]={"how":"check","at":now(),"detail":"encrypted token staged and bot identity checked"}
+                    n["version"]+=1; save(n,"drop:staged")
+                    create({"code":"build","kind":"phone","title":"Start SMAT Sprint bot, part 2",
+                            "what":"Start the new bot so I can verify that it reaches your private Telegram chat.",
+                            "why":"The token alone does not prove ownership of the chat.",
+                            "steps_phone":["Open https://t.me/"+json.loads(drop.STAGED.read_text())["username"],
+                                           "Tap Start, or send /start. Do not paste the token into chat."],
+                            "steps_pc":[],"blocking":["full phone bot connection"],
+                            "check":{"id":"bot_owner_verified","args":{}},"reply":"done",
+                            "blocks_build":True,"created_by":"bridge","expires_at":None,
+                            "deadline":None,"consequential":False,"skippable":False})
+        except Exception:
+            print("drop issue check failed",file=sys.stderr)
     for p in sorted(NEEDS.glob("n-*.json")):
         n=json.loads(p.read_text(encoding="utf8"))
         if n["status"]!="open": continue
         c=n.get("check")
-        if c and c["id"]=="gh_auth":
+        if c and c["id"] in ("gh_auth","bot_owner_verified"):
             last=n.get("last_check_at")
             due=last is None or time.time()-datetime.fromisoformat(last).timestamp()>=60 or n.pop("next_check_at",None)
             if due:
-                ok=gh_auth(); n["last_check_at"]=now()
+                if c["id"]=="gh_auth": ok=gh_auth(); detail="logged in as mushfique-dgist"
+                else:
+                    try: ok,username=drop.check_owner()
+                    except Exception: ok=False; username=None
+                    ok = ok and (ROOT/"state/bridge/full_test_passed.json").exists()
+                    detail="owner verified for "+username if username else "bot owner not verified"
+                    if ok:
+                        atomic_json(full.MODE,{"mode":"full","at":now()})
+                n["last_check_at"]=now()
                 if ok:
                     n["status"]="resolved"
-                    n["resolution"]={"how":"check","at":now(),"detail":"logged in as mushfique-dgist"}
+                    n["resolution"]={"how":"check","at":now(),"detail":detail}
                 n["version"]+=1; save(n,"check:passed" if ok else "check:pending")
         if n["status"]=="open" and not n["telegram"]["last_sent_at"]:
             try: send(n)
             except Exception: print("need send failed: "+n["need_id"],file=sys.stderr)
-    atomic_json(ROOT/"state/bridge/heartbeat.json",{"at":now(),"mode":"send_only"})
+    mode=json.loads(full.MODE.read_text()).get("mode","send_only") if full.MODE.exists() else "send_only"
+    atomic_json(ROOT/"state/bridge/heartbeat.json",{"at":now(),"mode":mode})
 def main():
     NEEDS.mkdir(parents=True,exist_ok=True)
     for d in ("requests","rejected"): (NEEDS/d).mkdir(exist_ok=True)
     with (NEEDS/"bridge.lock").open("w") as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-        atomic_json(ROOT/"state/bridge/mode.json",{"mode":"send_only"})
+        if not full.MODE.exists():
+            atomic_json(full.MODE,{"mode":"send_only"})
+        first_full=True
         while True:
-            tick(); time.sleep(5)
+            tick()
+            mode=json.loads(full.MODE.read_text()).get("mode","send_only")
+            if mode=="full":
+                try:
+                    full.poll_once(save,first=first_full)
+                    first_full=False
+                except Exception:
+                    print("programme bot poll failed",file=sys.stderr)
+                    time.sleep(5)
+            else: time.sleep(5)
 if __name__=="__main__": main()

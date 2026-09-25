@@ -2,6 +2,8 @@
 """Nonblocking client for the SMAT-Sprint bridge need store."""
 import argparse
 import json
+import secrets
+from datetime import datetime, timezone
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -21,7 +23,7 @@ def main():
     create.add_argument("--why", required=True)
     create.add_argument("--step", action="append", default=[])
     create.add_argument("--blocking", action="append", default=[])
-    create.add_argument("--check", choices=("none", "gh_auth"))
+    create.add_argument("--check", choices=("none", "gh_auth", "bot_owner_verified"))
     create.add_argument("--reply", choices=sorted(needs.ALLOWED_REPLIES), default="none")
     create.add_argument("--no-block-build", action="store_true")
     create.add_argument("--created-by", choices=("codex-build", "runner", "controller", "bridge", "wrapper", "watchdog"), default="codex-build")
@@ -37,7 +39,26 @@ def main():
     cancel = actions.add_parser("cancel")
     cancel.add_argument("need_id")
     cancel.add_argument("--reason", required=True)
+    launch = sub.add_parser("launch")
+    lsub = launch.add_subparsers(dest="launch_action", required=True)
+    lr = lsub.add_parser("request")
+    lr.add_argument("op", choices=("push_main","push_pages","create_deploy_key","repo_access","pages_live","restart_bridge"))
+    ls = lsub.add_parser("status")
+    ls.add_argument("request_id")
     args = parser.parse_args()
+    if args.area == "launch":
+        if args.launch_action == "request":
+            rid = secrets.token_hex(8)
+            needs.atomic_json(needs.ROOT/"state/launcher/requests"/(rid+".json"),
+                {"schema_version":1,"id":rid,"op":args.op,
+                 "created_at":datetime.now(timezone.utc).isoformat()})
+            print(rid)
+        else:
+            if not __import__("re").fullmatch(r"[0-9a-f]{16}",args.request_id):
+                raise ValueError("request id")
+            p = needs.ROOT/"state/launcher/results"/(args.request_id+".json")
+            print(p.read_text() if p.exists() else "pending")
+        return
     if args.action == "create":
         spec = {"code": args.code, "kind": args.kind, "title": args.title,
                 "what": args.what, "why": args.why, "steps_phone": args.step,
