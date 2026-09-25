@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Nonblocking client for the SMAT-Sprint bridge need store."""
 import argparse
+import getpass
+import hashlib
 import json
 import os
 import secrets
@@ -46,6 +48,10 @@ def main():
     lr.add_argument("op", choices=("push_main","push_pages","create_deploy_key","repo_access","pages_live","restart_bridge"))
     ls = lsub.add_parser("status")
     ls.add_argument("request_id")
+    secret = sub.add_parser("secret")
+    secret_sub = secret.add_subparsers(dest="secret_action", required=True)
+    secret_set = secret_sub.add_parser("set")
+    secret_set.add_argument("kind", choices=("telegram-bot-token",))
     build = sub.add_parser("build")
     bsub = build.add_subparsers(dest="build_action", required=True)
     ba = bsub.add_parser("arm")
@@ -57,6 +63,23 @@ def main():
     bsub.add_parser("status")
     bsub.add_parser("shell")
     args = parser.parse_args()
+    if args.area == "secret":
+        if not sys.stdin.isatty():
+            raise RuntimeError("secret set requires an interactive terminal")
+        from bridge import drop
+        matching=[n for n in needs.list_open() if n.get("drop_kind")==args.kind]
+        if len(matching)!=1: raise RuntimeError("expected one open bot-token need")
+        username=input("New bot username: ").strip().removeprefix("@")
+        token=getpass.getpass("BotFather token (hidden): ").strip()
+        try:
+            payload={"need_id":matching[0]["need_id"],"kind":args.kind,
+                     "value":token,"username":username}
+            drop.stage_bot(payload,hashlib.sha256(token.encode()).hexdigest())
+        finally:
+            token=""
+            payload.clear()
+        print("Bot identity checked and staged. Start the bot on your phone when the next need arrives.")
+        return
     if args.area == "build":
         if args.build_action == "shell":
             os.execv("/usr/bin/python3",["/usr/bin/python3",

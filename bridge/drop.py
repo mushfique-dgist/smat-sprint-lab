@@ -70,17 +70,27 @@ def stage_bot(value, digest):
     return nid
 
 def consume_issues():
-    if not (CONFIG/"gh/hosts.yml").exists(): return []
+    if not (CONFIG/"gh/hosts.yml").exists(): return [],[]
     issues=json.loads(gh(["api",f"repos/{REPO}/issues?state=open&per_page=100"]))
     seen=set(json.loads(SEEN.read_text()) if SEEN.exists() else [])
-    accepted=[]
+    accepted=[]; rejected=[]
     for issue in issues:
         if "pull_request" in issue: continue
         title=issue.get("title","")
         if not re.fullmatch(r"secret-drop n-[0-9]{8}-[a-z0-9-]{1,30}-[0-9a-f]{4}",title): continue
         number=issue["number"]
-        if number in seen: continue
-        if issue.get("user",{}).get("login")!="mushfique-dgist" or issue.get("author_association")!="OWNER":
+        if number in seen:
+            # Seen means processed, not necessarily deleted. Retry deletion after
+            # an outage so an encrypted issue cannot stay open indefinitely.
+            try: gh(["issue","delete",str(number),"--yes","--repo",REPO])
+            except Exception: pass
+            continue
+        owner=(issue.get("user",{}).get("login")=="mushfique-dgist" and
+               issue.get("author_association")=="OWNER")
+        if not owner:
+            seen.add(number); atomic_json(SEEN,sorted(seen))
+            try: gh(["issue","delete",str(number),"--yes","--repo",REPO])
+            except Exception: pass
             continue
         try:
             value,digest=open_envelope(issue.get("body",""))
@@ -88,12 +98,12 @@ def consume_issues():
             accepted.append(stage_bot(value,digest))
         except Exception:
             # Never print exception text: provider output could include a token.
-            pass
+            rejected.append(title.rsplit(" ",1)[-1])
         seen.add(number)
         atomic_json(SEEN,sorted(seen))
         try: gh(["issue","delete",str(number),"--yes","--repo",REPO])
         except Exception: pass
-    return accepted
+    return accepted,rejected
 
 def check_owner():
     if OWNER_VERIFIED.exists() and (CONFIG/"telegram.env").exists():

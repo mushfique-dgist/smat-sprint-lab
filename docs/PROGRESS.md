@@ -1,28 +1,31 @@
 # Current milestone and task
-M0 (Part N): build and verify the phone needs bridge, secret drop, build jail, launcher and wrapper.
+M0 (Part N): finish the phone bridge and bounded builder bootstrap. CPU-only setup continues while another autoresearch occupies the GPU.
 
 # Done
-- Handoff README, master prompt and research directions read in order; Part E.8 step 0 attempted.
-- Isolated gh 2.101.0 copy checksum passed; GitHub device login succeeded as mushfique-dgist.
-- Owner-only DGIST send module validates a positive private chat id; Telegram returned HTTP 400 chat not found. Gmail fallback sent the code to its configured single recipient.
-- Send-only bridge service is enabled and active; durable need 1 was created and resolved by the isolated gh_auth check. sprintctl status and list work. Need 2 went to Gmail.
-- Live Phase 0 checks: 105 GB disk free, 24 GiB MemAvailable, RTX 5090 visible in shell and user unit; EGL rendered 64x64; bubblewrap canary saw CUDA and EGL; transient scope accepted BindsTo and After.
+- Read the handoff README first, followed E.8 step 0 for GitHub login, then read the full master prompt from Page one and 02_RESEARCH_DIRECTIONS.md. No goal mode or subagents.
+- Isolated gh 2.101.0 passed checksum and logged in as mushfique-dgist. Need 1 was resolved by an independent gh_auth check.
+- Private mushfique-dgist/smat-sprint-lab repository, deploy key, and public Pages drop shell are live. The Pages branch contains only public shell assets.
+- Need 2 was delivered to the configured single-recipient Gmail fallback after the DGIST bot returned HTTP 400 chat not found for the configured positive owner id. Its encrypted phone drop and PC fallback are being verified.
+- Send-only bridge, fixed-operation launcher, and bounded wrapper run from the pinned svc-0 service worktree. The wrapper is BOOTSTRAP and unarmed; full bot mode is gated by full_test_passed.json.
+- CPU-only build jail passed foreign-secret, process, user-bus, no-GPU, read-only-state, and writable-spool canaries. A real Codex builder-mode-1 canary returned CHECKED using the private Codex home without changing shared config.
+- Browser/PyNaCl sealed-box round trip, known vector, stale fingerprint refusal, private-issue intake, owner checks, scrubber checks, full-bridge fake callback/reply cases, wrapper bootstrap/recovery cases, and 10,000 unique need IDs passed.
+- The nearest AGENTS.md and a fresh rendered prompt were checked; the context audit passed. Foreign services and shared Codex config remain untouched.
 
 # Next
-1. Finish Phase 0 probes, including the exact build-jail, browser, Codex and systemd checks.
-2. Create the private repository and Pages secret-drop shell using only the isolated gh session.
-5. Send the BotFather setup need through a verified phone route; build and test full bridge mode.
-6. Build and test the jail, named-operation launcher and bounded session wrapper.
-7. Arm the wrapper only after M0 tests, progress and end.json are complete.
+1. Finish CPU fake-backend cases for full bridge, outage and crash paths, then release a tested service tag. Full bot mode remains gated until that and real phone smoke pass.
+2. Deliver the corrected BotFather need with the PC fallback through the configured phone email route; process the encrypted token and verify the owner's private /start when the phone drop arrives.
+3. Complete the remaining launcher and wrapper controls, release protocol, and N.11 adversarial cases. Keep the wrapper unarmed until its launch path and end.json gate are safe.
+4. Defer final CUDA-in-jail and science GPU canaries until GPU admission is safe; no GPU job is running for SMAT-Sprint.
 
 # Detached jobs
-- None. The transient GitHub login unit finished successfully. The bridge and launcher are persistent user services, not detached experiment jobs.
+- None. The bridge, launcher and unarmed wrapper are persistent user services, not detached experiment jobs.
 
 # Open needs
-- Need n-20260926-build-5d0b: create the programme bot on the phone and submit the encrypted token through the live Pages drop. Sent by the configured Gmail fallback. Need 1 resolved by check.
+- n-20260926-build-5d0b: create the programme bot on the phone and submit its token through the live encrypted Pages drop. The configured Gmail route is aurnab0001@gmail.com.
 
 # Red tests / open bugs
-- DGIST bot sendMessage to the configured positive owner chat returned HTTP 400 chat not found; no Telegram delivery was claimed.
-- Server Codex CLI is 0.155.0-alpha.16.4, so the handoff's 0.153.4 command and jail assumptions need current-version canaries.
-- Another autoresearch currently occupies GPU memory; no GPU jobs from this project will start until admission is safe. Other units are left untouched.
-- Full bot mode, the complete launcher registry, release tree, wrapper and end.json are not yet complete.
+- DGIST bot sendMessage to the configured positive owner id returned HTTP 400 chat not found. Telegram delivery is unverified; Gmail is the current phone route.
+- The own bot has not been created or started, so real full-mode smoke cannot pass yet. The bridge remains send-only.
+- N.11 is not yet complete: full outage/crash matrix, commands, reissue scheduling and real bot cases remain. Full mode is not trusted or enabled.
+- A foreign autoresearch process is occupying the GPU. Final CUDA-in-jail and scientific acceptance remain open, with no GPU use from this project.
+- The currently running services are pinned to svc-0; changes in the dev tree have not yet been released.

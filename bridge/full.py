@@ -51,11 +51,13 @@ def send_need(need,plain):
     result=bot_api(token,"sendMessage",body)
     return result["message_id"],nonce
 
-def send_plain(plain):
+def send_plain(plain,reply_to=None):
     token,owner=credentials()
     clean=scrub_outbound(plain)
-    return bot_api(token,"sendMessage",{"chat_id":owner,"text":html.escape(clean),
-                                        "parse_mode":"HTML","link_preview_options":{"is_disabled":True}})
+    body={"chat_id":owner,"text":html.escape(clean),"parse_mode":"HTML",
+          "link_preview_options":{"is_disabled":True}}
+    if reply_to is not None: body["reply_parameters"]={"message_id":reply_to}
+    return bot_api(token,"sendMessage",body)
 
 def _matching(short):
     matches=[]
@@ -74,6 +76,18 @@ def _valid_message(message,owner):
 
 def _answer(token,callback_id,text=""):
     bot_api(token,"answerCallbackQuery",{"callback_query_id":callback_id,"text":text[:180]})
+
+def close_message(n):
+    text=n.get("telegram",{}).get("last_text")
+    ids=n.get("telegram",{}).get("message_ids",[])
+    if not text or not ids: return
+    token,owner=credentials()
+    try:
+        bot_api(token,"editMessageText",{"chat_id":owner,"message_id":ids[-1],
+            "text":html.escape(text+"\n✓ Done — checked at "+datetime.now(timezone.utc).strftime("%H:%M UTC")),
+            "parse_mode":"HTML","reply_markup":{"inline_keyboard":[]}})
+    except Exception:
+        pass
 
 def _transition(n,action,save):
     if n["status"]!="open": return "Already closed."
@@ -105,6 +119,7 @@ def _transition(n,action,save):
         n["resolution"]={"how":"check","at":datetime.now(timezone.utc).isoformat(),"detail":"verified"}
     else: return "That action is not available."
     n["version"]+=1; save(n,"button:"+action)
+    close_message(n)
     return "Recorded for need "+n["need_id"][-4:]+"."
 
 def handle_update(update,save):
@@ -119,7 +134,7 @@ def handle_update(update,save):
         match=BUTTON.fullmatch(data)
         answer=""
         if (sender.get("id")==owner and sender.get("is_bot") is False and
-            isinstance(msg,dict) and msg.get("date",0)>0 and
+            "inline_message_id" not in cb and isinstance(msg,dict) and msg.get("date",0)>0 and
             msg.get("chat",{}).get("id")==owner and match):
             action,short,nonce=match.groups()
             need=_matching(short)
@@ -129,7 +144,14 @@ def handle_update(update,save):
         _answer(token,cb_id,answer)
         return
     message=update.get("message")
-    if not isinstance(message,dict) or not _valid_message(message,owner): return
+    if not isinstance(message,dict): return
+    sender=message.get("from",{}); chat=message.get("chat",{})
+    owner_private=(sender.get("id")==owner and sender.get("is_bot") is False and
+                   chat.get("id")==owner and chat.get("type")=="private")
+    if owner_private and ("forward_origin" in message or "via_bot" in message):
+        send_plain("I ignore forwarded messages; type your answer instead.")
+        return
+    if not _valid_message(message,owner): return
     text=message.get("text","")
     if len(text)>1500:
         send_plain("That message is too long for a need reply."); return
@@ -141,7 +163,12 @@ def handle_update(update,save):
     if text=="/start": send_plain("Connected to SMAT-Sprint. Use /needs to see open requests."); return
     if text=="/help": send_plain("Use /needs for open requests and /status for a short build status. Do not send tokens here."); return
     if text=="/needs":
-        for n in list_open(): send_plain("Open need "+n["need_id"][-4:]+": "+n["title"])
+        for n in list_open():
+            ids=n.get("telegram",{}).get("message_ids",[])
+            sent=n.get("telegram",{}).get("last_sent_at")
+            recent=bool(sent) and (datetime.now(timezone.utc)-datetime.fromisoformat(sent)).total_seconds()<172800
+            send_plain("Open need "+n["need_id"][-4:]+": "+n["title"],
+                       reply_to=ids[-1] if ids and recent else None)
         return
     if text=="/status":
         state=ROOT/"state/codexwrap/state.json"
@@ -158,7 +185,16 @@ def handle_update(update,save):
     elif message.get("reply_to_message"):
         mid=message["reply_to_message"].get("message_id")
         candidates=[n for n in candidates if mid in n.get("telegram",{}).get("message_ids",[])]
-    elif len(candidates)!=1: candidates=[]
+    else:
+        all_ids=[mid for p in NEEDS.glob("n-*.json")
+                 for mid in json.loads(p.read_text()).get("telegram",{}).get("message_ids",[])]
+        newest=max(all_ids,default=0)
+        if len(candidates)!=1 or not candidates[0].get("telegram",{}).get("message_ids") or (
+            candidates[0]["telegram"]["message_ids"][-1]!=newest):
+            candidates=[]
+        elif candidates[0].get("telegram",{}).get("last_sent_at"):
+            sent=datetime.fromisoformat(candidates[0]["telegram"]["last_sent_at"]).timestamp()
+            if message.get("date",0)<sent: candidates=[]
     if len(candidates)!=1:
         send_plain("Please reply to the latest need message or start with its four-character id.")
         return
@@ -181,6 +217,7 @@ def handle_update(update,save):
     n["status"]="resolved"; n["version"]+=1
     n["resolution"]={"how":"reply","at":datetime.now(timezone.utc).isoformat(),"detail":chosen}
     save(n,"reply")
+    close_message(n)
     send_plain("Recorded "+chosen+" for need "+n["need_id"][-4:]+".")
 
 def poll_once(save,first=False):

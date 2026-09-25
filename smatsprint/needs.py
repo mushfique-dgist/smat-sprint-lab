@@ -1,5 +1,5 @@
 """Nonblocking need requests; the bridge is the sole state writer."""
-import json, os, re, secrets, time
+import fcntl, json, os, re, secrets, time
 from datetime import datetime
 from pathlib import Path
 
@@ -31,15 +31,44 @@ def validate(s):
     if s.get("reissue") is not None: raise ValueError("reissue not installed")
     if s.get("code") not in ("build",): raise ValueError("code")
 
+def _write_bitmap(path, bitmap):
+    tmp=path.with_name(path.name+"."+secrets.token_hex(6)+".tmp")
+    with tmp.open("xb") as out:
+        out.write(bitmap); out.flush(); os.fsync(out.fileno())
+    os.replace(tmp,path)
+    fd=os.open(path.parent,os.O_DIRECTORY)
+    try: os.fsync(fd)
+    finally: os.close(fd)
+
 def create(spec):
     validate(spec)
-    for _ in range(20):
-        nid="n-"+datetime.now().strftime("%Y%m%d")+"-"+spec["code"]+"-"+secrets.token_hex(2)
-        if not (NEEDS/(nid+".json")).exists(): break
-    else: raise RuntimeError("id collision")
-    atomic_json(NEEDS/"requests"/(str(time.time_ns())+"-"+secrets.token_hex(4)+".json"),
-                {"op":"create","need_id":nid,"expected_version":None,"spec":spec})
+    requests=NEEDS/"requests"
+    requests.mkdir(parents=True,exist_ok=True)
+    with (requests/".allocation.lock").open("a") as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX)
+        bitmap_path=requests/".allocated.bin"
+        if bitmap_path.exists():
+            bitmap=bytearray(bitmap_path.read_bytes())
+            if len(bitmap)!=8192: raise RuntimeError("allocation bitmap invalid")
+        else:
+            bitmap=bytearray(8192)
+            ids=[p.stem[-4:] for p in NEEDS.glob("n-*.json")]
+            for p in requests.glob("*.json"):
+                try: ids.append(json.loads(p.read_text(encoding="utf8"))["need_id"][-4:])
+                except (ValueError,KeyError): pass
+            for short in ids:
+                i=int(short,16); bitmap[i//8]|=1<<(i%8)
+        for _ in range(100):
+            i=secrets.randbelow(65536)
+            if not bitmap[i//8] & (1<<(i%8)): break
+        else: raise RuntimeError("short need id space congested")
+        bitmap[i//8]|=1<<(i%8)
+        _write_bitmap(bitmap_path,bitmap)
+        nid="n-"+datetime.now().strftime("%Y%m%d")+"-"+spec["code"]+"-"+format(i,"04x")
+        atomic_json(requests/(str(time.time_ns())+"-"+secrets.token_hex(4)+".json"),
+                    {"op":"create","need_id":nid,"expected_version":None,"spec":spec})
     return nid
+
 
 def status(nid):
     if not ID.fullmatch(nid): raise ValueError("id")

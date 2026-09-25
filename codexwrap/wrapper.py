@@ -1,5 +1,6 @@
 """Durable bounded builder-session scheduler. It never executes project code itself."""
 import fcntl
+import hashlib
 import json
 import os
 import re
@@ -76,6 +77,7 @@ def process_request(path,s):
             s["armed_at"]=stamp(); s["armed_by"]=request.get("requester_pid")
             s["hold_reason"]=None
         elif op=="hold":
+            if s["state"] in ("LAUNCHING","RUNNING"): raise ValueError("session active; use stop-now after confirmation")
             reason=request.get("reason","manual")
             if not isinstance(reason,str) or len(reason)>100: raise ValueError("reason")
             s["state"]="HOLD"; s["hold_reason"]=reason
@@ -145,10 +147,11 @@ def blockers(s):
     for n in list_open():
         if n.get("blocks_build"):
             fallback=(now()-parse(s["bootstrap_sent_at"])).total_seconds()>=86400
-            if fallback and s["next"] in ("M0","M1a") and n["title"].startswith("Create SMAT Sprint bot"):
+            if fallback and s["next"] in ("M0","M1a") and (n["title"].startswith("Create SMAT Sprint bot") or n["title"].startswith("GitHub login")):
                 s["next"]="M1a"
                 continue
             reasons.append("open need "+n["need_id"])
+    if s["next"]=="M8" and not (ROOT/"state/phase2_go.json").exists(): reasons.append("Phase 2 go")
     for file in SESSIONS.glob("*/exit_code"):
         try:
             number=file.parent.name
@@ -158,10 +161,24 @@ def blockers(s):
         except Exception: reasons.append("unit check")
     return reasons
 
+def progress_signature():
+    result=subprocess.run(["git","rev-parse","HEAD"],cwd=PROJECT,
+                          capture_output=True,text=True,timeout=10)
+    head=result.stdout.strip() if result.returncode==0 else ""
+    lines=(PROJECT/"docs/PROGRESS.md").read_text(encoding="utf8").splitlines()
+    chosen=[]
+    active=False
+    for line in lines:
+        if line.startswith("# "): active=line in ("# Current milestone and task","# Done")
+        if active: chosen.append(line)
+    digest=hashlib.sha256("\n".join(chosen).encode()).hexdigest()
+    return {"head":head,"progress_sections_sha256":digest}
+
 def prompt_for(number,milestone):
     open_needs=[{"id":n["need_id"],"code":n["code"],"title":n["title"]}
                 for n in list_open()]
-    inputs={"milestone":milestone,"open_needs":open_needs,"resolved_needs":[]}
+    inputs={"milestone":milestone,"open_needs":open_needs,"resolved_needs":[],
+            "progress_before":progress_signature()}
     directory=SESSIONS/str(number)
     directory.mkdir(mode=0o700,parents=True,exist_ok=False)
     atomic_json(directory/"inputs.json",inputs)
@@ -178,16 +195,19 @@ Create needs with sprintctl need create; never wait for one. End only under Part
     (directory/"milestone").write_text(milestone+"\n")
     return directory
 
+def start_unit(number):
+    cmd=["systemd-run","--user",f"--unit=smatsprint-codex-{number}",
+         "--slice=smatsprint_build.slice",f"--working-directory={Path(__file__).resolve().parents[1]}",
+         "-p","OOMScoreAdjust=900","-p","RuntimeMaxSec=36000","-p","MemoryMax=6G",
+         "/usr/bin/python3","-m","codexwrap.run_session",str(number)]
+    return subprocess.run(cmd,capture_output=True,text=True,timeout=20)
+
 def launch(s):
     number=max([int(p.name) for p in SESSIONS.iterdir() if p.is_dir() and p.name.isdigit()]+[0])+1
     directory=prompt_for(number,s["next"])
     s["state"]="LAUNCHING"; s["current_session"]=number
     save(s,"prelaunch")
-    cmd=["systemd-run","--user",f"--unit=smatsprint-codex-{number}",
-         "--slice=smatsprint_build.slice",f"--working-directory={Path(__file__).resolve().parents[1]}",
-         "-p","OOMScoreAdjust=900","-p","RuntimeMaxSec=36000","-p","MemoryMax=6G",
-         "/usr/bin/python3","-m","codexwrap.run_session",str(number)]
-    result=subprocess.run(cmd,capture_output=True,text=True,timeout=20)
+    result=start_unit(number)
     if result.returncode:
         s["state"]="BACKOFF"
         s["backoff_until"]=(now()+timedelta(minutes=10)).isoformat()
@@ -215,7 +235,11 @@ def finish(s):
     else: code=1; duration=0
     try: end=validate_end(json.loads((directory/"end.json").read_text()))
     except Exception: end=None
-    progress=code==0 and end is not None and duration>=600
+    try:
+        baseline=json.loads((directory/"inputs.json").read_text())["progress_before"]
+        changed=baseline!=progress_signature()
+    except Exception: changed=False
+    progress=code==0 and end is not None and duration>=600 and changed
     s["last_session"]=number; s["current_session"]=None
     if not progress:
         s["failures"]+=1
@@ -236,7 +260,13 @@ def finish(s):
             index=MILESTONES.index(s["next"])
             s["next"]=MILESTONES[index+1] if index+1<len(MILESTONES) else "DONE"
         if s["next"]=="DONE": s["state"]="DONE"
-        elif end["waiting_for_needs"]: s["state"]="HOLD"; s["hold_reason"]="waiting for phone need"
+        elif end["waiting_for_needs"]:
+            s["state"]="HOLD"; s["hold_reason"]="waiting for phone need"
+            s["waiting_for_needs"]=end["waiting_for_needs"]
+        elif end["waiting_for_jobs"]:
+            s["state"]="HOLD"; s["hold_reason"]="waiting for detached jobs"
+            s["waiting_for_jobs"]=end["waiting_for_jobs"]
+            s["jobs_wait_started_at"]=stamp()
         else: s["state"]="ARMED"; s["armed_at"]=stamp()
     save(s,"session-ended")
     return s
@@ -249,15 +279,37 @@ def tick():
                      (NEEDS/(nid+".json")).exists() and json.loads((NEEDS/(nid+".json")).read_text())["status"]=="open"]
         if not outstanding:
             s["state"]="ARMED"; s["hold_reason"]=None; s["armed_at"]=stamp(); save(s,"needs-resolved")
+    if s["state"]=="HOLD" and s.get("hold_reason")=="waiting for detached jobs":
+        ready=True
+        for job in s.get("waiting_for_jobs",[]):
+            name=job.get("name","")
+            if not re.fullmatch(r"[a-z0-9_-]{1,50}",name): ready=False; break
+            exit_file=ROOT/"state/detached"/name/"exit_code"
+            if exit_file.exists(): continue
+            try:
+                eta=parse(job["eta"])
+                start=parse(s["jobs_wait_started_at"])
+                if now()<eta+(eta-start)/2: ready=False
+            except Exception: ready=False
+        if ready:
+            s["state"]="ARMED"; s["hold_reason"]=None; s["armed_at"]=stamp()
+            save(s,"jobs-completed-or-overdue")
     if s["state"]=="BACKOFF" and s["backoff_until"] and now()>=parse(s["backoff_until"]):
         s["state"]="ARMED"; s["backoff_until"]=None; save(s,"backoff-ended")
     if s["state"]=="LAUNCHING":
-        active,_=active_unit(s["current_session"])
-        if active: s["state"]="RUNNING"; save(s,"adopt-launched-unit")
-        else:
-            # The same unit name makes a retry idempotent; do not choose a new session number.
-            s["state"]="BACKOFF"; s["backoff_until"]=(now()+timedelta(minutes=10)).isoformat()
-            save(s,"launch-state-uncertain")
+        active,properties=active_unit(s["current_session"])
+        if active or (SESSIONS/str(s["current_session"])/"exit_code").exists():
+            s["state"]="RUNNING"; save(s,"adopt-launched-unit")
+        elif properties.get("LoadState")=="not-found":
+            result=start_unit(s["current_session"])
+            active,_=active_unit(s["current_session"])
+            if result.returncode==0 or active:
+                s["state"]="RUNNING"; s["last_launch_at"]=stamp()
+                s["launches"].append(s["last_launch_at"])
+                save(s,"recovered-launch")
+            else:
+                s["state"]="BACKOFF"; s["backoff_until"]=(now()+timedelta(minutes=10)).isoformat()
+                save(s,"launch-recovery-failed")
     if s["state"]=="RUNNING": s=finish(s)
     if s["state"]=="ARMED":
         reasons=blockers(s)

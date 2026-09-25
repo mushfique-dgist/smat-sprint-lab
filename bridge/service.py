@@ -29,6 +29,8 @@ def message(n):
     lines=["[SMAT-Sprint build] "+("Phone" if n["kind"]=="phone" else "PC only")+": "+n["title"],n["what"]+" "+n["why"]]
     lines += [str(i)+". "+s.replace("{need_id}",n["need_id"]) for i,s in enumerate(n["steps_phone"],1)]
     if n.get("blocking"): lines.append("Everything else is continuing; only "+", ".join(n["blocking"])+" waits.")
+    if n.get("steps_pc"):
+        lines.append("PC fallback: "+"; ".join(n["steps_pc"]))
     lines += ["Need "+n["need_id"][-4:],"Do not reply to the DGIST bot; that chat belongs to the course service."]
     text="\n".join(lines)
     if len(text)>1500: raise ValueError("message length")
@@ -41,6 +43,7 @@ def send(n):
             mid,nonce=full.send_need(n,text)
             n["telegram"]["message_ids"].append(mid)
             n["telegram"]["nonce"]=nonce
+            n["telegram"]["last_text"]=text
             channel="programme_bot"
         except Exception:
             dgist_send.send_email("SMAT-Sprint: action needed on your phone",text); channel="gmail"
@@ -93,24 +96,45 @@ def tick():
     if time.time()-last_issue_check>=60:
         last_issue_check=time.time()
         try:
-            for nid in drop.consume_issues():
-                p=NEEDS/(nid+".json")
-                n=json.loads(p.read_text(encoding="utf8"))
-                if n["status"]=="open":
-                    n["status"]="resolved"
-                    n["resolution"]={"how":"check","at":now(),"detail":"encrypted token staged and bot identity checked"}
-                    n["version"]+=1; save(n,"drop:staged")
-                    create({"code":"build","kind":"phone","title":"Start SMAT Sprint bot, part 2",
-                            "what":"Start the new bot so I can verify that it reaches your private Telegram chat.",
-                            "why":"The token alone does not prove ownership of the chat.",
-                            "steps_phone":["Open https://t.me/"+json.loads(drop.STAGED.read_text())["username"],
-                                           "Tap Start, or send /start. Do not paste the token into chat."],
-                            "steps_pc":[],"blocking":["full phone bot connection"],
-                            "check":{"id":"bot_owner_verified","args":{}},"reply":"done",
-                            "blocks_build":True,"created_by":"bridge","expires_at":None,
-                            "deadline":None,"consequential":False,"skippable":False})
+            accepted,rejected=drop.consume_issues()
+            for nid in rejected:
+                create({"code":"build","kind":"phone","title":"Encrypted drop could not be used",
+                        "what":"The encrypted issue for need "+nid[-4:]+" did not pass the lab checks.",
+                        "why":"It was deleted from the private repository. No token was installed.",
+                        "steps_phone":["Open the latest drop link from your phone need and submit a fresh encrypted issue."],
+                        "steps_pc":[],"blocking":[],"check":None,"reply":"none",
+                        "blocks_build":False,"created_by":"bridge","expires_at":None,
+                        "deadline":None,"consequential":False,"skippable":False})
         except Exception:
             print("drop issue check failed",file=sys.stderr)
+    # The same durable stage is populated by a phone drop or the local PC
+    # fallback. Finish it after a bridge restart as well.
+    if drop.STAGED.exists():
+        try:
+            staged=json.loads(drop.STAGED.read_text())
+            nid=staged["need_id"]
+            p=NEEDS/(nid+".json")
+            n=json.loads(p.read_text(encoding="utf8"))
+            if n["status"]=="open":
+                n["status"]="resolved"
+                n["resolution"]={"how":"check","at":now(),"detail":"encrypted token staged and bot identity checked"}
+                n["version"]+=1; save(n,"drop:staged")
+            exists=any(x.get("title")=="Start SMAT Sprint bot, part 2" for x in (
+                json.loads(q.read_text()) for q in NEEDS.glob("n-*.json")))
+            queued=any(x.get("spec",{}).get("title")=="Start SMAT Sprint bot, part 2" for x in (
+                json.loads(q.read_text()) for q in (NEEDS/"requests").glob("*.json")))
+            if not exists and not queued:
+                create({"code":"build","kind":"phone","title":"Start SMAT Sprint bot, part 2",
+                        "what":"Start the new bot so I can verify that it reaches your private Telegram chat.",
+                        "why":"The token alone does not prove ownership of the chat.",
+                        "steps_phone":["Open https://t.me/"+staged["username"],
+                                       "Tap Start, or send /start. Do not paste the token into chat."],
+                        "steps_pc":[],"blocking":["full phone bot connection"],
+                        "check":{"id":"bot_owner_verified","args":{}},"reply":"done",
+                        "blocks_build":True,"created_by":"bridge","expires_at":None,
+                        "deadline":None,"consequential":False,"skippable":False})
+        except Exception:
+            print("staged bot processing failed",file=sys.stderr)
     for p in sorted(NEEDS.glob("n-*.json")):
         n=json.loads(p.read_text(encoding="utf8"))
         if n["status"]!="open": continue
@@ -132,6 +156,11 @@ def tick():
                     n["status"]="resolved"
                     n["resolution"]={"how":"check","at":now(),"detail":detail}
                 n["version"]+=1; save(n,"check:passed" if ok else "check:pending")
+        if n["status"]=="open" and n.get("snoozed_until"):
+            if datetime.fromisoformat(n["snoozed_until"])<=datetime.now(timezone.utc):
+                n["snoozed_until"]=None
+                n["telegram"]["last_sent_at"]=None
+                n["version"]+=1; save(n,"snooze-ended")
         if n["status"]=="open" and not n["telegram"]["last_sent_at"]:
             try: send(n)
             except Exception: print("need send failed: "+n["need_id"],file=sys.stderr)

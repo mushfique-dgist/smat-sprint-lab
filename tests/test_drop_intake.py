@@ -49,12 +49,12 @@ with tempfile.TemporaryDirectory() as temp:
          patch.object(drop,"gh",fake_gh), \
          patch.object(drop,"bot_api",fake_bot_api), \
          patch.object(drop,"owner_credentials",lambda: ("unused",8746723177)):
-        accepted = drop.consume_issues()
-        assert accepted == [NEED_ID], accepted
+        accepted,rejected = drop.consume_issues()
+        assert accepted == [NEED_ID] and not rejected, (accepted,rejected)
         assert (root/"staged_bot.json").stat().st_mode & 0o777 == 0o600
-        assert json.loads((root/"seen.json").read_text()) == [101]
-        assert len([c for c in calls if c[:2]==["issue","delete"]]) == 1
-        assert drop.consume_issues() == []
+        assert json.loads((root/"seen.json").read_text()) == [101,102]
+        assert len([c for c in calls if c[:2]==["issue","delete"]]) == 2
+        assert drop.consume_issues() == ([],[])
         ok,name = drop.check_owner()
         assert ok and name == USERNAME
         assert (root/"telegram.env").stat().st_mode & 0o777 == 0o600

@@ -14,7 +14,7 @@ PROJECT = Path(__file__).resolve().parents[1]
 DASH = PROJECT / "dashboard"
 KEY = json.loads((DASH / "drop-key.json").read_text())
 PRIVATE = PrivateKey(Path("/home/aurnab/.config/smatsprint/drop_x25519").read_bytes())
-CHROME = "/home/aurnab/.cache/ms-playwright/chromium-1217/chrome-linux64/chrome"
+CHROME = "/home/aurnab/projects/smat-sprint/cache/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-linux64/chrome-headless-shell"
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
