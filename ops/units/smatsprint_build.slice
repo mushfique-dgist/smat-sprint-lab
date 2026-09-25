@@ -1,0 +1,7 @@
+[Unit]
+Description=SMAT-Sprint build sessions
+[Slice]
+MemoryHigh=5G
+MemoryMax=6G
+CPUQuota=800%
+TasksMax=2048

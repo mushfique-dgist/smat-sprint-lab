@@ -1,0 +1,20 @@
+[Unit]
+Description=SMAT-Sprint send-only needs bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/aurnab/smatsprint-home/state/trees/service
+Environment=SMATSPRINT_HOME=/home/aurnab/smatsprint-home
+ExecStart=/home/aurnab/.local/share/smatsprint/venv/bin/python -m bridge.service
+Restart=always
+RestartSec=10
+Slice=smatsprint-ctl.slice
+MemoryMax=256M
+LimitCORE=0
+UMask=0077
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=default.target

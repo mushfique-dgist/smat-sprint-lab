@@ -1,0 +1,20 @@
+[Unit]
+Description=SMAT-Sprint named-operation launcher
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/aurnab/smatsprint-home/state/trees/service
+Environment=SMATSPRINT_HOME=/home/aurnab/smatsprint-home
+ExecStart=/usr/bin/python3 -m launcher.service
+Restart=always
+RestartSec=10
+Slice=smatsprint-ctl.slice
+MemoryMax=256M
+LimitCORE=0
+UMask=0077
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=default.target

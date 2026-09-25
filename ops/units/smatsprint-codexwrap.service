@@ -1,0 +1,20 @@
+[Unit]
+Description=SMAT-Sprint bounded Codex session wrapper
+After=smatsprint-bridge.service smatsprint-launcher.service
+Wants=smatsprint-bridge.service smatsprint-launcher.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/aurnab/smatsprint-home/state/trees/service
+Environment=SMATSPRINT_HOME=/home/aurnab/smatsprint-home
+ExecStart=/usr/bin/python3 -m codexwrap.wrapper
+Restart=always
+RestartSec=10
+Slice=smatsprint-ctl.slice
+MemoryMax=256M
+LimitCORE=0
+UMask=0077
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=default.target

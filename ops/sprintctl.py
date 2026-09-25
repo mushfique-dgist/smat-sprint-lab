@@ -2,6 +2,7 @@
 """Nonblocking client for the SMAT-Sprint bridge need store."""
 import argparse
 import json
+import os
 import secrets
 from datetime import datetime, timezone
 import sys
@@ -45,7 +46,37 @@ def main():
     lr.add_argument("op", choices=("push_main","push_pages","create_deploy_key","repo_access","pages_live","restart_bridge"))
     ls = lsub.add_parser("status")
     ls.add_argument("request_id")
+    build = sub.add_parser("build")
+    bsub = build.add_subparsers(dest="build_action", required=True)
+    ba = bsub.add_parser("arm")
+    ba.add_argument("--next", choices=("M0","M1a"), required=True)
+    bh = bsub.add_parser("hold")
+    bh.add_argument("--reason", required=True)
+    bsub.add_parser("resume")
+    bsub.add_parser("release")
+    bsub.add_parser("status")
+    bsub.add_parser("shell")
     args = parser.parse_args()
+    if args.area == "build":
+        if args.build_action == "shell":
+            os.execv("/usr/bin/python3",["/usr/bin/python3",
+                "/home/aurnab/smatsprint-home/state/trees/service/codexwrap/jail.py","--",
+                "/usr/local/bin/codex","-m","gpt-6-astra","-p","smatsprint-builder",
+                "-C","/home/aurnab/projects/smat-sprint",
+                "-c","plugins={}","-c","marketplaces={}"])
+        if args.build_action == "status":
+            p=needs.ROOT/"state/codexwrap/state.json"
+            print(p.read_text() if p.exists() else '{"state":"BOOTSTRAP"}')
+        else:
+            rid=secrets.token_hex(8)
+            req={"schema_version":1,"id":rid,"op":args.build_action,
+                 "created_at":datetime.now(timezone.utc).isoformat(),
+                 "requester_pid":os.getpid()}
+            if args.build_action == "arm": req["next"]=args.next
+            if args.build_action == "hold": req["reason"]=args.reason
+            needs.atomic_json(needs.ROOT/"state/codexwrap/requests"/(rid+".json"),req)
+            print(rid)
+        return
     if args.area == "launch":
         if args.launch_action == "request":
             rid = secrets.token_hex(8)

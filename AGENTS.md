@@ -11,6 +11,7 @@ The experiment and sandbox are separate. Only a user-confirmed config Promote cr
 The forge, DGIST agents, other users, their services and secrets are off limits.
 Do not reuse the forge GitHub session, bot, Vast instances or credentials.
 Do not reboot the shared server. Honour Pause and the disk and memory floors.
+The other autoresearch may occupy the GPU. Finish CPU setup first; start GPU work only after live admission says it is free.
 Do not put credentials in git, logs, status, Pages, Telegram or Vast.
 Use the smallest relevant spec part: N for needs and build sessions; G for gate; B for science;
 H for steering and lanes; C for runner; R for resilience; D for control and moves; E for milestones.

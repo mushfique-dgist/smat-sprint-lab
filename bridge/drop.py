@@ -45,7 +45,7 @@ def open_envelope(body):
     raw=match.group(1)
     box=base64.urlsafe_b64decode(raw+"="*((-len(raw))%4))
     if len(box)<48 or len(box)>5000: raise ValueError("size")
-    pub=json.loads((Path("/home/aurnab/projects/smat-sprint/dashboard/drop-key.json")).read_text())
+    pub=json.loads((Path(__file__).resolve().parents[1] / "dashboard/drop-key.json").read_text())
     value=json.loads(SealedBox(PrivateKey((CONFIG/"drop_x25519").read_bytes())).decrypt(box))
     if value.get("key_id")!=pub["key_id"]: raise ValueError("key id")
     created=datetime.fromisoformat(value["created_at"])
