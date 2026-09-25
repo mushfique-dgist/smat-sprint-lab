@@ -6,7 +6,7 @@ M0 (Part N): finish the phone bridge and bounded builder bootstrap. CPU-only set
 - Isolated gh 2.101.0 passed checksum and logged in as mushfique-dgist. Need 1 was resolved by an independent gh_auth check.
 - Private mushfique-dgist/smat-sprint-lab repository, deploy key, and public Pages drop shell are live. The Pages branch contains only public shell assets.
 - Need 2 was delivered to the configured single-recipient Gmail fallback after the DGIST bot returned HTTP 400 chat not found for the configured positive owner id. Its encrypted phone drop passed browser/PyNaCl checks; the corrected message with the PC fallback was sent again through Gmail.
-- Send-only bridge, fixed-operation launcher, and bounded wrapper run from the pinned svc-2 service worktree. The wrapper is BOOTSTRAP and unarmed; full bot mode is gated by full_test_passed.json.
+- Send-only bridge, fixed-operation launcher, and bounded wrapper run from the pinned svc-2 service worktree. The wrapper's launch state is in state/codexwrap/state.json; any M0 continuation runs in the CPU-only jail. Full bot mode is gated by full_test_passed.json.
 - CPU-only build jail passed foreign-secret, process, user-bus, no-GPU, read-only-state, and writable-spool canaries. A real Codex builder-mode-1 canary returned CHECKED using the private Codex home without changing shared config.
 - Browser/PyNaCl sealed-box round trip, known vector, stale fingerprint refusal, private-issue intake, owner checks, scrubber checks, full-bridge fake callback/reply cases, wrapper bootstrap/recovery cases, and 10,000 unique need IDs passed.
 - The nearest AGENTS.md and a fresh rendered prompt were checked; the context audit passed. Foreign services and shared Codex config remain untouched.
@@ -28,4 +28,4 @@ M0 (Part N): finish the phone bridge and bounded builder bootstrap. CPU-only set
 - The own bot has not been created or started, so real full-mode smoke cannot pass yet. The bridge remains send-only.
 - N.11 is not yet complete: full outage/crash matrix, commands, reissue scheduling and real bot cases remain. Full mode is not trusted or enabled.
 - A foreign autoresearch process is occupying the GPU. Final CUDA-in-jail and scientific acceptance remain open, with no GPU use from this project.
-- The running services are pinned to svc-2. The wrapper remains BOOTSTRAP until the first-session report and end.json are written.
+- The running services are pinned to svc-2. The first-session report and end.json precede the one-time M0 arm operation.
